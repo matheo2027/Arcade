@@ -12,6 +12,3 @@ add_subdirectory(snake)
 # Create a shared library for games
 add_library(games SHARED "")
 target_link_libraries(games PUBLIC pacman snake)
-
-# Move the .so file to the root of the lib folder
-set_target_properties(games PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../lib)

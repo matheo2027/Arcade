@@ -12,6 +12,3 @@ add_subdirectory(ncurses)
 # Create a shared library for graphics
 add_library(graphics SHARED "")
 target_link_libraries(graphics PUBLIC SDL2 NCurses)
-
-# Move the .so file to the root of the lib folder
-set_target_properties(graphics PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../lib)
