@@ -9,12 +9,12 @@
 #define NCURSES_HPP_
 
 class NCurses {
-    public:
-        NCurses();
-        ~NCurses();
+public:
+  NCurses();
+  ~NCurses();
 
-    protected:
-    private:
+protected:
+private:
 };
 
 #endif /* !NCURSES_HPP_ */

@@ -9,12 +9,12 @@
 #define SNAKE_HPP_
 
 class Snake {
-  public:
-    Snake();
-    ~Snake();
+public:
+  Snake();
+  ~Snake();
 
-  protected:
-  private:
+protected:
+private:
 };
 
 #endif /* !SNAKE_HPP_ */

@@ -9,12 +9,12 @@
 #define PACMAN_HPP_
 
 class Pacman {
-    public:
-        Pacman();
-        ~Pacman();
+public:
+  Pacman();
+  ~Pacman();
 
-    protected:
-    private:
+protected:
+private:
 };
 
 #endif /* !PACMAN_HPP_ */

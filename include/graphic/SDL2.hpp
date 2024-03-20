@@ -9,12 +9,12 @@
 #define SDL2_HPP_
 
 class SDL2 {
-    public:
-        SDL2();
-        ~SDL2();
+public:
+  SDL2();
+  ~SDL2();
 
-    protected:
-    private:
+protected:
+private:
 };
 
 #endif /* !SDL2_HPP_ */
