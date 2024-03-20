@@ -8,7 +8,10 @@
 #ifndef NCURSES_HPP_
 #define NCURSES_HPP_
 
-class NCurses {
+#include "IDisplayModule.hpp"
+
+namespace arcade {
+class NCurses : virtual public arcade::IDisplayModule {
 public:
   NCurses();
   ~NCurses();
@@ -16,5 +19,6 @@ public:
 protected:
 private:
 };
+}; // namespace arcade
 
 #endif /* !NCURSES_HPP_ */

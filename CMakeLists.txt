@@ -19,21 +19,24 @@ include_directories(${CMAKE_SOURCE_DIR}/include/graphic)
 include_directories(${CMAKE_SOURCE_DIR}/include/game)
 
 # Main arcade executable
-add_executable(arcade src/main.cpp) # Add other source files as needed
+add_executable(arcade src/main.cpp)
 
 # Games
-add_library(arcade_snake SHARED lib/games/snake/Snake.cpp) # Add other source files
-                                                       # as needed
+add_library(arcade_game SHARED lib/games/IGameModule.cpp)
 
-add_library(arcade_pacman SHARED lib/games/pacman/Pacman.cpp) # Add other source
-                                                          # files as needed
+add_library(arcade_snake SHARED lib/games/snake/Snake.cpp)
+
+add_library(arcade_pacman SHARED lib/games/pacman/Pacman.cpp)
 
 # Graphics
+add_library(arcade_IDisplay SHARED lib/graphics/IDisplayModule.cpp)
+
+add_library(arcade_DisplayModule SHARED lib/graphics/DisplayModuleImpl.cpp)
+
 add_library(
-  arcade_ncurses SHARED lib/graphics/ncurses/NCurses.cpp) # Add other source files
-                                                      # as needed
-add_library(arcade_sdl2 SHARED lib/graphics/sdl2/SDL2.cpp) # Add other source files
-                                                       # as needed
+  arcade_ncurses SHARED lib/graphics/ncurses/NCurses.cpp)
+
+add_library(arcade_sdl2 SHARED lib/graphics/sdl2/SDL2.cpp)
 
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
