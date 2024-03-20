@@ -22,7 +22,10 @@ jobs:
           repository: ""
 
       - name: Compile project
-        run: cmake -S . -B build && cmake --build build
+        run: cmake -S . -B build
+
+      - name: Build project
+        run: cmake --build build
 
       # - name: Clean project
       #   run: make clean
