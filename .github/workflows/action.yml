@@ -21,6 +21,9 @@ jobs:
         with:
           repository: ""
 
+      - name: Install SDL2
+        run: sudo apt-get install libsdl2-dev
+
       - name: Compile project
         run: cmake -S . -B build
 
