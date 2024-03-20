@@ -22,17 +22,17 @@ include_directories(${CMAKE_SOURCE_DIR}/include/game)
 add_executable(arcade src/main.cpp) # Add other source files as needed
 
 # Games
-add_library(arcade_snake SHARED games/snake/Snake.cpp) # Add other source files
+add_library(arcade_snake SHARED lib/games/snake/Snake.cpp) # Add other source files
                                                        # as needed
 
-add_library(arcade_pacman SHARED games/pacman/Pacman.cpp) # Add other source
+add_library(arcade_pacman SHARED lib/games/pacman/Pacman.cpp) # Add other source
                                                           # files as needed
 
 # Graphics
 add_library(
-  arcade_ncurses SHARED graphics/ncurses/NCurses.cpp) # Add other source files
+  arcade_ncurses SHARED lib/graphics/ncurses/NCurses.cpp) # Add other source files
                                                       # as needed
-add_library(arcade_sdl2 SHARED graphics/sdl2/SDL2.cpp) # Add other source files
+add_library(arcade_sdl2 SHARED lib/graphics/sdl2/SDL2.cpp) # Add other source files
                                                        # as needed
 
 find_package(Curses REQUIRED)
@@ -45,3 +45,11 @@ include_directories(${SDL2_INCLUDE_DIR})
 # Afterwards, link it like this
 target_link_libraries(arcade PRIVATE ${CURSES_LIBRARIES})
 target_link_libraries(arcade PRIVATE ${SDL2_LIBRARIES})
+
+
+# Move .so files out of the build folder
+set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+add_custom_command(TARGET arcade_snake POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_snake> ${LIB_DESTINATION}/arcade_snake.so)
+add_custom_command(TARGET arcade_pacman POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_pacman> ${LIB_DESTINATION}/arcade_pacman.so)
+add_custom_command(TARGET arcade_ncurses POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_ncurses> ${LIB_DESTINATION}/arcade_ncurses.so)
+add_custom_command(TARGET arcade_sdl2 POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sdl2> ${LIB_DESTINATION}/arcade_sdl2.so)
