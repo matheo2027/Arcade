@@ -7,10 +7,10 @@
 
 #include "Snake.hpp"
 
-Snake::Snake()
+arcade::Snake::Snake() : arcade::IModule(), arcade::IGameModule()
 {
 }
 
-Snake::~Snake()
+arcade::Snake::~Snake()
 {
 }

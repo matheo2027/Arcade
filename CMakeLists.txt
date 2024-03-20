@@ -22,6 +22,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include/game)
 add_executable(arcade src/main.cpp) # Add other source files as needed
 
 # Games
+add_library(arcade_game SHARED games/IGameModule.cpp) # Add other source files
+                                                       # as needed
+
 add_library(arcade_snake SHARED games/snake/Snake.cpp) # Add other source files
                                                        # as needed
 
@@ -29,6 +32,8 @@ add_library(arcade_pacman SHARED games/pacman/Pacman.cpp) # Add other source
                                                           # files as needed
 
 # Graphics
+add_library(arcade_graphic SHARED graphics/IDisplayModule.cpp) # Add other source files
+                                                       # as needed
 add_library(
   arcade_ncurses SHARED graphics/ncurses/NCurses.cpp) # Add other source files
                                                       # as needed

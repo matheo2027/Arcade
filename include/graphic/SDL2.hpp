@@ -8,7 +8,10 @@
 #ifndef SDL2_HPP_
 #define SDL2_HPP_
 
-class SDL2 {
+#include "IDisplayModule.hpp"
+
+namespace arcade {
+class SDL2 : virtual public arcade::IDisplayModule {
 public:
   SDL2();
   ~SDL2();
@@ -16,5 +19,6 @@ public:
 protected:
 private:
 };
+}; // namespace arcade
 
 #endif /* !SDL2_HPP_ */

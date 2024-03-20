@@ -7,10 +7,10 @@
 
 #include "Pacman.hpp"
 
-Pacman::Pacman()
+arcade::Pacman::Pacman() : arcade::IModule(), arcade::IGameModule()
 {
 }
 
-Pacman::~Pacman()
+arcade::Pacman::~Pacman()
 {
 }
