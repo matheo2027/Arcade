@@ -2,20 +2,20 @@
 ** EPITECH PROJECT, 2024
 ** bsArcade
 ** File description:
-** IDisplayModule
+** ADisplayModule
 */
 
-#ifndef IDISPLAYMODULE_HPP_
-#define IDISPLAYMODULE_HPP_
+#ifndef ADISPLAYMODULE_HPP_
+#define ADISPLAYMODULE_HPP_
 
 #include "IModule.hpp"
 
 namespace arcade {
-class IDisplayModule : virtual public arcade::IModule {
+class ADisplayModule : virtual public arcade::IModule {
 public:
   enum DisplayStatus { RUNNING, PAUSED, GAMEOVER, WIN };
-  IDisplayModule();
-  virtual ~IDisplayModule() = 0;
+  ADisplayModule();
+  ~ADisplayModule();
   virtual void init() = 0;
   virtual void stop() = 0;
   virtual const arcade::IModule::LibName getName() const = 0;
@@ -25,4 +25,4 @@ public:
 };
 }; // namespace arcade
 
-#endif /* !IDISPLAYMODULE_HPP_ */
+#endif /* !ADISPLAYMODULE_HPP_ */

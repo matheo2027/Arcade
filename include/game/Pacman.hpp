@@ -8,10 +8,10 @@
 #ifndef PACMAN_HPP_
 #define PACMAN_HPP_
 
-#include "IGameModule.hpp"
+#include "AGameModule.hpp"
 
 namespace arcade {
-class Pacman : virtual public arcade::IGameModule {
+class Pacman : virtual public arcade::AGameModule {
 public:
   Pacman();
   ~Pacman();

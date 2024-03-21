@@ -7,7 +7,7 @@
 
 #include "SDL2.hpp"
 
-arcade::SDL2::SDL2() : IModule(), IDisplayModule()
+arcade::SDL2::SDL2() : IModule(), ADisplayModule()
 {
 }
 

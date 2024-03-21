@@ -8,10 +8,10 @@
 #ifndef NCURSES_HPP_
 #define NCURSES_HPP_
 
-#include "IDisplayModule.hpp"
+#include "ADisplayModule.hpp"
 
 namespace arcade {
-class NCurses : virtual public arcade::IDisplayModule {
+class NCurses : virtual public arcade::ADisplayModule {
 public:
   NCurses();
   ~NCurses();

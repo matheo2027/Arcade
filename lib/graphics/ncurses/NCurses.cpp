@@ -7,7 +7,7 @@
 
 #include "NCurses.hpp"
 
-arcade::NCurses::NCurses() : arcade::IModule(), arcade::IDisplayModule()
+arcade::NCurses::NCurses() : arcade::IModule(), arcade::ADisplayModule()
 {
 }
 

@@ -7,7 +7,7 @@
 
 #include "Snake.hpp"
 
-arcade::Snake::Snake() : arcade::IModule(), arcade::IGameModule()
+arcade::Snake::Snake() : arcade::IModule(), arcade::AGameModule()
 {
 }
 
