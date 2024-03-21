@@ -36,6 +36,8 @@ add_library(
 
 add_library(arcade_sdl2 SHARED lib/graphics/sdl2/SDL2.cpp)
 
+add_library(arcade_sfml SHARED lib/graphics/sfml/Sfml.cpp)
+
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
@@ -43,9 +45,13 @@ find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 
 
+# find_package(SFML REQUIRED)
+# include_directories(${SFML_INCLUDE_DIR})
+
 # Afterwards, link it like this
 target_link_libraries(arcade PRIVATE ${CURSES_LIBRARIES})
 target_link_libraries(arcade PRIVATE ${SDL2_LIBRARIES})
+# target_link_libraries(arcade PRIVATE ${SFML_LIBRARIES})
 
 
 # Move .so files out of the build folder
@@ -55,3 +61,4 @@ add_custom_command(TARGET arcade_snake POST_BUILD COMMAND ${CMAKE_COMMAND} -E co
 add_custom_command(TARGET arcade_pacman POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_pacman> ${LIB_DESTINATION}/arcade_pacman.so)
 add_custom_command(TARGET arcade_ncurses POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_ncurses> ${LIB_DESTINATION}/arcade_ncurses.so)
 add_custom_command(TARGET arcade_sdl2 POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sdl2> ${LIB_DESTINATION}/arcade_sdl2.so)
+add_custom_command(TARGET arcade_sfml POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sfml> ${LIB_DESTINATION}/arcade_sfml.so)
