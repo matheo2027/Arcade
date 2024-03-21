@@ -8,7 +8,9 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
-class CoreModule {
+#include "IModule.hpp"
+namespace arcade {
+class CoreModule : virtual public arcade::IModule {
 public:
   CoreModule();
   ~CoreModule();
@@ -18,5 +20,6 @@ public:
 protected:
   CoreStatus _coreStatus;
 };
+}; // namespace arcade
 
 #endif /* !COREMODULE_HPP_ */

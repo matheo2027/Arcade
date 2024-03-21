@@ -9,7 +9,7 @@
 #define SDL2_HPP_
 
 #include "ADisplayModule.hpp"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 namespace arcade {
 class SDL2 : virtual public arcade::ADisplayModule {
