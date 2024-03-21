@@ -19,6 +19,7 @@ public:
   virtual void init() = 0;
   virtual void stop() = 0;
 
+  virtual void display() = 0;
   void setDisplayStatus(DisplayStatus status);
   DisplayStatus getDisplayStatus() const;
 

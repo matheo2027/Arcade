@@ -12,6 +12,19 @@ arcade::Sdl2::Sdl2() : IModule(), ADisplayModule() {}
 
 arcade::Sdl2::~Sdl2() {}
 
+void arcade::Sdl2::display()
+{
+  switch (this->getDisplayStatus()) {
+  case arcade::ADisplayModule::DisplayStatus::RUNNING:
+    /* code */
+    break;
+
+  default:
+    break;
+  }
+}
+
+
 void arcade::Sdl2::init()
 {
   // Initialize SDL
