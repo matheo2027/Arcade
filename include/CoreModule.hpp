@@ -12,6 +12,7 @@ class CoreModule {
 public:
   CoreModule();
   ~CoreModule();
+  enum CoreStatus { RUNNING, SELECTION };
 
 protected:
 private:

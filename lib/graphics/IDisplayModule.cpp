@@ -15,3 +15,13 @@ const arcade::IModule::ModuleType arcade::IDisplayModule::getType() const
 {
   return arcade::IModule::ModuleType::GRAPHIC;
 }
+
+arcade::IModule::KeyboardInput arcade::IDisplayModule::getInput()
+{
+    return arcade::IModule::KeyboardInput::UP;
+}
+
+void arcade::IDisplayModule::sendGameData(arcade::IModule::GameData data)
+{
+    return;
+}

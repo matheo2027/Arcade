@@ -15,3 +15,13 @@ const arcade::IModule::ModuleType arcade::IGameModule::getType() const
 {
   return arcade::IModule::ModuleType::GAME;
 }
+
+void arcade::IGameModule::sendInput(arcade::IModule::KeyboardInput input)
+{
+    return;
+}
+
+arcade::IModule::GameData arcade::IGameModule::sendGameData()
+{
+    return arcade::IModule::GameData();
+}

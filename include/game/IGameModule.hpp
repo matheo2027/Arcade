@@ -13,12 +13,15 @@
 namespace arcade {
 class IGameModule : virtual public arcade::IModule {
 public:
+  enum GameStatus { RUNNING, PAUSED, GAMEOVER, WIN };
   IGameModule();
   virtual ~IGameModule() = 0;
   virtual void init() = 0;
   virtual void stop() = 0;
   virtual const arcade::IModule::LibName getName() const = 0;
   const arcade::IModule::ModuleType getType() const;
+  void sendInput(arcade::IModule::KeyboardInput input);
+  arcade::IModule::GameData sendGameData();
 };
 }; // namespace arcade
 
