@@ -5,7 +5,7 @@
 ** SDL2
 */
 
-#include "SDL2.hpp"
+#include "Sdl2.hpp"
 #include <iostream>
 
 arcade::SDL2::SDL2() : IModule(), ADisplayModule() {}
