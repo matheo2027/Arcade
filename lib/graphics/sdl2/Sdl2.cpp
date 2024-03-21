@@ -8,11 +8,11 @@
 #include "Sdl2.hpp"
 #include <iostream>
 
-arcade::SDL2::SDL2() : IModule(), ADisplayModule() {}
+arcade::Sdl2::Sdl2() : IModule(), ADisplayModule() {}
 
-arcade::SDL2::~SDL2() {}
+arcade::Sdl2::~Sdl2() {}
 
-void arcade::SDL2::init()
+void arcade::Sdl2::init()
 {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -39,7 +39,7 @@ void arcade::SDL2::init()
   this->_window = window; // Save window in the class
 }
 
-void arcade::SDL2::stop()
+void arcade::Sdl2::stop()
 {
   SDL_Window *window = static_cast<SDL_Window *>(this->_window);
   if (window == nullptr) {
@@ -53,4 +53,9 @@ void arcade::SDL2::stop()
 
   // Quit SDL subsystems
   SDL_Quit();
+}
+
+const arcade::IModule::LibName arcade::Sdl2::getName() const
+{
+  return arcade::IModule::LibName::SDL;
 }

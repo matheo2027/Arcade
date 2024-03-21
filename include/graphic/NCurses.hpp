@@ -17,6 +17,7 @@ public:
   ~NCurses();
   void init();
   void stop();
+  const arcade::IModule::LibName getName() const;
 
 protected:
 private:

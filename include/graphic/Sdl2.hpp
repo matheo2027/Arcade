@@ -12,12 +12,13 @@
 #include <SDL2/SDL.h>
 
 namespace arcade {
-class SDL2 : virtual public arcade::ADisplayModule {
+class Sdl2 : virtual public arcade::ADisplayModule {
 public:
-  SDL2();
-  ~SDL2();
+  Sdl2();
+  ~Sdl2();
   void init();
   void stop();
+  const arcade::IModule::LibName getName() const;
 
 protected:
 private:

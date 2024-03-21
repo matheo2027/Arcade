@@ -7,18 +7,15 @@
 
 #include "NCurses.hpp"
 
-arcade::NCurses::NCurses() : arcade::IModule(), arcade::ADisplayModule()
-{
-}
+arcade::NCurses::NCurses() : arcade::IModule(), arcade::ADisplayModule() {}
 
-arcade::NCurses::~NCurses()
-{
-}
+arcade::NCurses::~NCurses() {}
 
-void arcade::NCurses::init()
-{
-}
+void arcade::NCurses::init() {}
 
-void arcade::NCurses::stop()
+void arcade::NCurses::stop() {}
+
+const arcade::IModule::LibName arcade::NCurses::getName() const
 {
+  return arcade::IModule::LibName::NCURSES;
 }
