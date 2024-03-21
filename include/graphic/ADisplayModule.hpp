@@ -29,6 +29,7 @@ public:
   void sendGameData(arcade::IModule::GameData data);
 
   protected:
+    void *_data;
     arcade::IModule::GameData _gameData;
     arcade::IModule::KeyboardInput _input;
     DisplayStatus _displayStatus;

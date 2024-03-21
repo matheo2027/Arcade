@@ -9,12 +9,15 @@
 #define SDL2_HPP_
 
 #include "ADisplayModule.hpp"
+#include <SDL.h>
 
 namespace arcade {
 class SDL2 : virtual public arcade::ADisplayModule {
 public:
   SDL2();
   ~SDL2();
+  void init();
+  void stop();
 
 protected:
 private:
