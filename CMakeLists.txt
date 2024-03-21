@@ -32,7 +32,7 @@ add_library(arcade_snake SHARED lib/games/snake/Snake.cpp)
 add_library(arcade_pacman SHARED lib/games/pacman/Pacman.cpp)
 
 # Graphics
-add_library(arcade_IDisplay SHARED lib/graphics/ADisplayModule.cpp)
+add_library(arcade_ADisplayModule STATIC lib/graphics/ADisplayModule.cpp)
 
 add_library(
   arcade_ncurses SHARED lib/graphics/ncurses/NCurses.cpp)
@@ -47,14 +47,11 @@ include_directories(${CURSES_INCLUDE_DIR})
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 
-
-# find_package(SFML REQUIRED)
-# include_directories(${SFML_INCLUDE_DIR})
-
 # Afterwards, link it like this
 target_link_libraries(arcade PRIVATE ${CURSES_LIBRARIES})
 target_link_libraries(arcade PRIVATE ${SDL2_LIBRARIES})
-# target_link_libraries(arcade PRIVATE ${SFML_LIBRARIES})
+target_link_libraries(arcade PRIVATE ${SFML_LIBRARIES})
+target_link_libraries(arcade_sfml PRIVATE arcade_ADisplayModule)
 
 
 # Move .so files out of the build folder

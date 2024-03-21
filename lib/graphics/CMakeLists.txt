@@ -8,7 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Include subdirectories
 add_subdirectory(sdl2)
 add_subdirectory(ncurses)
+add_subdirectory(sfml)
+
+add_library(ADisplayModule STATIC  ADisplayModule.cpp)
 
 # Create a shared library for graphics
 add_library(graphics SHARED "")
-target_link_libraries(graphics PUBLIC SDL2 NCurses)
+target_link_libraries(graphics PUBLIC SDL2 NCurses Sfml ADisplayModule)

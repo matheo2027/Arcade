@@ -57,7 +57,8 @@ public:
     W,
     X,
     Y,
-    Z
+    Z,
+    NONE
   };
 
   enum ModuleType { GRAPHIC, GAME };
