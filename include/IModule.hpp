@@ -64,16 +64,17 @@ public:
   enum ModuleType { GRAPHIC, GAME };
   enum LibName {
     // GAME
-    PACMAN,
+    SNAKE,
     NIBBLER,
+    PACMAN,
+    QIX,
     CENTIPEDE,
     SOLARFOX,
     // GRAPHIC
-    SFML,
     NCURSES,
     SDL,
-    OPENGL,
-    UNKNOWN
+    SFML,
+    OPENGL
   };
   virtual const LibName getName() const = 0;
   virtual const ModuleType getType() const = 0;
