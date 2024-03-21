@@ -13,7 +13,7 @@
 namespace arcade {
 class ADisplayModule : virtual public arcade::IModule {
 public:
-  enum DisplayStatus { RUNNING, PAUSED, GAMEOVER, WIN };
+  enum DisplayStatus { RUNNING, PAUSED, SELECTION, GAMEOVER, WIN };
   ADisplayModule();
   ~ADisplayModule();
   virtual void init() = 0;

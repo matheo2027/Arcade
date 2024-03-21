@@ -26,8 +26,8 @@ void arcade::SDL2::init()
       SDL_CreateWindow("Arcade",                // window title
                        SDL_WINDOWPOS_UNDEFINED, // initial x position
                        SDL_WINDOWPOS_UNDEFINED, // initial y position
-                       640,                     // width, in pixels
-                       480,                     // height, in pixels
+                       1920,                    // width, in pixels
+                       1080,                    // height, in pixels
                        SDL_WINDOW_SHOWN         // flags - see below
       );
 
@@ -39,4 +39,7 @@ void arcade::SDL2::init()
   }
 }
 
-void arcade::SDL2::stop() {}
+void arcade::SDL2::stop()
+{
+  
+}

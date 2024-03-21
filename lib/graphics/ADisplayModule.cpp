@@ -7,7 +7,10 @@
 
 #include "ADisplayModule.hpp"
 
-arcade::ADisplayModule::ADisplayModule() : arcade::IModule() {}
+arcade::ADisplayModule::ADisplayModule() : arcade::IModule()
+{
+  this->_displayStatus = DisplayStatus::SELECTION;
+}
 
 arcade::ADisplayModule::~ADisplayModule() {}
 

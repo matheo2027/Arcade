@@ -21,6 +21,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include/game)
 # Main arcade executable
 add_executable(arcade src/Main.cpp)
 
+# Core
+add_library(arcade_core SHARED lib/CoreModule.cpp)
+
 # Games
 add_library(arcade_game SHARED lib/games/AGameModule.cpp)
 
@@ -34,7 +37,7 @@ add_library(arcade_IDisplay SHARED lib/graphics/ADisplayModule.cpp)
 add_library(
   arcade_ncurses SHARED lib/graphics/ncurses/NCurses.cpp)
 
-add_library(arcade_sdl2 SHARED lib/graphics/sdl2/SDL2.cpp)
+add_library(arcade_sdl2 SHARED lib/graphics/sdl2/Sdl2.cpp)
 
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
