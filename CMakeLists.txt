@@ -52,6 +52,7 @@ target_link_libraries(arcade PRIVATE ${SDL2_LIBRARIES})
 
 # Move .so files out of the build folder
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+add_custom_command(TARGET arcade POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade> ${CMAKE_SOURCE_DIR})
 add_custom_command(TARGET arcade_snake POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_snake> ${LIB_DESTINATION}/arcade_snake.so)
 add_custom_command(TARGET arcade_pacman POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_pacman> ${LIB_DESTINATION}/arcade_pacman.so)
 add_custom_command(TARGET arcade_ncurses POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_ncurses> ${LIB_DESTINATION}/arcade_ncurses.so)
