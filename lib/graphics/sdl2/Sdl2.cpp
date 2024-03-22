@@ -24,7 +24,6 @@ void arcade::Sdl2::display()
   }
 }
 
-
 void arcade::Sdl2::init()
 {
   // Initialize SDL

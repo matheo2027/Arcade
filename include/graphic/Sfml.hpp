@@ -12,24 +12,22 @@
 #include <SFML/Graphics.hpp>
 
 namespace arcade {
-class SFML : virtual public arcade::ADisplayModule {
+class Sfml : virtual public arcade::ADisplayModule {
 public:
-    SFML();
-    ~SFML();
+  Sfml();
+  ~Sfml();
 
-    arcade::IModule::KeyboardInput getInput();
-    void init();
-    void stop();
-    void display(const arcade::IModule::GameData &data);
-
+  arcade::IModule::KeyboardInput getInput();
+  void init();
+  void stop();
+  void display();
+  const arcade::IModule::LibName getName() const;
 
 protected:
 private:
-    sf::RenderWindow _window;
-    sf::Texture _texture;
-    sf::Font _font;
+  sf::Texture _texture;
+  sf::Font _font;
 };
-};
-
+}; // namespace arcade
 
 #endif /* !SFML_HPP_ */

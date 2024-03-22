@@ -14,4 +14,4 @@ add_library(ADisplayModule STATIC  ADisplayModule.cpp)
 
 # Create a shared library for graphics
 add_library(graphics SHARED "")
-target_link_libraries(graphics PUBLIC SDL2 NCurses Sfml ADisplayModule)
+target_link_libraries(graphics PUBLIC Sdl2 NCurses Sfml ADisplayModule)
