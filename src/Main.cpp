@@ -19,7 +19,7 @@ int arcadeRe(char *path_graphic_lib)
   DLLoader<arcade::IModule> loader(path_graphic_lib);
   arcade::IModule *aze = loader.getInstance("entryPoint");
   aze->init();
-  sleep(5);
+  sleep(2);
   aze->stop();
   return OK;
 }
