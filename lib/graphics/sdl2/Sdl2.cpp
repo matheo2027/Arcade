@@ -48,6 +48,23 @@ void arcade::Sdl2::init()
     SDL_Quit();
     throw std::exception();
   }
+
+  // Get window surface
+  SDL_Surface *surface = SDL_GetWindowSurface(window);
+  // Check if surface is null
+  if (!surface) {
+    std::cerr << "Could not get window surface! SDL_Error: " << SDL_GetError()
+              << std::endl;
+    throw std::exception();
+  } else {
+    // Fill the surface white
+    SDL_FillRect(surface,
+                 NULL,
+                 SDL_MapRGB(surface->format, 0, 0, 0)); // RGB value for black
+    // Update the window with the new surface
+    SDL_UpdateWindowSurface(window);
+  }
+
   this->_window = window; // Save window in the class
 }
 
@@ -72,7 +89,4 @@ const arcade::IModule::LibName arcade::Sdl2::getName() const
   return arcade::IModule::LibName::SDL;
 }
 
-extern "C" arcade::Sdl2 *entryPoint()
-{
-  return new arcade::Sdl2();
-}
+extern "C" arcade::Sdl2 *entryPoint() { return new arcade::Sdl2(); }

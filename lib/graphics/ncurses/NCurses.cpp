@@ -31,7 +31,4 @@ const arcade::IModule::LibName arcade::NCurses::getName() const
   return arcade::IModule::LibName::NCURSES;
 }
 
-extern "C" arcade::NCurses *entryPoint()
-{
-  return new arcade::NCurses();
-}
+extern "C" arcade::NCurses *entryPoint() { return new arcade::NCurses(); }

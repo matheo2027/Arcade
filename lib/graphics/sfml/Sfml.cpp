@@ -13,9 +13,10 @@ arcade::Sfml::~Sfml() {}
 
 void arcade::Sfml::init()
 {
-  sf::RenderWindow *window;
-  window->create(sf::VideoMode(1920, 1080), "Arcade");
+  sf::RenderWindow *window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Arcade");
   window->setFramerateLimit(60);
+  window->clear(sf::Color::Black);
+  window->display();
   this->_window = window;
 }
 
@@ -91,7 +92,4 @@ arcade::IModule::KeyboardInput arcade::Sfml::getInput()
   return arcade::IModule::KeyboardInput::NONE;
 }
 
-extern "C" arcade::Sfml *entry_point()
-{
-  return new arcade::Sfml();
-}
+extern "C" arcade::Sfml *entryPoint() { return new arcade::Sfml(); }
