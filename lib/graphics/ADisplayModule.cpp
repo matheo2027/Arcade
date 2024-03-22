@@ -10,6 +10,7 @@
 arcade::ADisplayModule::ADisplayModule() : arcade::IModule()
 {
   this->_displayStatus = DisplayStatus::SELECTION;
+  this->_window = nullptr;
 }
 
 arcade::ADisplayModule::~ADisplayModule() {}

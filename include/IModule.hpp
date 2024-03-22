@@ -15,8 +15,8 @@
 namespace arcade {
 class IModule {
 public:
-  IModule();
-  ~IModule();
+  IModule(){};
+  virtual ~IModule(){};
   virtual void init() = 0;
   virtual void stop() = 0;
   struct GameData {
@@ -64,16 +64,17 @@ public:
   enum ModuleType { GRAPHIC, GAME };
   enum LibName {
     // GAME
-    PACMAN,
+    SNAKE,
     NIBBLER,
+    PACMAN,
+    QIX,
     CENTIPEDE,
     SOLARFOX,
     // GRAPHIC
-    SFML,
     NCURSES,
     SDL,
-    OPENGL,
-    UNKNOWN
+    SFML,
+    OPENGL
   };
   virtual const LibName getName() const = 0;
   virtual const ModuleType getType() const = 0;

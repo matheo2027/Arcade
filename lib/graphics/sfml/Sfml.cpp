@@ -2,76 +2,91 @@
 ** EPITECH PROJECT, 2024
 ** Arcade
 ** File description:
-** SFML
+** Sfml
 */
 
 #include "Sfml.hpp"
 
-arcade::SFML::SFML() : IModule(), ADisplayModule()
+arcade::Sfml::Sfml() : IModule(), ADisplayModule() {}
+
+arcade::Sfml::~Sfml() {}
+
+void arcade::Sfml::init()
 {
+  sf::RenderWindow *window;
+  window->create(sf::VideoMode(1920, 1080), "Arcade");
+  window->setFramerateLimit(60);
+  this->_window = window;
 }
 
-arcade::SFML::~SFML()
+void arcade::Sfml::stop()
 {
+  sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
+  if (window == nullptr) {
+    throw std::exception();
+  }
+  window->close();
+  this->_window = nullptr;
 }
 
-
-void arcade::SFML::init()
+void arcade::Sfml::display()
 {
-    _window.create(sf::VideoMode(1920, 1080), "Arcade");
-    _window.setFramerateLimit(60);
-}
-
-void arcade::SFML::stop()
-{
-    _window.close();
-}
-
-void arcade::SFML::display(const arcade::IModule::GameData &data)
-{
-    _window.clear();
-    for (int y = 0; y < data.display_info.size(); y++) {
-        for (int x = 0; x < data.display_info[y].size(); x++) {
-            sf::RectangleShape rectangle(sf::Vector2f(20, 20));
-            rectangle.setPosition(x * 20, y * 20);
-            rectangle.setFillColor(sf::Color::White);
-            _window.draw(rectangle);
-        }
+  sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
+  if (window == nullptr) {
+    throw std::exception();
+  }
+  window->clear();
+  for (int y = 0; y < this->_gameData.display_info.size(); y++) {
+    for (int x = 0; x < this->_gameData.display_info[y].size(); x++) {
+      sf::RectangleShape rectangle(sf::Vector2f(20, 20));
+      rectangle.setPosition(x * 20, y * 20);
+      rectangle.setFillColor(sf::Color::White);
+      window->draw(rectangle);
     }
-    _window.display();
+  }
+  window->display();
+  this->_window = window;
 }
 
-arcade::IModule::KeyboardInput arcade::SFML::getInput()
+const arcade::IModule::LibName arcade::Sfml::getName() const
 {
-    sf::Event event;
+  return arcade::IModule::LibName::SFML;
+}
 
-    while (this->_window.pollEvent(event)) {
-        switch (event.type)
-        {
-        case sf::Event::KeyPressed:
-            switch (event.key.code) {
-            // case sf::Event::Closed:
+arcade::IModule::KeyboardInput arcade::Sfml::getInput()
+{
+  sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
+  if (window == nullptr) {
+    throw std::exception();
+  }
+  sf::Event event;
 
-            case sf::Keyboard::Up:
-                return arcade::IModule::KeyboardInput::UP;
-            case sf::Keyboard::Down:
-                return arcade::IModule::KeyboardInput::DOWN;
-            case sf::Keyboard::Left:
-                return arcade::IModule::KeyboardInput::LEFT;
-            case sf::Keyboard::Right:
-                return arcade::IModule::KeyboardInput::RIGHT;
-            case sf::Keyboard::Space:
-                return arcade::IModule::KeyboardInput::SPACE;
-            case sf::Keyboard::Escape:
-                return arcade::IModule::KeyboardInput::ESCAPE;
-            default:
-                break;
-            }
-            break;
+  while (window->pollEvent(event)) {
+    switch (event.type) {
+    case sf::Event::KeyPressed:
+      switch (event.key.code) {
+        // case sf::Event::Closed:
 
-        default:
-            break;
-        }
+      case sf::Keyboard::Up:
+        return arcade::IModule::KeyboardInput::UP;
+      case sf::Keyboard::Down:
+        return arcade::IModule::KeyboardInput::DOWN;
+      case sf::Keyboard::Left:
+        return arcade::IModule::KeyboardInput::LEFT;
+      case sf::Keyboard::Right:
+        return arcade::IModule::KeyboardInput::RIGHT;
+      case sf::Keyboard::Space:
+        return arcade::IModule::KeyboardInput::SPACE;
+      case sf::Keyboard::Escape:
+        return arcade::IModule::KeyboardInput::ESCAPE;
+      default:
+        break;
+      }
+      break;
+
+    default:
+      break;
     }
-    return arcade::IModule::KeyboardInput::NONE;
+  }
+  return arcade::IModule::KeyboardInput::NONE;
 }
