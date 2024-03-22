@@ -71,3 +71,8 @@ const arcade::IModule::LibName arcade::Sdl2::getName() const
 {
   return arcade::IModule::LibName::SDL;
 }
+
+extern "C" arcade::Sdl2 *entryPoint()
+{
+  return new arcade::Sdl2();
+}
