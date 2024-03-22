@@ -10,8 +10,6 @@ public:
   DLLoader(const std::string &libPath)
   {
     handle = dlopen(libPath.c_str(), RTLD_LAZY);
-    std::cout << libPath << std::endl;
-    std::cout << handle << std::endl;
     if (!handle) {
       std::cerr << dlerror() << std::endl;
       exit(1);

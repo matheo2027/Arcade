@@ -90,3 +90,8 @@ arcade::IModule::KeyboardInput arcade::Sfml::getInput()
   }
   return arcade::IModule::KeyboardInput::NONE;
 }
+
+extern "C" arcade::Sfml *entry_point()
+{
+  return new arcade::Sfml();
+}
