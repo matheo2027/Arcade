@@ -10,8 +10,8 @@ add_subdirectory(sdl2)
 add_subdirectory(ncurses)
 add_subdirectory(sfml)
 
-add_library(ADisplayModule STATIC  ADisplayModule.cpp)
+add_library(graphics STATIC ADisplayModule.cpp ADisplayModule.hpp)
 
 # Create a shared library for graphics
 add_library(graphics SHARED "")
-target_link_libraries(graphics PUBLIC SDL2 NCurses Sfml ADisplayModule)
+target_link_libraries(graphics PUBLIC SDL2 NCurses Sfml)
