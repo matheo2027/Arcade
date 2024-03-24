@@ -14,6 +14,12 @@
 #include <libgen.h>
 #include <unistd.h>
 
+/**
+ * @brief launch the arcade
+ * 
+ * @param path_graphic_lib path of the graphic library
+ * @return int OK if the arcade is launched
+ */
 int arcadeRe(char *path_graphic_lib)
 {
   DLLoader<arcade::IModule> loader(path_graphic_lib);
@@ -27,6 +33,13 @@ int arcadeRe(char *path_graphic_lib)
   return OK;
 }
 
+/**
+ * @brief check if the library is a good graphic library
+ * 
+ * @param path_graphic_lib path of the graphic library
+ * @return true if the library is a good graphic library
+ * @return false if the library is not a good graphic library
+ */
 bool is_good_graphic_lib(char *path_graphic_lib)
 {
   if (access(path_graphic_lib, F_OK) == ERROR)
@@ -45,6 +58,10 @@ bool is_good_graphic_lib(char *path_graphic_lib)
   return true;
 }
 
+/**
+ * @brief display the help
+ * 
+ */
 void help(void)
 {
   std::cout << "USAGE :" << std::endl;
