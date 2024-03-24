@@ -19,3 +19,5 @@ const arcade::IModule::LibName arcade::Pacman::getName() const
 {
   return arcade::IModule::LibName::PACMAN;
 }
+
+extern "C" arcade::Pacman *entryPoint() { return new arcade::Pacman(); }

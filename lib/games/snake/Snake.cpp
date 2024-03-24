@@ -19,3 +19,5 @@ const arcade::IModule::LibName arcade::Snake::getName() const
 {
   return arcade::IModule::LibName::SNAKE;
 }
+
+extern "C" arcade::Snake *entryPoint() { return new arcade::Snake(); }

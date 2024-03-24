@@ -61,7 +61,7 @@ public:
     NONE
   };
 
-  enum ModuleType { GRAPHIC, GAME };
+  enum ModuleType { GRAPHIC, GAME, CORE};
   enum LibName {
     // GAME
     SNAKE,
@@ -74,7 +74,9 @@ public:
     NCURSES,
     SDL,
     SFML,
-    OPENGL
+    OPENGL,
+    // CORE
+    UNKNOWN
   };
   virtual const LibName getName() const = 0;
   virtual const ModuleType getType() const = 0;

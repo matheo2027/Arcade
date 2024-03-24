@@ -8,38 +8,41 @@
 #include "DLLoader.hpp"
 #include "IModule.hpp"
 #include "Macros.hpp"
+#include <ADisplayModule.hpp>
 #include <cstring>
 #include <iostream>
 #include <libgen.h>
 #include <unistd.h>
-#include <ADisplayModule.hpp>
 
 int arcadeRe(char *path_graphic_lib)
 {
   DLLoader<arcade::IModule> loader(path_graphic_lib);
-  arcade::IModule *aze = loader.getInstance("entryPoint");
-  aze->init();
+  arcade::IModule *defaultGraphicLib = loader.getInstance("entryPoint");
+  arcade::ADisplayModule *graphicLib =
+      dynamic_cast<arcade::ADisplayModule *>(defaultGraphicLib);
+  graphicLib->init();
   sleep(2);
-  aze->stop();
+  graphicLib->stop();
+  delete graphicLib;
   return OK;
 }
 
-int is_good_graphic_lib(char *path_graphic_lib)
+bool is_good_graphic_lib(char *path_graphic_lib)
 {
   if (access(path_graphic_lib, F_OK) == ERROR)
-    return ERROR;
+    return false;
   char *lib_name = basename(path_graphic_lib);
   if (strncmp(lib_name, "arcade_", 7) != OK)
-    return ERROR;
+    return false;
   if (strncmp(&(lib_name[strlen(lib_name) - 3]), ".so", 3) != OK)
-    return ERROR;
+    return false;
   DLLoader<arcade::IModule> loader(path_graphic_lib);
-  arcade::IModule *aze = loader.getInstance("entryPoint");
-  if (aze == nullptr)
-    return ERROR;
-  if (dynamic_cast<arcade::ADisplayModule *>(aze) == nullptr)
-    return ERROR;
-  return OK;
+  arcade::IModule *graphicModule = loader.getInstance("entryPoint");
+  if (graphicModule == nullptr)
+    return false;
+  if (dynamic_cast<arcade::ADisplayModule *>(graphicModule) == nullptr)
+    return false;
+  return true;
 }
 
 void help(void)
@@ -54,7 +57,7 @@ int main(int ac, char **av)
     help();
     return KO;
   }
-  if (is_good_graphic_lib(av[1]) == ERROR) {
+  if (is_good_graphic_lib(av[1]) == false) {
     std::cerr << "Error: The graphic library is not found" << std::endl;
     return KO;
   }

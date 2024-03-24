@@ -12,6 +12,10 @@ arcade::Sdl2::Sdl2() : IModule(), ADisplayModule() {}
 
 arcade::Sdl2::~Sdl2() {}
 
+/**
+ * @brief display information on the window
+ * 
+ */
 void arcade::Sdl2::display()
 {
   switch (this->getDisplayStatus()) {
@@ -24,6 +28,10 @@ void arcade::Sdl2::display()
   }
 }
 
+/**
+ * @brief initailize the SDL2 module and create a window
+ * 
+ */
 void arcade::Sdl2::init()
 {
   // Initialize SDL
@@ -68,6 +76,10 @@ void arcade::Sdl2::init()
   this->_window = window; // Save window in the class
 }
 
+/**
+ * @brief stop the SDL2 module and destroy the window
+ * 
+ */
 void arcade::Sdl2::stop()
 {
   SDL_Window *window = static_cast<SDL_Window *>(this->_window);
@@ -84,6 +96,11 @@ void arcade::Sdl2::stop()
   SDL_Quit();
 }
 
+/**
+ * @brief return the name of the module
+ * 
+ * @return const arcade::IModule::LibName
+ */
 const arcade::IModule::LibName arcade::Sdl2::getName() const
 {
   return arcade::IModule::LibName::SDL;
