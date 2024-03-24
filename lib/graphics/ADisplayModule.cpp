@@ -7,12 +7,20 @@
 
 #include "ADisplayModule.hpp"
 
+/**
+ * @brief Construct a new arcade::ADisplayModule::ADisplayModule object
+ *
+ */
 arcade::ADisplayModule::ADisplayModule() : arcade::IModule()
 {
   this->_displayStatus = DisplayStatus::SELECTION;
   this->_window = nullptr;
 }
 
+/**
+ * @brief Destroy the arcade::ADisplayModule::ADisplayModule object
+ *
+ */
 arcade::ADisplayModule::~ADisplayModule() {}
 
 /**
@@ -49,7 +57,7 @@ arcade::ADisplayModule::getDisplayStatus() const
 
 /**
  * @brief get input from the user
- * 
+ *
  * @return arcade::IModule::KeyboardInput
  */
 arcade::IModule::KeyboardInput arcade::ADisplayModule::getInput() const
@@ -59,7 +67,7 @@ arcade::IModule::KeyboardInput arcade::ADisplayModule::getInput() const
 
 /**
  * @brief receive send data of the game module to the display module
- * 
+ *
  * @param data of the game module (score, map, player position)
  */
 void arcade::ADisplayModule::sendGameData(arcade::IModule::GameData data)
