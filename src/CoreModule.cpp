@@ -23,7 +23,7 @@ arcade::CoreModule::CoreModule() : arcade::IModule()
  * @brief Destroy the arcade::Core Module::Core Module object
  *
  */
-arcade::CoreModule::~CoreModule() {}
+arcade::CoreModule::~CoreModule() { this->stop(); }
 
 /**
  * @brief load the libraries in the given path
@@ -36,7 +36,19 @@ void arcade::CoreModule::init() {}
  * @brief stop the core module
  *
  */
-void arcade::CoreModule::stop() {}
+void arcade::CoreModule::stop()
+{
+  if (this->_gameModule != nullptr) {
+    this->_gameModule->stop();
+    delete (this->_gameModule);
+    this->_gameModule = nullptr;
+  }
+  if (this->_gameModule != nullptr) {
+    this->_graphicModule->stop();
+    delete (this->_graphicModule);
+    this->_graphicModule = nullptr;
+  }
+}
 
 /**
  * @brief get the name of the library
@@ -124,13 +136,27 @@ void arcade::CoreModule::setModule(arcade::IModule *module,
   return;
 }
 
+void arcade::CoreModule::addLibList(std::string pathLib)
+{
+  DLLoader<arcade::IModule> loader(pathLib);
+  arcade::IModule *module = loader.getInstance("entryPoint");
+  if (module == nullptr)
+    throw std::exception();
+  if (module->getType() == arcade::IModule::ModuleType::GAME) {
+    this->_menuData._gameLibList.push_back(pathLib);
+  } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
+    this->_menuData._graphicLibList.push_back(pathLib);
+  } else {
+    throw std::exception();
+  }
+}
+
 /**
  * @brief get the list of libraries in the given path
  *
  * @param pathLib path to the libraries
- * @return std::vector<std::string> list of libraries
  */
-std::vector<std::string> arcade::CoreModule::getLib(std::string pathLib)
+void arcade::CoreModule::getLib(std::string pathLib)
 {
   std::vector<std::string> matchedFiles;
   DIR *dir;
@@ -145,21 +171,23 @@ std::vector<std::string> arcade::CoreModule::getLib(std::string pathLib)
       std::cerr << e.what() << std::endl;
     }
   }
-
   while ((entry = readdir(dir)) != nullptr) {
     if (strncmp(entry->d_name, "arcade_", strlen("arcade_")) == 0 &&
         strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) == OK) {
       matchedFiles.push_back(std::string(entry->d_name));
     }
   }
-
   closedir(dir);
 
-  // Print out the files
-  for (const auto &file : matchedFiles) {
-    std::cout << file << std::endl;
+  for (std::string file : matchedFiles) {
+    file = pathLib + file;
+    try {
+      this->addLibList(file);
+    } catch (const std::exception &e) {
+      std::cerr << e.what() << '\n';
+      throw std::exception();
+    }
   }
-  return matchedFiles;
 }
 
 void arcade::CoreModule::loadLib(std::string pathLib)
@@ -173,14 +201,14 @@ void arcade::CoreModule::loadLib(std::string pathLib)
       std::cerr << e.what() << std::endl;
     }
   if (module->getType() == arcade::IModule::ModuleType::GAME) {
-    if (this->_gameModule != nullptr){
+    if (this->_gameModule != nullptr) {
       this->_gameModule->stop();
       delete (this->_gameModule);
     }
     this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
     this->_gameModule->init();
   } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
-    if (this->_gameModule != nullptr){
+    if (this->_gameModule != nullptr) {
       this->_graphicModule->stop();
       delete (this->_graphicModule);
     }

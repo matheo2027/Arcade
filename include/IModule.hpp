@@ -43,6 +43,9 @@ public:
   struct MenuData {
     std::vector<std::string> _graphicLibList;
     std::vector<std::string> _gameLibList;
+    size_t indexGraphic;
+    size_t indexGame;
+    std::string _description;
   };
 
   /**

@@ -30,8 +30,9 @@ public:
   ADisplayModule *getGraphicModule();
   AGameModule *getGameModule();
   void setModule(arcade::IModule *module, arcade::IModule::ModuleType type);
-  std::vector<std::string> getLib(std::string pathLib);
+  void getLib(std::string pathLib);
   void loadLib(std::string pathLib);
+  void addLibList(std::string pathLib);
 
 protected:
   CoreStatus _coreStatus;
