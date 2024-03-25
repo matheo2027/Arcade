@@ -19,10 +19,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include/graphic)
 include_directories(${CMAKE_SOURCE_DIR}/include/game)
 
 # Main arcade executable
-add_executable(arcade src/Main.cpp)
-
-# Core
-add_library(arcade_core SHARED lib/CoreModule.cpp)
+add_executable(arcade src/Main.cpp src/CoreModule.cpp)
 
 # Games
 add_library(arcade_game SHARED lib/games/AGameModule.cpp)

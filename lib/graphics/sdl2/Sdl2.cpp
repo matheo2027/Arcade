@@ -25,7 +25,19 @@ void arcade::Sdl2::display()
   case arcade::ADisplayModule::DisplayStatus::RUNNING:
     /* code */
     break;
-
+  case arcade::ADisplayModule::DisplayStatus::PAUSED:
+    /* code */
+    break;
+  case arcade::ADisplayModule::DisplayStatus::SELECTION:
+    std::cout << "Selection" << std::endl;
+    /* code */
+    break;
+  case arcade::ADisplayModule::DisplayStatus::GAMEOVER:
+    /* code */
+    break;
+  case arcade::ADisplayModule::DisplayStatus::WIN:
+    /* code */
+    break;
   default:
     break;
   }

@@ -6,10 +6,6 @@
 */
 
 #include "CoreModule.hpp"
-#include <NCurses.hpp>
-#include <Pacman.hpp>
-#include <Sdl2.hpp>
-#include <Snake.hpp>
 
 /**
  * @brief Construct a new arcade::Core Module::Core Module object
@@ -82,73 +78,38 @@ arcade::CoreModule::CoreStatus arcade::CoreModule::getCoreStatus() const
 /**
  * @brief get the display module
  *
- * @return std::unique_ptr<arcade::ADisplayModule>
+ * @return arcade::ADisplayModule *
  */
-std::unique_ptr<arcade::ADisplayModule> arcade::CoreModule::getDisplayModule()
+arcade::ADisplayModule *arcade::CoreModule::getDisplayModule()
 {
-  return std::move(this->_displayModule);
+  return this->_displayModule;
 }
 
 /**
  * @brief get the game module
  *
- * @return std::unique_ptr<arcade::AGameModule>
+ * @return arcade::AGameModule *
  */
-std::unique_ptr<arcade::AGameModule> arcade::CoreModule::getGameModule()
+arcade::AGameModule *arcade::CoreModule::getGameModule()
 {
-  return std::move(this->_gameModule);
+  return this->_gameModule;
 }
 
 /**
  * @brief set graphic or game module to the core module
  *
- * @param name of the module (snake, pacman, ncurses, sdl2)
+ * @param module to set
  * @param type of the module (graphic or game)
  */
-void arcade::CoreModule::setModule(arcade::IModule::LibName name,
+void arcade::CoreModule::setModule(arcade::IModule *module,
                                    arcade::IModule::ModuleType type)
 {
   switch (type) {
   case arcade::IModule::ModuleType::GAME:
-    switch (name) {
-    case arcade::IModule::LibName::SNAKE:
-      this->_gameModule = std::move(std::make_unique<arcade::Snake>());
-      break;
-    case arcade::IModule::LibName::NIBBLER:
-      /* code */
-      break;
-    case arcade::IModule::LibName::QIX:
-      /* code */
-      break;
-    case arcade::IModule::LibName::PACMAN:
-      this->_gameModule = std::move(std::make_unique<arcade::Pacman>());
-      break;
-    case arcade::IModule::LibName::CENTIPEDE:
-      /* code */
-      break;
-    case arcade::IModule::LibName::SOLARFOX:
-      /* code */
-      break;
-    default:
-      throw std::exception();
-    }
+    this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
     break;
-
   case arcade::IModule::ModuleType::GRAPHIC:
-    switch (name) {
-    case arcade::IModule::LibName::SFML:
-      /* code */
-      break;
-    case arcade::IModule::LibName::NCURSES:
-      this->_displayModule = std::move(std::make_unique<arcade::NCurses>());
-      break;
-    case arcade::IModule::LibName::SDL:
-      this->_displayModule = std::move(std::make_unique<arcade::Sdl2>());
-      break;
-    default:
-      throw std::exception();
-    }
-
+    this->_displayModule = dynamic_cast<arcade::ADisplayModule *>(module);
     break;
   default:
     throw std::exception();

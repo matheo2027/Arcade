@@ -11,9 +11,8 @@
 #include "ADisplayModule.hpp"
 #include "AGameModule.hpp"
 #include "IModule.hpp"
-#include <memory>
-#include <iostream>
 #include <dirent.h>
+#include <iostream>
 
 namespace arcade {
 class CoreModule : virtual public arcade::IModule {
@@ -27,16 +26,15 @@ public:
   enum CoreStatus { RUNNING, SELECTION };
   void setCoreStatus(CoreStatus status);
   CoreStatus getCoreStatus() const;
-  std::unique_ptr<ADisplayModule> getDisplayModule();
-  std::unique_ptr<AGameModule> getGameModule();
-  void setModule(arcade::IModule::LibName name,
-                 arcade::IModule::ModuleType type);
+  ADisplayModule *getDisplayModule();
+  AGameModule *getGameModule();
+  void setModule(arcade::IModule *module, arcade::IModule::ModuleType type);
   std::vector<std::string> getLib(std::string pathLib);
 
 protected:
   CoreStatus _coreStatus;
-  std::unique_ptr<arcade::ADisplayModule> _displayModule;
-  std::unique_ptr<arcade::AGameModule> _gameModule;
+  arcade::ADisplayModule *_displayModule;
+  arcade::AGameModule *_gameModule;
 };
 }; // namespace arcade
 

@@ -8,7 +8,10 @@
 #ifndef IMODULE_HPP_
 #define IMODULE_HPP_
 
-#include <map> // Include the necessary header file
+#include "Macros.hpp"
+#include <map>
+#include <memory>
+#include <string.h>
 #include <string>
 #include <vector>
 

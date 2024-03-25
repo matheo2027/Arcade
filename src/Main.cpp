@@ -9,6 +9,7 @@
 #include "IModule.hpp"
 #include "Macros.hpp"
 #include <ADisplayModule.hpp>
+#include <CoreModule.hpp>
 #include <cstring>
 #include <iostream>
 #include <libgen.h>
@@ -16,26 +17,27 @@
 
 /**
  * @brief launch the arcade
- * 
+ *
  * @param path_graphic_lib path of the graphic library
  * @return int OK if the arcade is launched
  */
 int arcadeRe(char *path_graphic_lib)
 {
+  arcade::CoreModule core;
   DLLoader<arcade::IModule> loader(path_graphic_lib);
   arcade::IModule *defaultGraphicLib = loader.getInstance("entryPoint");
-  arcade::ADisplayModule *graphicLib =
-      dynamic_cast<arcade::ADisplayModule *>(defaultGraphicLib);
-  graphicLib->init();
+  core.setModule(defaultGraphicLib, arcade::IModule::ModuleType::GRAPHIC);
+  core.getDisplayModule()->init();
+  core.getDisplayModule()->display();
   sleep(2);
-  graphicLib->stop();
-  delete graphicLib;
+  core.getDisplayModule()->stop();
+  delete core.getDisplayModule();
   return OK;
 }
 
 /**
  * @brief check if the library is a good graphic library
- * 
+ *
  * @param path_graphic_lib path of the graphic library
  * @return true if the library is a good graphic library
  * @return false if the library is not a good graphic library
@@ -60,7 +62,7 @@ bool is_good_graphic_lib(char *path_graphic_lib)
 
 /**
  * @brief display the help
- * 
+ *
  */
 void help(void)
 {
