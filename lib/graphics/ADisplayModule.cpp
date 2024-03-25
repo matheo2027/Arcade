@@ -15,6 +15,9 @@ arcade::ADisplayModule::ADisplayModule() : arcade::IModule()
 {
   this->_displayStatus = DisplayStatus::SELECTION;
   this->_window = nullptr;
+  this->_texture = nullptr;
+  this->_event = nullptr;
+  this->_font = nullptr;
 }
 
 /**

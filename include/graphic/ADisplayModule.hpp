@@ -33,6 +33,7 @@ protected:
   void *_window;
   void *_texture;
   void *_event;
+  void *_font;
   arcade::IModule::GameData _gameData;
   arcade::IModule::KeyboardInput _input;
   DisplayStatus _displayStatus;

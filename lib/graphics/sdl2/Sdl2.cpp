@@ -8,13 +8,16 @@
 #include "Sdl2.hpp"
 #include <iostream>
 
-arcade::Sdl2::Sdl2() : IModule(), ADisplayModule() {}
+arcade::Sdl2::Sdl2() : IModule(), ADisplayModule()
+{
+  this->_renderer = nullptr;
+}
 
 arcade::Sdl2::~Sdl2() {}
 
 /**
  * @brief display information on the window
- * 
+ *
  */
 void arcade::Sdl2::display()
 {
@@ -30,7 +33,7 @@ void arcade::Sdl2::display()
 
 /**
  * @brief initailize the SDL2 module and create a window
- * 
+ *
  */
 void arcade::Sdl2::init()
 {
@@ -38,6 +41,13 @@ void arcade::Sdl2::init()
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError()
               << std::endl;
+    throw std::exception();
+  }
+
+  if (TTF_Init() == -1) {
+    std::cerr << "SDL_ttf could not initialize! TTF Error: " << TTF_GetError()
+              << std::endl;
+    SDL_Quit();
     throw std::exception();
   }
 
@@ -54,6 +64,23 @@ void arcade::Sdl2::init()
     std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError()
               << std::endl;
     SDL_Quit();
+    throw std::exception();
+  }
+
+  SDL_Renderer *renderer =
+      SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+  if (!renderer) {
+    std::cerr << "Renderer could not be created! SDL Error: " << SDL_GetError()
+              << std::endl;
+    this->stop();
+    throw std::exception();
+  }
+
+  TTF_Font *font = TTF_OpenFont("assets/default/font/font1.ttf", 24);
+  if (!font) {
+    std::cerr << "Failed to load font! TTF Error: " << TTF_GetError()
+              << std::endl;
+    this->stop();
     throw std::exception();
   }
 
@@ -78,7 +105,7 @@ void arcade::Sdl2::init()
 
 /**
  * @brief stop the SDL2 module and destroy the window
- * 
+ *
  */
 void arcade::Sdl2::stop()
 {
@@ -92,13 +119,16 @@ void arcade::Sdl2::stop()
 
   this->_window = nullptr;
 
+  if (this->_renderer)
+    SDL_DestroyRenderer(this->_renderer);
+  TTF_Quit();
   // Quit SDL subsystems
   SDL_Quit();
 }
 
 /**
  * @brief return the name of the module
- * 
+ *
  * @return arcade::IModule::LibName
  */
 arcade::IModule::LibName arcade::Sdl2::getName() const
@@ -108,7 +138,7 @@ arcade::IModule::LibName arcade::Sdl2::getName() const
 
 /**
  * @brief entry point for the library
- * 
+ *
  * @return arcade::Sdl2 *
  */
 extern "C" arcade::Sdl2 *entryPoint() { return new arcade::Sdl2(); }
