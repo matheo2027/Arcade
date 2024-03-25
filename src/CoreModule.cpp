@@ -14,6 +14,8 @@
 arcade::CoreModule::CoreModule() : arcade::IModule()
 {
   this->_coreStatus = CoreStatus::SELECTION;
+  this->_gameModule = nullptr;
+  this->_graphicModule = nullptr;
 }
 
 /**
@@ -80,9 +82,9 @@ arcade::CoreModule::CoreStatus arcade::CoreModule::getCoreStatus() const
  *
  * @return arcade::ADisplayModule *
  */
-arcade::ADisplayModule *arcade::CoreModule::getDisplayModule()
+arcade::ADisplayModule *arcade::CoreModule::getGraphicModule()
 {
-  return this->_displayModule;
+  return this->_graphicModule;
 }
 
 /**
@@ -109,7 +111,7 @@ void arcade::CoreModule::setModule(arcade::IModule *module,
     this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
     break;
   case arcade::IModule::ModuleType::GRAPHIC:
-    this->_displayModule = dynamic_cast<arcade::ADisplayModule *>(module);
+    this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
     break;
   default:
     throw std::exception();
@@ -123,7 +125,7 @@ void arcade::CoreModule::setModule(arcade::IModule *module,
  * @param pathLib path to the libraries
  * @return std::vector<std::string> list of libraries
  */
-std::vector<std::string> getLib(std::string pathLib)
+std::vector<std::string> arcade::CoreModule::getLib(std::string pathLib)
 {
   std::vector<std::string> matchedFiles;
   DIR *dir;
@@ -149,4 +151,30 @@ std::vector<std::string> getLib(std::string pathLib)
     std::cout << file << std::endl;
   }
   return matchedFiles;
+}
+
+void arcade::CoreModule::loadLib(std::string pathLib)
+{
+  DLLoader<arcade::IModule> loader(pathLib);
+  arcade::IModule *module = loader.getInstance("entryPoint");
+  if (module == nullptr)
+    throw std::exception();
+  if (module->getType() == arcade::IModule::ModuleType::GAME) {
+    if (this->_gameModule != nullptr){
+      this->_gameModule->stop();
+      delete (this->_gameModule);
+    }
+    this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
+    this->_gameModule->init();
+  } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
+    if (this->_gameModule != nullptr){
+      this->_graphicModule->stop();
+      delete (this->_graphicModule);
+    }
+    this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
+    this->_graphicModule->init();
+  } else {
+    throw std::exception();
+  }
+  return;
 }

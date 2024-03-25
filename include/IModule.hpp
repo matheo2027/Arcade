@@ -40,6 +40,11 @@ public:
     std::map<unsigned int, std::string> sprite_value;
   };
 
+  struct MenuData {
+    std::vector<std::string> _graphicLibList;
+    std::vector<std::string> _gameLibList;
+  };
+
   /**
    * @brief all the possible keyboard inputs
    *

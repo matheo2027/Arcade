@@ -5,14 +5,9 @@
 ** main
 */
 
-#include "DLLoader.hpp"
 #include "IModule.hpp"
-#include "Macros.hpp"
-#include <ADisplayModule.hpp>
 #include <CoreModule.hpp>
-#include <cstring>
 #include <iostream>
-#include <libgen.h>
 #include <unistd.h>
 
 /**
@@ -21,17 +16,17 @@
  * @param path_graphic_lib path of the graphic library
  * @return int OK if the arcade is launched
  */
-int arcadeRe(char *path_graphic_lib)
+int arcadeRe(std::string path_graphic_lib)
 {
   arcade::CoreModule core;
-  DLLoader<arcade::IModule> loader(path_graphic_lib);
-  arcade::IModule *defaultGraphicLib = loader.getInstance("entryPoint");
-  core.setModule(defaultGraphicLib, arcade::IModule::ModuleType::GRAPHIC);
-  core.getDisplayModule()->init();
-  core.getDisplayModule()->display();
+  core.loadLib(path_graphic_lib);
+  if (core.getGraphicModule() == nullptr)
+    return KO;
+  core.getLib("./lib/");
+  core.getGraphicModule()->display();
   sleep(2);
-  core.getDisplayModule()->stop();
-  delete core.getDisplayModule();
+  core.getGraphicModule()->stop();
+  delete core.getGraphicModule();
   return OK;
 }
 

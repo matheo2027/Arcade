@@ -10,6 +10,7 @@
 
 #include "ADisplayModule.hpp"
 #include "AGameModule.hpp"
+#include "DLLoader.hpp"
 #include "IModule.hpp"
 #include <dirent.h>
 #include <iostream>
@@ -26,15 +27,17 @@ public:
   enum CoreStatus { RUNNING, SELECTION };
   void setCoreStatus(CoreStatus status);
   CoreStatus getCoreStatus() const;
-  ADisplayModule *getDisplayModule();
+  ADisplayModule *getGraphicModule();
   AGameModule *getGameModule();
   void setModule(arcade::IModule *module, arcade::IModule::ModuleType type);
   std::vector<std::string> getLib(std::string pathLib);
+  void loadLib(std::string pathLib);
 
 protected:
   CoreStatus _coreStatus;
-  arcade::ADisplayModule *_displayModule;
+  arcade::ADisplayModule *_graphicModule;
   arcade::AGameModule *_gameModule;
+  arcade::IModule::MenuData _menuData;
 };
 }; // namespace arcade
 

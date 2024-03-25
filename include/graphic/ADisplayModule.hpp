@@ -28,6 +28,7 @@ public:
 
   arcade::IModule::KeyboardInput getInput() const;
   void sendGameData(arcade::IModule::GameData data);
+  void sendMenuData(arcade::IModule::MenuData data);
 
 protected:
   void *_window;
@@ -35,6 +36,7 @@ protected:
   void *_event;
   void *_font;
   arcade::IModule::GameData _gameData;
+  arcade::IModule::MenuData _menuData;
   arcade::IModule::KeyboardInput _input;
   DisplayStatus _displayStatus;
 };
