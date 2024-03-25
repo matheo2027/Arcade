@@ -7,19 +7,36 @@
 
 #include "Sfml.hpp"
 
+/**
+ * @brief Construct a new arcade::Sfml::Sfml object
+ *
+ */
 arcade::Sfml::Sfml() : IModule(), ADisplayModule() {}
 
+/**
+ * @brief Destroy the arcade::Sfml::Sfml object
+ *
+ */
 arcade::Sfml::~Sfml() {}
 
+/**
+ * @brief init the window
+ *
+ */
 void arcade::Sfml::init()
 {
-  sf::RenderWindow *window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Arcade");
+  sf::RenderWindow *window =
+      new sf::RenderWindow(sf::VideoMode(1920, 1080), "Arcade");
   window->setFramerateLimit(60);
   window->clear(sf::Color::Black);
   window->display();
   this->_window = window;
 }
 
+/**
+ * @brief stop the window
+ *
+ */
 void arcade::Sfml::stop()
 {
   sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
@@ -30,6 +47,10 @@ void arcade::Sfml::stop()
   this->_window = nullptr;
 }
 
+/**
+ * @brief display the game info in the window
+ *
+ */
 void arcade::Sfml::display()
 {
   sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
@@ -49,11 +70,21 @@ void arcade::Sfml::display()
   this->_window = window;
 }
 
-const arcade::IModule::LibName arcade::Sfml::getName() const
+/**
+ * @brief return the name of the library
+ *
+ * @return arcade::IModule::LibName
+ */
+arcade::IModule::LibName arcade::Sfml::getName() const
 {
   return arcade::IModule::LibName::SFML;
 }
 
+/**
+ * @brief get the keyboard input
+ *
+ * @return arcade::IModule::KeyboardInput
+ */
 arcade::IModule::KeyboardInput arcade::Sfml::getInput()
 {
   sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
@@ -92,4 +123,9 @@ arcade::IModule::KeyboardInput arcade::Sfml::getInput()
   return arcade::IModule::KeyboardInput::NONE;
 }
 
+/**
+ * @brief entry point for the library
+ *
+ * @return arcade::Sfml*
+ */
 extern "C" arcade::Sfml *entryPoint() { return new arcade::Sfml(); }

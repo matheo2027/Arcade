@@ -99,11 +99,16 @@ void arcade::Sdl2::stop()
 /**
  * @brief return the name of the module
  * 
- * @return const arcade::IModule::LibName
+ * @return arcade::IModule::LibName
  */
-const arcade::IModule::LibName arcade::Sdl2::getName() const
+arcade::IModule::LibName arcade::Sdl2::getName() const
 {
   return arcade::IModule::LibName::SDL;
 }
 
+/**
+ * @brief entry point for the library
+ * 
+ * @return arcade::Sdl2 *
+ */
 extern "C" arcade::Sdl2 *entryPoint() { return new arcade::Sdl2(); }
