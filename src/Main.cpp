@@ -25,8 +25,7 @@ int arcadeRe(std::string path_graphic_lib)
   core.getLib("./lib/");
   core.getGraphicModule()->display();
   sleep(2);
-  core.getGraphicModule()->stop();
-  delete core.getGraphicModule();
+  core.stop();
   return OK;
 }
 
