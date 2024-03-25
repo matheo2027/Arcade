@@ -6,6 +6,7 @@
 */
 
 #include "CoreModule.hpp"
+#include "Error.hpp"
 
 /**
  * @brief Construct a new arcade::Core Module::Core Module object
@@ -126,7 +127,11 @@ void arcade::CoreModule::setModule(arcade::IModule *module,
     this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
     break;
   default:
-    throw std::exception();
+    try {
+      throw BadModuleTypeException("Bad module type");
+    } catch (BadModuleTypeException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   return;
 }
@@ -163,7 +168,11 @@ void arcade::CoreModule::getLib(std::string pathLib)
   dir = opendir(pathLib.c_str());
   if (dir == nullptr) {
     perror("opendir");
-    throw std::exception();
+    try {
+      throw OpendirException("Could not open directory");
+    } catch (OpendirException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   while ((entry = readdir(dir)) != nullptr) {
     if (strncmp(entry->d_name, "arcade_", strlen("arcade_")) == 0 &&
@@ -189,25 +198,30 @@ void arcade::CoreModule::loadLib(std::string pathLib)
   DLLoader<arcade::IModule> loader(pathLib);
   arcade::IModule *module = loader.getInstance("entryPoint");
   if (module == nullptr)
-    throw std::exception();
-  switch (module->getType()) {
-  case arcade::IModule::ModuleType::GAME:
+    try {
+      throw NoModuleLoadedException("No module loaded");
+    } catch (NoModuleLoadedException &e) {
+      std::cerr << e.what() << std::endl;
+    }
+  if (module->getType() == arcade::IModule::ModuleType::GAME) {
     if (this->_gameModule != nullptr) {
       this->_gameModule->stop();
       delete (this->_gameModule);
     }
     this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
     this->_gameModule->init();
-    break;
-  case arcade::IModule::ModuleType::GRAPHIC:
+  } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
     if (this->_gameModule != nullptr) {
       this->_graphicModule->stop();
       delete (this->_graphicModule);
     }
     this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
     this->_graphicModule->init();
-    break;
-  default:
-    throw std::exception();
+  } else {
+    try {
+      throw BadModuleTypeException("Bad module type");
+    } catch (BadModuleTypeException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
 }

@@ -6,6 +6,7 @@
 */
 
 #include "NCurses.hpp"
+#include "Error.hpp"
 
 arcade::NCurses::NCurses() : arcade::IModule(), arcade::ADisplayModule() {}
 
@@ -42,8 +43,13 @@ void arcade::NCurses::init() {
 void arcade::NCurses::stop() {
 
   WINDOW *win = static_cast<WINDOW *>(this->_window);
+  win = nullptr;
   if (win == nullptr) {
-    throw std::exception();
+    try {
+      throw NoWindowException("No window to stop");
+    } catch (NoWindowException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   delwin(win); // Delete the window
   endwin();    // Restore normal terminal behavior
@@ -56,6 +62,6 @@ arcade::IModule::LibName arcade::NCurses::getName() const
 
 /**
  * @brief entry point
- * 
+ *
  */
 extern "C" arcade::NCurses *entryPoint() { return new arcade::NCurses(); }
