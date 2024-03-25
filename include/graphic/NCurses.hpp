@@ -19,6 +19,7 @@ public:
   void init();
   void stop();
   void display();
+  void displayMenu();
   arcade::IModule::LibName getName() const;
 
 protected:

@@ -17,6 +17,12 @@ arcade::CoreModule::CoreModule() : arcade::IModule()
   this->_coreStatus = CoreStatus::SELECTION;
   this->_gameModule = nullptr;
   this->_graphicModule = nullptr;
+  this->_menuData._description = "\nLegend:\nPress UP/DOWN to navigate\n\
+  Press ENTER to confirm the choice\n\
+  Press TAB to switch between Graphical Library and Game selection";
+  this->_menuData.indexGame = 0;
+  this->_menuData.indexGraphic = 0;
+  this->_menuData._type = arcade::IModule::ModuleType::GRAPHIC;
 }
 
 /**
@@ -210,6 +216,7 @@ void arcade::CoreModule::loadLib(std::string pathLib)
     }
     this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
     this->_gameModule->init();
+    this->_gameModule->setCoreModule(this);
   } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
     if (this->_gameModule != nullptr) {
       this->_graphicModule->stop();
@@ -217,6 +224,7 @@ void arcade::CoreModule::loadLib(std::string pathLib)
     }
     this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
     this->_graphicModule->init();
+    this->_graphicModule->setCoreModule(this);
   } else {
     try {
       throw BadModuleTypeException("Bad module type");
@@ -224,4 +232,94 @@ void arcade::CoreModule::loadLib(std::string pathLib)
       std::cerr << e.what() << std::endl;
     }
   }
+}
+
+void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
+{
+  switch (key) {
+  case arcade::IModule::KeyboardInput::UP:
+    if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC) {
+      if (this->_menuData.indexGraphic > 0)
+        --this->_menuData.indexGraphic;
+    } else {
+      if (this->_menuData.indexGame > 0)
+        --this->_menuData.indexGame;
+    }
+    break;
+  case arcade::IModule::KeyboardInput::DOWN:
+    if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC) {
+      if (this->_menuData.indexGraphic <
+          this->_menuData._graphicLibList.size() - 1)
+        ++this->_menuData.indexGraphic;
+    } else {
+      if (this->_menuData.indexGame < this->_menuData._gameLibList.size() - 1)
+        ++this->_menuData.indexGame;
+    }
+    break;
+  case arcade::IModule::KeyboardInput::ENTER:
+    if (this->_menuData._gameLibList.size() == 0 ||
+        this->_menuData._graphicLibList.size() == 0)
+      throw std::exception();
+    this->loadLib(this->_menuData._gameLibList[this->_menuData.indexGame]);
+    this->loadLib(
+        this->_menuData._graphicLibList[this->_menuData.indexGraphic]);
+    this->_coreStatus = CoreStatus::RUNNING;
+    break;
+  case arcade::IModule::KeyboardInput::TAB:
+    if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC)
+      this->_menuData._type = arcade::IModule::ModuleType::GAME;
+    else
+      this->_menuData._type = arcade::IModule::ModuleType::GRAPHIC;
+    break;
+  }
+}
+
+void arcade::CoreModule::handleKeyRunning(arcade::IModule::KeyboardInput key) {}
+
+void arcade::CoreModule::handleKeyEvent(arcade::IModule::KeyboardInput key)
+{
+  switch (this->_coreStatus) {
+  case CoreStatus::SELECTION:
+    this->handleKeySelection(key);
+    break;
+  case CoreStatus::RUNNING:
+    this->handleKeyRunning(key);
+    break;
+  default:
+    throw std::exception();
+  }
+  if (this->_coreStatus == CoreStatus::SELECTION) {
+    if (key == arcade::IModule::KeyboardInput::ENTER) {
+      if (this->_menuData._gameLibList.size() == 0 ||
+          this->_menuData._graphicLibList.size() == 0)
+        throw std::exception();
+      this->loadLib(this->_menuData._gameLibList[0]);
+      this->loadLib(this->_menuData._graphicLibList[0]);
+      this->_coreStatus = CoreStatus::RUNNING;
+    }
+  } else if (this->_coreStatus == CoreStatus::RUNNING) {
+    if (key == arcade::IModule::KeyboardInput::ESCAPE) {
+      this->_coreStatus = CoreStatus::SELECTION;
+    }
+  }
+}
+
+/**
+ * @brief get the menu data
+ *
+ * @return arcade::IModule::MenuData
+ */
+arcade::IModule::MenuData arcade::CoreModule::getMenuData() const
+{
+  return this->_menuData;
+}
+
+/**
+ * @brief get the game data
+ *
+ * @return arcade::IModule::GameData
+ */
+arcade::IModule::GameData arcade::CoreModule::getGameData() const
+{
+  return this->_gameData;
 }

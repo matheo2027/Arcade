@@ -19,13 +19,11 @@
 int arcadeRe(std::string path_graphic_lib)
 {
   arcade::CoreModule core;
+  core.getLib("./lib/");
   core.loadLib(path_graphic_lib);
   if (core.getGraphicModule() == nullptr)
     return KO;
-  core.getLib("./lib/");
   core.getGraphicModule()->display();
-  sleep(2);
-  core.stop();
   return OK;
 }
 
