@@ -137,11 +137,14 @@ void arcade::CoreModule::addLibList(std::string pathLib)
   arcade::IModule *module = loader.getInstance("entryPoint");
   if (module == nullptr)
     throw std::exception();
-  if (module->getType() == arcade::IModule::ModuleType::GAME) {
+  switch (module->getType()) {
+  case arcade::IModule::ModuleType::GAME:
     this->_menuData._gameLibList.push_back(pathLib);
-  } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
+    break;
+  case arcade::IModule::ModuleType::GRAPHIC:
     this->_menuData._graphicLibList.push_back(pathLib);
-  } else {
+    break;
+  default:
     throw std::exception();
   }
 }
@@ -187,22 +190,24 @@ void arcade::CoreModule::loadLib(std::string pathLib)
   arcade::IModule *module = loader.getInstance("entryPoint");
   if (module == nullptr)
     throw std::exception();
-  if (module->getType() == arcade::IModule::ModuleType::GAME) {
+  switch (module->getType()) {
+  case arcade::IModule::ModuleType::GAME:
     if (this->_gameModule != nullptr) {
       this->_gameModule->stop();
       delete (this->_gameModule);
     }
     this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
     this->_gameModule->init();
-  } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
+    break;
+  case arcade::IModule::ModuleType::GRAPHIC:
     if (this->_gameModule != nullptr) {
       this->_graphicModule->stop();
       delete (this->_graphicModule);
     }
     this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
     this->_graphicModule->init();
-  } else {
+    break;
+  default:
     throw std::exception();
   }
-  return;
 }
