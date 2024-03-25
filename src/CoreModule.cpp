@@ -6,6 +6,7 @@
 */
 
 #include "CoreModule.hpp"
+#include "Error.hpp"
 
 /**
  * @brief Construct a new arcade::Core Module::Core Module object
@@ -114,7 +115,11 @@ void arcade::CoreModule::setModule(arcade::IModule *module,
     this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
     break;
   default:
-    throw std::exception();
+    try {
+      throw BadModuleTypeException("Bad module type");
+    } catch (BadModuleTypeException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   return;
 }
@@ -134,7 +139,11 @@ std::vector<std::string> arcade::CoreModule::getLib(std::string pathLib)
   dir = opendir(pathLib.c_str());
   if (dir == nullptr) {
     perror("opendir");
-    throw std::exception();
+    try {
+      throw OpendirException("Could not open directory");
+    } catch (OpendirException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   while ((entry = readdir(dir)) != nullptr) {
@@ -158,7 +167,11 @@ void arcade::CoreModule::loadLib(std::string pathLib)
   DLLoader<arcade::IModule> loader(pathLib);
   arcade::IModule *module = loader.getInstance("entryPoint");
   if (module == nullptr)
-    throw std::exception();
+    try {
+      throw NoModuleLoadedException("No module loaded");
+    } catch (NoModuleLoadedException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   if (module->getType() == arcade::IModule::ModuleType::GAME) {
     if (this->_gameModule != nullptr){
       this->_gameModule->stop();
@@ -174,7 +187,11 @@ void arcade::CoreModule::loadLib(std::string pathLib)
     this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
     this->_graphicModule->init();
   } else {
-    throw std::exception();
+    try {
+      throw BadModuleTypeException("Bad module type");
+    } catch (BadModuleTypeException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   return;
 }

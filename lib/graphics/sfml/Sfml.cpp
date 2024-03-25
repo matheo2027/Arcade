@@ -6,6 +6,7 @@
 */
 
 #include "Sfml.hpp"
+#include "Error.hpp"
 
 /**
  * @brief Construct a new arcade::Sfml::Sfml object
@@ -41,7 +42,11 @@ void arcade::Sfml::stop()
 {
   sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
   if (window == nullptr) {
-    throw std::exception();
+    try {
+      throw NoWindowException("No window to stop");
+    } catch (NoWindowException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   window->close();
   this->_window = nullptr;
@@ -55,7 +60,11 @@ void arcade::Sfml::display()
 {
   sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
   if (window == nullptr) {
-    throw std::exception();
+    try {
+      throw NoWindowException("No window to stop");
+    } catch (NoWindowException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   window->clear();
   for (int y = 0; y < this->_gameData.display_info.size(); y++) {
@@ -89,7 +98,11 @@ arcade::IModule::KeyboardInput arcade::Sfml::getInput()
 {
   sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
   if (window == nullptr) {
-    throw std::exception();
+    try {
+      throw NoWindowException("No window to stop");
+    } catch (NoWindowException &e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
   sf::Event event;
 
