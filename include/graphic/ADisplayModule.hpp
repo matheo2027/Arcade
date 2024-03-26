@@ -8,13 +8,10 @@
 #ifndef ADISPLAYMODULE_HPP_
 #define ADISPLAYMODULE_HPP_
 
-#include "CoreModule.hpp"
-#include "IModule.hpp"
+#include "IDisplayModule.hpp"
 namespace arcade {
-class CoreModule;
-class ADisplayModule : virtual public arcade::IModule {
+class ADisplayModule : virtual public arcade::IDisplayModule {
 public:
-  enum DisplayStatus { RUNNING, PAUSED, SELECTION, GAMEOVER, WIN };
   ADisplayModule();
   ~ADisplayModule();
   virtual void init() = 0;
@@ -29,17 +26,11 @@ public:
   virtual arcade::IModule::LibName getName() const = 0;
   arcade::IModule::ModuleType getType() const;
 
-  arcade::IModule::KeyboardInput getInput() const;
   void sendGameData(arcade::IModule::GameData data);
   void sendMenuData(arcade::IModule::MenuData data);
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;
-
-protected:
-  DisplayStatus _displayStatus;
-  arcade::CoreModule *_coreModule;
-
 };
 }; // namespace arcade
 

@@ -99,9 +99,9 @@ arcade::CoreModule::CoreStatus arcade::CoreModule::getCoreStatus() const
 /**
  * @brief get the display module
  *
- * @return arcade::ADisplayModule *
+ * @return arcade::IDisplayModule *
  */
-arcade::ADisplayModule *arcade::CoreModule::getGraphicModule()
+arcade::IDisplayModule *arcade::CoreModule::getGraphicModule()
 {
   return this->_graphicModule;
 }
@@ -109,9 +109,9 @@ arcade::ADisplayModule *arcade::CoreModule::getGraphicModule()
 /**
  * @brief get the game module
  *
- * @return arcade::AGameModule *
+ * @return arcade::IGameModule *
  */
-arcade::AGameModule *arcade::CoreModule::getGameModule()
+arcade::IGameModule *arcade::CoreModule::getGameModule()
 {
   return this->_gameModule;
 }
@@ -127,10 +127,10 @@ void arcade::CoreModule::setModule(arcade::IModule *module,
 {
   switch (type) {
   case arcade::IModule::ModuleType::GAME:
-    this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
+    this->_gameModule = dynamic_cast<arcade::IGameModule *>(module);
     break;
   case arcade::IModule::ModuleType::GRAPHIC:
-    this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
+    this->_graphicModule = dynamic_cast<arcade::IDisplayModule *>(module);
     break;
   default:
     try {
@@ -214,17 +214,17 @@ void arcade::CoreModule::loadLib(std::string pathLib)
       this->_gameModule->stop();
       delete (this->_gameModule);
     }
-    this->_gameModule = dynamic_cast<arcade::AGameModule *>(module);
-    this->_gameModule->init();
+    this->_gameModule = dynamic_cast<arcade::IGameModule *>(module);
     this->_gameModule->setCoreModule(this);
+    this->_gameModule->init();
   } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
     if (this->_gameModule != nullptr) {
       this->_graphicModule->stop();
       delete (this->_graphicModule);
     }
-    this->_graphicModule = dynamic_cast<arcade::ADisplayModule *>(module);
-    this->_graphicModule->init();
+    this->_graphicModule = dynamic_cast<arcade::IDisplayModule *>(module);
     this->_graphicModule->setCoreModule(this);
+    this->_graphicModule->init();
   } else {
     try {
       throw BadModuleTypeException("Bad module type");
@@ -253,10 +253,10 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
     break;
   case arcade::IModule::KeyboardInput::DOWN:
     if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC) {
-      this->_menuData.indexGraphic += 1;
-      if (this->_menuData.indexGraphic >
-          this->_menuData._graphicLibList.size() - 1)
-        this->_menuData.indexGraphic = 0;
+      this->_menuData._graphicLibList.insert(
+          this->_menuData._graphicLibList.begin(),
+          this->_menuData._graphicLibList.back());
+      this->_menuData._graphicLibList.pop_back();
     } else {
       this->_menuData._gameLibList.insert(this->_menuData._gameLibList.begin(),
                                           this->_menuData._gameLibList.back());
@@ -272,7 +272,7 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
         this->_menuData._graphicLibList[this->_menuData.indexGraphic]);
     this->_coreStatus = CoreStatus::RUNNING;
     this->getGraphicModule()->setDisplayStatus(
-        arcade::ADisplayModule::DisplayStatus::RUNNING);
+        arcade::IDisplayModule::DisplayStatus::RUNNING);
     break;
   case arcade::IModule::KeyboardInput::TAB:
     if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC)

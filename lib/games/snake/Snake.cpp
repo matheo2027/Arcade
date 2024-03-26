@@ -23,7 +23,16 @@ arcade::Snake::~Snake() {}
  * @brief init the game
  *
  */
-void arcade::Snake::init() { return; }
+void arcade::Snake::init()
+{
+  arcade::IModule::GameData gameData;
+  gameData.display_info = {
+    {'0', '0', '0'}
+  };
+  printf("Snake init before\n");
+  this->getCoreModule()->setGameData(gameData);
+  printf("Snake init after\n");
+}
 
 /**
  * @brief stop the game

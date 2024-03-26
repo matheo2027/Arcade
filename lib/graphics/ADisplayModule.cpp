@@ -11,7 +11,7 @@
  * @brief Construct a new arcade::ADisplayModule::ADisplayModule object
  *
  */
-arcade::ADisplayModule::ADisplayModule() : arcade::IModule()
+arcade::ADisplayModule::ADisplayModule() : arcade::IModule(), arcade::IDisplayModule()
 {
   this->_displayStatus = DisplayStatus::SELECTION;
 }
@@ -52,16 +52,6 @@ arcade::ADisplayModule::DisplayStatus
 arcade::ADisplayModule::getDisplayStatus() const
 {
   return this->_displayStatus;
-}
-
-/**
- * @brief get input from the user
- *
- * @return arcade::IModule::KeyboardInput
- */
-arcade::IModule::KeyboardInput arcade::ADisplayModule::getInput() const
-{
-  return arcade::IModule::KeyboardInput::UP;
 }
 
 /**

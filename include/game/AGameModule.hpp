@@ -8,14 +8,11 @@
 #ifndef AGAMEMODULE_HPP_
 #define AGAMEMODULE_HPP_
 
-#include "CoreModule.hpp"
-#include "IModule.hpp"
+#include "IGameModule.hpp"
 
 namespace arcade {
-class CoreModule;
-class AGameModule : virtual public arcade::IModule {
+class AGameModule : virtual public arcade::IGameModule {
 public:
-  enum GameStatus { RUNNING, PAUSED, GAMEOVER, WIN };
   AGameModule();
   ~AGameModule();
   virtual void init() = 0;
@@ -32,11 +29,6 @@ public:
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;
-
-protected:
-  GameStatus _gameStatus;
-  arcade::CoreModule *_coreModule;
-
 };
 }; // namespace arcade
 

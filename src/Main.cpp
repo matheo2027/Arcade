@@ -48,7 +48,7 @@ bool is_good_graphic_lib(char *path_graphic_lib)
   arcade::IModule *graphicModule = loader.getInstance("entryPoint");
   if (graphicModule == nullptr)
     return false;
-  if (dynamic_cast<arcade::ADisplayModule *>(graphicModule) == nullptr)
+  if (dynamic_cast<arcade::IDisplayModule *>(graphicModule) == nullptr)
     return false;
   return true;
 }
