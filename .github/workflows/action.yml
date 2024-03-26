@@ -20,7 +20,7 @@ jobs:
           repository: ""
 
       - name: Install SDL2
-        run: sudo apt install -y libsdl2-dev libsfml-dev
+        run: sudo apt install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsfml-dev
 
       - name: Compile project
         run: cmake -S . -B build
