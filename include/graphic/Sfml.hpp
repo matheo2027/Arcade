@@ -22,10 +22,11 @@ public:
   void stop();
   void display();
   void displayMenu();
+  void displayGame();
   arcade::IModule::LibName getName() const;
 
 protected:
-private:
+  sf::RenderWindow *_window;
   sf::Texture _texture;
   sf::Font _font;
 };

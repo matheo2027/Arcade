@@ -21,10 +21,13 @@ public:
   void stop();
   void display();
   void displayMenu();
+  void displayGame();
   arcade::IModule::LibName getName() const;
 
 protected:
-  SDL_Renderer* _renderer;
+  SDL_Window *_window;
+  TTF_Font *_font;
+  SDL_Renderer *_renderer;
 };
 }; // namespace arcade
 

@@ -23,7 +23,8 @@ int arcadeRe(std::string path_graphic_lib)
   core.loadLib(path_graphic_lib);
   if (core.getGraphicModule() == nullptr)
     return KO;
-  core.getGraphicModule()->display();
+  while (core.getCoreStatus() != arcade::CoreModule::EXIT)
+    core.getGraphicModule()->display();
   return OK;
 }
 

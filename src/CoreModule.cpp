@@ -18,8 +18,8 @@ arcade::CoreModule::CoreModule() : arcade::IModule()
   this->_gameModule = nullptr;
   this->_graphicModule = nullptr;
   this->_menuData._description = "\nLegend:\nPress UP/DOWN to navigate\n\
-  Press ENTER to confirm the choice\n\
-  Press TAB to switch between Graphical Library and Game selection";
+Press ENTER to confirm the choice\n\
+Press TAB to switch between Graphical Library and Game selection";
   this->_menuData.indexGame = 0;
   this->_menuData.indexGraphic = 0;
   this->_menuData._type = arcade::IModule::ModuleType::GRAPHIC;
@@ -239,21 +239,25 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
   switch (key) {
   case arcade::IModule::KeyboardInput::UP:
     if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC) {
-      if (this->_menuData.indexGraphic > 0)
-        --this->_menuData.indexGraphic;
+      this->_menuData.indexGraphic -= 1;
+      if (this->_menuData.indexGraphic < 0)
+        this->_menuData.indexGraphic = this->_menuData._graphicLibList.size() - 1;
     } else {
-      if (this->_menuData.indexGame > 0)
-        --this->_menuData.indexGame;
+      this->_menuData.indexGame -= 1;
+      if (this->_menuData.indexGame < 0)
+        this->_menuData.indexGame = this->_menuData._gameLibList.size() - 1;
     }
     break;
   case arcade::IModule::KeyboardInput::DOWN:
     if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC) {
-      if (this->_menuData.indexGraphic <
+      this->_menuData.indexGraphic += 1;
+      if (this->_menuData.indexGraphic >
           this->_menuData._graphicLibList.size() - 1)
-        ++this->_menuData.indexGraphic;
+        this->_menuData.indexGraphic = 0;
     } else {
-      if (this->_menuData.indexGame < this->_menuData._gameLibList.size() - 1)
-        ++this->_menuData.indexGame;
+      this->_menuData.indexGame += 1;
+      if (this->_menuData.indexGame > this->_menuData._gameLibList.size() - 1)
+        this->_menuData.indexGame = 0;
     }
     break;
   case arcade::IModule::KeyboardInput::ENTER:
@@ -264,6 +268,8 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
     this->loadLib(
         this->_menuData._graphicLibList[this->_menuData.indexGraphic]);
     this->_coreStatus = CoreStatus::RUNNING;
+    this->getGraphicModule()->setDisplayStatus(
+        arcade::ADisplayModule::DisplayStatus::RUNNING);
     break;
   case arcade::IModule::KeyboardInput::TAB:
     if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC)
@@ -271,10 +277,27 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
     else
       this->_menuData._type = arcade::IModule::ModuleType::GRAPHIC;
     break;
+  case arcade::IModule::KeyboardInput::CROSS:
+    this->_coreStatus = CoreStatus::EXIT;
+    break;
+  default:
+    break;
   }
 }
 
-void arcade::CoreModule::handleKeyRunning(arcade::IModule::KeyboardInput key) {}
+void arcade::CoreModule::handleKeyRunning(arcade::IModule::KeyboardInput key)
+{
+  switch (key) {
+  // case arcade::IModule::KeyboardInput::ESCAPE:
+  //   this->_coreStatus = CoreStatus::SELECTION;
+  //   break;
+  case arcade::IModule::KeyboardInput::CROSS:
+    this->_coreStatus = CoreStatus::EXIT;
+    break;
+  default:
+    break;
+  }
+}
 
 void arcade::CoreModule::handleKeyEvent(arcade::IModule::KeyboardInput key)
 {
@@ -287,20 +310,6 @@ void arcade::CoreModule::handleKeyEvent(arcade::IModule::KeyboardInput key)
     break;
   default:
     throw std::exception();
-  }
-  if (this->_coreStatus == CoreStatus::SELECTION) {
-    if (key == arcade::IModule::KeyboardInput::ENTER) {
-      if (this->_menuData._gameLibList.size() == 0 ||
-          this->_menuData._graphicLibList.size() == 0)
-        throw std::exception();
-      this->loadLib(this->_menuData._gameLibList[0]);
-      this->loadLib(this->_menuData._graphicLibList[0]);
-      this->_coreStatus = CoreStatus::RUNNING;
-    }
-  } else if (this->_coreStatus == CoreStatus::RUNNING) {
-    if (key == arcade::IModule::KeyboardInput::ESCAPE) {
-      this->_coreStatus = CoreStatus::SELECTION;
-    }
   }
 }
 
@@ -322,4 +331,14 @@ arcade::IModule::MenuData arcade::CoreModule::getMenuData() const
 arcade::IModule::GameData arcade::CoreModule::getGameData() const
 {
   return this->_gameData;
+}
+
+/**
+ * @brief set the game data
+ *
+ * @param gameData game data to set
+ */
+void arcade::CoreModule::setGameData(arcade::IModule::GameData gameData)
+{
+  this->_gameData = gameData;
 }
