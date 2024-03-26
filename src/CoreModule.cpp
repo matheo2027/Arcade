@@ -232,6 +232,8 @@ void arcade::CoreModule::loadLib(std::string pathLib)
       std::cerr << e.what() << std::endl;
     }
   }
+  this->_menuData.indexGame = this->_menuData._gameLibList.size() / 2;
+  this->_menuData.indexGraphic = this->_menuData._graphicLibList.size() / 2;
 }
 
 void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
@@ -239,13 +241,14 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
   switch (key) {
   case arcade::IModule::KeyboardInput::UP:
     if (this->_menuData._type == arcade::IModule::ModuleType::GRAPHIC) {
-      this->_menuData.indexGraphic -= 1;
-      if (this->_menuData.indexGraphic < 0)
-        this->_menuData.indexGraphic = this->_menuData._graphicLibList.size() - 1;
+      this->_menuData._graphicLibList.push_back(
+          this->_menuData._graphicLibList.front());
+      this->_menuData._graphicLibList.erase(
+          this->_menuData._graphicLibList.begin());
     } else {
-      this->_menuData.indexGame -= 1;
-      if (this->_menuData.indexGame < 0)
-        this->_menuData.indexGame = this->_menuData._gameLibList.size() - 1;
+      this->_menuData._gameLibList.push_back(
+          this->_menuData._gameLibList.front());
+      this->_menuData._gameLibList.erase(this->_menuData._gameLibList.begin());
     }
     break;
   case arcade::IModule::KeyboardInput::DOWN:
@@ -255,9 +258,9 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
           this->_menuData._graphicLibList.size() - 1)
         this->_menuData.indexGraphic = 0;
     } else {
-      this->_menuData.indexGame += 1;
-      if (this->_menuData.indexGame > this->_menuData._gameLibList.size() - 1)
-        this->_menuData.indexGame = 0;
+      this->_menuData._gameLibList.insert(this->_menuData._gameLibList.begin(),
+                                          this->_menuData._gameLibList.back());
+      this->_menuData._gameLibList.pop_back();
     }
     break;
   case arcade::IModule::KeyboardInput::ENTER:
