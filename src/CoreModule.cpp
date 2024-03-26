@@ -218,7 +218,11 @@ void arcade::CoreModule::loadLib(std::string pathLib)
     this->_gameModule->setCoreModule(this);
     this->_gameModule->init();
   } else if (module->getType() == arcade::IModule::ModuleType::GRAPHIC) {
-    if (this->_gameModule != nullptr) {
+    if (this->_graphicModule != nullptr) {
+      arcade::IDisplayModule *tmpGraphicModule =
+          dynamic_cast<arcade::IDisplayModule *>(module);
+      if (tmpGraphicModule->getName() == this->_graphicModule->getName())
+        return;
       this->_graphicModule->stop();
       delete (this->_graphicModule);
     }
@@ -267,6 +271,11 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
     if (this->_menuData._gameLibList.size() == 0 ||
         this->_menuData._graphicLibList.size() == 0)
       throw std::exception();
+    printf("Game: %s\n",
+           this->_menuData._gameLibList[this->_menuData.indexGame].c_str());
+    printf(
+        "Graphic: %s\n",
+        this->_menuData._graphicLibList[this->_menuData.indexGraphic].c_str());
     this->loadLib(this->_menuData._gameLibList[this->_menuData.indexGame]);
     this->loadLib(
         this->_menuData._graphicLibList[this->_menuData.indexGraphic]);
@@ -291,9 +300,6 @@ void arcade::CoreModule::handleKeySelection(arcade::IModule::KeyboardInput key)
 void arcade::CoreModule::handleKeyRunning(arcade::IModule::KeyboardInput key)
 {
   switch (key) {
-  // case arcade::IModule::KeyboardInput::ESCAPE:
-  //   this->_coreStatus = CoreStatus::SELECTION;
-  //   break;
   case arcade::IModule::KeyboardInput::CROSS:
     this->_coreStatus = CoreStatus::EXIT;
     break;
