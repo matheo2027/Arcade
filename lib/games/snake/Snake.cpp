@@ -25,13 +25,28 @@ arcade::Snake::~Snake() {}
  */
 void arcade::Snake::init()
 {
+
   arcade::IModule::GameData gameData;
-  gameData.display_info = {
-    {'0', '0', '0'}
-  };
-  printf("Snake init before\n");
+  int height = 27;
+  int width = 48;
+  for (int i = 0; i < height; i++) {
+    gameData.display_info.push_back(std::vector<int>(width));
+    for (int j = 0; j < width; j++) {
+      if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
+        gameData.display_info[i][j] = '#';
+      else
+        gameData.display_info[i][j] = ' ';
+    }
+  }
+  gameData.display_info[height / 2][width / 2] = 'P';
+  gameData.display_info[height / 2][width / 2 + 1] = '-';
+  gameData.display_info[height / 2][width / 2 + 2] = '-';
+  gameData.display_info[height / 2][width / 2 + 3] = '-';
+  gameData.sprite_value[' '] = "assets/default/map/map1.png";
+  gameData.sprite_value['#'] = "assets/default/map/map2.png";
+  gameData.sprite_value['P'] = "assets/default/npc/npc1.png";
+  gameData.sprite_value['-'] = "assets/default/npc/npc2.png";
   this->getCoreModule()->setGameData(gameData);
-  printf("Snake init after\n");
 }
 
 /**

@@ -118,8 +118,7 @@ void arcade::Sdl2::displayMenu()
       }
     }
 
-    SDL_SetRenderDrawColor(
-        this->_renderer, 30, 30, 30, 255); // Dark gray background
+    SDL_SetRenderDrawColor(this->_renderer, 30, 30, 30, 255); // Dark gray background
     SDL_RenderClear(this->_renderer);
 
     // Render our text
@@ -139,21 +138,45 @@ void arcade::Sdl2::displayGame()
 {
   // Clear the screen
   SDL_SetRenderDrawColor(
-      this->_renderer, 30, 30, 30, 255); // Dark gray background
+      this->_renderer, 0, 0, 0, 0); // Dark gray background
   SDL_RenderClear(this->_renderer);
+
+  // Generate the sprite map
+  std::map<int, SDL_Surface *> spriteSurfaces;
+  for (std::pair<int, std::string> sprite :
+       this->getCoreModule()->getGameData().sprite_value) {
+    spriteSurfaces[sprite.first] = IMG_Load(sprite.second.c_str());
+    if (!spriteSurfaces[sprite.first]) {
+      std::cerr << "Failed to load sprite: " << sprite.second << std::endl;
+      return;
+    }
+  }
 
   // Get the game data
   arcade::IModule::GameData gameData = this->getCoreModule()->getGameData();
 
-  // Draw the game
-  for (int y = 0; y < gameData.display_info.size(); y++) {
-    for (int x = 0; x < gameData.display_info[y].size(); x++) {
-      SDL_Rect rect = {x * 20, y * 20, 20, 20};
-      SDL_SetRenderDrawColor(
-          this->_renderer, 255, 255, 255, 255); // White color
-      SDL_RenderFillRect(this->_renderer, &rect);
+  // Update the screen
+  SDL_Texture *spriteTexture = nullptr;
+  SDL_Rect spriteRect;
+  for (int i = 0; i < gameData.display_info.size(); i += 1) {
+    for (int j = 0; j < gameData.display_info[i].size(); j += 1) {
+      spriteTexture = SDL_CreateTextureFromSurface(
+          this->_renderer, spriteSurfaces[gameData.display_info[i][j]]);
+      if (!spriteTexture) {
+        std::cerr << "Failed to create sprite texture: " << SDL_GetError()
+                  << std::endl;
+        return;
+      }
+      spriteRect = {j * 40, i * 40, 40, 40};
+      if (SDL_RenderCopy(this->_renderer, spriteTexture, nullptr, &spriteRect) <
+          0) {
+        std::cerr << "Failed to render sprite: " << SDL_GetError() << std::endl;
+        return;
+      }
     }
   }
+
+  SDL_RenderPresent(this->_renderer);
 
   int running = 1;
   while (running) {
@@ -166,9 +189,7 @@ void arcade::Sdl2::displayGame()
       }
     }
   }
-
-  // Update the screen
-  SDL_RenderPresent(this->_renderer);
+  SDL_DestroyTexture(spriteTexture);
 }
 
 /**
@@ -228,6 +249,11 @@ void arcade::Sdl2::init()
     } catch (SdlQuitException &e) {
       std::cerr << e.what() << std::endl;
     }
+  }
+
+  if (IMG_Init(IMG_INIT_PNG) < 0) {
+    std::cerr << "SDL_image could not initialize! SDL_image Error: "
+              << IMG_GetError() << std::endl;
   }
 
   // Create window
