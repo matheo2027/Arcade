@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "IModule.hpp"
+#include "Arcade.hpp"
 #include <CoreModule.hpp>
 #include <iostream>
 #include <unistd.h>
@@ -18,13 +18,14 @@
  */
 int arcadeRe(std::string path_graphic_lib)
 {
+  std::cout << "start arcade" << std::endl;
   arcade::CoreModule core;
   core.getLib("./lib/");
+  std::cout << "Graphic library loaded" << std::endl;
   core.loadLib(path_graphic_lib);
-  if (core.getGraphicModule() == nullptr)
-    return KO;
-  while (core.getCoreStatus() != arcade::CoreModule::EXIT)
+  while (core.getCoreStatus() != arcade::CoreModule::EXIT) {
     core.getGraphicModule()->display();
+  }
   return OK;
 }
 
@@ -44,11 +45,9 @@ bool is_good_graphic_lib(char *path_graphic_lib)
     return false;
   if (strncmp(&(lib_name[strlen(lib_name) - 3]), ".so", 3) != OK)
     return false;
-  DLLoader<arcade::IModule> loader(path_graphic_lib);
-  arcade::IModule *graphicModule = loader.getInstance("entryPoint");
-  if (graphicModule == nullptr)
-    return false;
-  if (dynamic_cast<arcade::IDisplayModule *>(graphicModule) == nullptr)
+  DLLoader<arcade::ModuleType> loader(path_graphic_lib);
+  arcade::ModuleType graphicModule = loader.getInstance("getType");
+  if (graphicModule != arcade::ModuleType::GRAPHIC)
     return false;
   return true;
 }
@@ -69,10 +68,12 @@ int main(int ac, char **av)
     help();
     return KO;
   }
+  std::cout << "before is_good_lib" << std::endl;
   if (is_good_graphic_lib(av[1]) == false) {
     std::cerr << "Error: The graphic library is not found" << std::endl;
     return KO;
   }
+  std::cout << "after ais_good_lib" << std::endl;
   arcadeRe(av[1]);
   return OK;
 }

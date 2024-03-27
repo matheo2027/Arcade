@@ -12,34 +12,23 @@
  * @brief Construct a new arcade::Sfml::Sfml object
  *
  */
-arcade::Sfml::Sfml() : IModule(), ADisplayModule() {}
+arcade::Sfml::Sfml() : arcade::ADisplayModule()
+{
+  std::cout << "Sfml created" << std::endl;
+  this->_window.create(sf::VideoMode(1920, 1080), "Arcade");
+  this->_window.setFramerateLimit(60);
+  this->_window.clear(sf::Color::Black);
+  this->_window.display();
+}
 
 /**
  * @brief Destroy the arcade::Sfml::Sfml object
  *
  */
-arcade::Sfml::~Sfml() {}
-
-/**
- * @brief init the window
- *
- */
-void arcade::Sfml::init()
+arcade::Sfml::~Sfml()
 {
-  this->_window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Arcade");
-  this->_window->setFramerateLimit(60);
-  this->_window->clear(sf::Color::Black);
-  this->_window->display();
-}
-
-/**
- * @brief stop the window
- *
- */
-void arcade::Sfml::stop()
-{
-  this->_window->close();
-  this->_window = nullptr;
+  std::cout << "Sfml destroyed" << std::endl;
+  this->_window.close();
 }
 
 void arcade::Sfml::displayMenu()
@@ -59,30 +48,30 @@ void arcade::Sfml::displayMenu()
   text.setPosition(20.f, 20.f);
 
   // Render the menu
-  while (this->_window->isOpen()) {
+  while (this->_window.isOpen()) {
     sf::Event event;
-    while (this->_window->pollEvent(event)) {
+    while (this->_window.pollEvent(event)) {
       if (event.type == sf::Event::Closed) {
         this->getCoreModule()->handleKeyEvent(
-            arcade::IModule::KeyboardInput::CROSS);
+            arcade::KeyboardInput::CROSS);
       }
       if (event.type == sf::Event::KeyPressed) {
         switch (event.key.code) {
         case sf::Keyboard::Up:
           this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::UP);
+              arcade::KeyboardInput::UP);
           break;
         case sf::Keyboard::Down:
           this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::DOWN);
+              arcade::KeyboardInput::DOWN);
           break;
         case sf::Keyboard::Tab:
           this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::TAB);
+              arcade::KeyboardInput::TAB);
           break;
         case sf::Keyboard::Return:
           this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::ENTER);
+              arcade::KeyboardInput::ENTER);
           return;
         }
       }
@@ -119,29 +108,29 @@ void arcade::Sfml::displayMenu()
     text.setString(menuText);
 
     // Draw
-    this->_window->clear(sf::Color::Black);
-    this->_window->draw(text);
-    this->_window->display();
+    this->_window.clear(sf::Color::Black);
+    this->_window.draw(text);
+    this->_window.display();
   }
 }
 
 void arcade::Sfml::displayGame()
 {
   // Render the menu
-  while (this->_window->isOpen()) {
+  while (this->_window.isOpen()) {
     sf::Event event;
-    while (this->_window->pollEvent(event)) {
+    while (this->_window.pollEvent(event)) {
       if (event.type == sf::Event::Closed) {
         this->getCoreModule()->handleKeyEvent(
-            arcade::IModule::KeyboardInput::CROSS);
-            this->_window->close();
+            arcade::KeyboardInput::CROSS);
+        this->_window.close();
         return;
       }
     }
 
     // Draw
-    this->_window->clear(sf::Color::Black);
-    this->_window->display();
+    this->_window.clear(sf::Color::Black);
+    this->_window.display();
   }
 }
 
@@ -157,16 +146,6 @@ void arcade::Sfml::display()
   default:
     break;
   }
-}
-
-/**
- * @brief return the name of the library
- *
- * @return arcade::IModule::LibName
- */
-arcade::IModule::LibName arcade::Sfml::getName() const
-{
-  return arcade::IModule::LibName::SFML;
 }
 
 /**
@@ -221,4 +200,17 @@ arcade::IModule::LibName arcade::Sfml::getName() const
  *
  * @return arcade::Sfml*
  */
-extern "C" arcade::Sfml *entryPoint() { return new arcade::Sfml(); }
+extern "C" std::unique_ptr<arcade::IDisplayModule> entryPoint()
+{
+  return std::make_unique<arcade::Sfml>();
+}
+
+extern "C" arcade::ModuleType getType()
+{
+  return arcade::ModuleType::GRAPHIC;
+}
+
+extern "C" std::string getName()
+{
+  return "sfml";
+}

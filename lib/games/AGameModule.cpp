@@ -11,7 +11,7 @@
  * @brief Construct a new arcade::A Game Module::A Game Module object
  *
  */
-arcade::AGameModule::AGameModule() : arcade::IModule()
+arcade::AGameModule::AGameModule()
 {
   this->_gameStatus = GameStatus::RUNNING;
 }
@@ -38,21 +38,11 @@ arcade::AGameModule::GameStatus arcade::AGameModule::getDisplayStatus() const
 }
 
 /**
- * @brief get the name of the game library
- *
- * @return const arcade::IModule::ModuleType
- */
-arcade::IModule::ModuleType arcade::AGameModule::getType() const
-{
-  return arcade::IModule::ModuleType::GAME;
-}
-
-/**
  * @brief receive input from the graphic module
  *
  * @param input KeyboardInput
  */
-void arcade::AGameModule::sendInput(arcade::IModule::KeyboardInput input)
+void arcade::AGameModule::sendInput(arcade::KeyboardInput input)
 {
   return;
 }
@@ -61,11 +51,11 @@ void arcade::AGameModule::sendInput(arcade::IModule::KeyboardInput input)
 /**
  * @brief send the game data to the graphic module
  *
- * @return arcade::IModule::GameData
+ * @return arcade::GameData
  */
-arcade::IModule::GameData arcade::AGameModule::sendGameData()
+arcade::GameData arcade::AGameModule::sendGameData()
 {
-  return arcade::IModule::GameData();
+  return arcade::GameData();
 }
 
 /**
@@ -75,6 +65,7 @@ arcade::IModule::GameData arcade::AGameModule::sendGameData()
  */
 void arcade::AGameModule::setCoreModule(arcade::CoreModule *coreModule)
 {
+  std::cout << "setCoreModule" << std::endl;
   this->_coreModule = coreModule;
 }
 

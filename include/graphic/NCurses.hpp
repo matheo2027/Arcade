@@ -16,12 +16,9 @@ class NCurses : virtual public arcade::ADisplayModule {
 public:
   NCurses();
   ~NCurses();
-  void init();
-  void stop();
   void display();
   void displayMenu();
   void displayGame();
-  arcade::IModule::LibName getName() const;
 
 protected:
   WINDOW *_window;

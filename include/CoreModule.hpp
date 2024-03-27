@@ -8,23 +8,20 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
+#include "Arcade.hpp"
 #include "DLLoader.hpp"
 #include "IDisplayModule.hpp"
 #include "IGameModule.hpp"
-#include "IModule.hpp"
 #include <dirent.h>
 
 namespace arcade {
 class IDisplayModule;
 class IGameModule;
-class CoreModule : virtual public arcade::IModule {
+class CoreModule {
 public:
   CoreModule();
   ~CoreModule();
-  void init();
-  void stop();
-  LibName getName() const;
-  ModuleType getType() const;
+
   enum CoreStatus { RUNNING, SELECTION, EXIT };
 
   void setCoreStatus(CoreStatus status);
@@ -33,27 +30,28 @@ public:
   arcade::IDisplayModule *getGraphicModule();
   arcade::IGameModule *getGameModule();
 
-  void setModule(arcade::IModule *module, arcade::IModule::ModuleType type);
+  void setGraphicModule(std::unique_ptr<arcade::IDisplayModule> module);
+  void setGameModule(std::unique_ptr<arcade::IGameModule> module);
 
   void getLib(std::string pathLib);
   void loadLib(std::string pathLib);
   void addLibList(std::string pathLib);
 
-  void handleKeyEvent(arcade::IModule::KeyboardInput key);
-  void handleKeySelection(arcade::IModule::KeyboardInput key);
-  void handleKeyRunning(arcade::IModule::KeyboardInput key);
+  void handleKeyEvent(arcade::KeyboardInput key);
+  void handleKeySelection(arcade::KeyboardInput key);
+  void handleKeyRunning(arcade::KeyboardInput key);
 
-  arcade::IModule::MenuData getMenuData() const;
+  arcade::MenuData getMenuData() const;
 
-  void setGameData(arcade::IModule::GameData gameData);
-  arcade::IModule::GameData getGameData() const;
+  void setGameData(arcade::GameData gameData);
+  arcade::GameData getGameData() const;
 
 protected:
   CoreStatus _coreStatus;
   arcade::IDisplayModule *_graphicModule;
   arcade::IGameModule *_gameModule;
-  arcade::IModule::MenuData _menuData;
-  arcade::IModule::GameData _gameData;
+  arcade::MenuData _menuData;
+  arcade::GameData _gameData;
 };
 }; // namespace arcade
 

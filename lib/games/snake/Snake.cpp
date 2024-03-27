@@ -11,22 +11,9 @@
  * @brief Construct a new arcade::Snake::Snake object
  *
  */
-arcade::Snake::Snake() : arcade::IModule(), arcade::AGameModule() {}
-
-/**
- * @brief Destroy the arcade::Snake::Snake object
- *
- */
-arcade::Snake::~Snake() {}
-
-/**
- * @brief init the game
- *
- */
-void arcade::Snake::init()
+arcade::Snake::Snake() : arcade::AGameModule()
 {
-
-  arcade::IModule::GameData gameData;
+  arcade::GameData gameData;
   int height = 27;
   int width = 48;
   for (int i = 0; i < height; i++) {
@@ -46,27 +33,26 @@ void arcade::Snake::init()
   gameData.sprite_value['#'] = "assets/default/map/map2.png";
   gameData.sprite_value['P'] = "assets/default/npc/npc1.png";
   gameData.sprite_value['-'] = "assets/default/npc/npc2.png";
-  this->getCoreModule()->setGameData(gameData);
 }
 
 /**
- * @brief stop the game
+ * @brief Destroy the arcade::Snake::Snake object
  *
  */
-void arcade::Snake::stop() { return; }
-
-/**
- * @brief return the name of the game library
- *
- * @return const arcade::IModule::LibName
- */
-arcade::IModule::LibName arcade::Snake::getName() const
-{
-  return arcade::IModule::LibName::SNAKE;
-}
+arcade::Snake::~Snake() {}
 
 /**
  * @brief generate entry point for the game library
  *
  */
-extern "C" arcade::Snake *entryPoint() { return new arcade::Snake(); }
+extern "C" std::unique_ptr<arcade::IGameModule> entryPoint()
+{
+  return std::make_unique<arcade::Snake>();
+}
+
+extern "C" arcade::ModuleType getType()
+{
+  return arcade::ModuleType::GAME;
+}
+
+extern "C" std::string getName() { return "snake"; }

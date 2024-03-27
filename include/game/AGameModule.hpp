@@ -15,17 +15,12 @@ class AGameModule : virtual public arcade::IGameModule {
 public:
   AGameModule();
   ~AGameModule();
-  virtual void init() = 0;
-  virtual void stop() = 0;
 
   void setGameStatus(GameStatus status);
   GameStatus getDisplayStatus() const;
 
-  virtual arcade::IModule::LibName getName() const = 0;
-  arcade::IModule::ModuleType getType() const;
-
-  void sendInput(arcade::IModule::KeyboardInput input);
-  arcade::IModule::GameData sendGameData();
+  void sendInput(arcade::KeyboardInput input);
+  arcade::GameData sendGameData();
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;

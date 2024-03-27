@@ -9,26 +9,21 @@
 #define IGAMEMODULE_HPP_
 
 #include "CoreModule.hpp"
-#include "IModule.hpp"
+#include "Arcade.hpp"
 
 namespace arcade {
 class CoreModule;
-class IGameModule : virtual public arcade::IModule {
+class IGameModule {
 public:
   enum GameStatus { RUNNING, PAUSED, GAMEOVER, WIN };
   IGameModule(){};
   virtual ~IGameModule(){};
-  virtual void init() = 0;
-  virtual void stop() = 0;
 
   virtual void setGameStatus(GameStatus status) = 0;
   virtual GameStatus getDisplayStatus() const = 0;
 
-  virtual arcade::IModule::LibName getName() const = 0;
-  virtual arcade::IModule::ModuleType getType() const = 0;
-
-  virtual void sendInput(arcade::IModule::KeyboardInput input) = 0;
-  virtual arcade::IModule::GameData sendGameData() = 0;
+  virtual void sendInput(arcade::KeyboardInput input) = 0;
+  virtual arcade::GameData sendGameData() = 0;
 
   virtual void setCoreModule(arcade::CoreModule *coreModule) = 0;
   virtual arcade::CoreModule *getCoreModule() const = 0;

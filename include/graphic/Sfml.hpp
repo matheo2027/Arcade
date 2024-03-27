@@ -17,16 +17,13 @@ public:
   Sfml();
   ~Sfml();
 
-  arcade::IModule::KeyboardInput getInput();
-  void init();
-  void stop();
+  arcade::KeyboardInput getInput();
   void display();
   void displayMenu();
   void displayGame();
-  arcade::IModule::LibName getName() const;
 
 protected:
-  sf::RenderWindow *_window;
+  sf::RenderWindow _window;
   sf::Texture _texture;
   sf::Font _font;
 };

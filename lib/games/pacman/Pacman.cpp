@@ -9,40 +9,31 @@
 
 /**
  * @brief Construct a new arcade::Pacman::Pacman object
- * 
+ *
  */
-arcade::Pacman::Pacman() : arcade::IModule(), arcade::AGameModule() {}
+arcade::Pacman::Pacman() : arcade::AGameModule() {}
 
 /**
  * @brief Destroy the arcade::Pacman::Pacman object
- * 
+ *
  */
 arcade::Pacman::~Pacman() {}
 
 /**
- * @brief initialize the game
- * 
+ * @brief generate entry point for the game library
+ *
  */
-void init() { return; }
-
-/**
- * @brief stop the game
- * 
- */
-void stop() { return; }
-
-/**
- * @brief return the name of the game
- * 
- * @return const arcade::IModule::LibName
- */
-arcade::IModule::LibName arcade::Pacman::getName() const
+extern "C" std::unique_ptr<arcade::IGameModule> entryPoint()
 {
-  return arcade::IModule::LibName::PACMAN;
+  return std::make_unique<arcade::Pacman>();
 }
 
-/**
- * @brief generate entry point for the game library
- * 
- */
-extern "C" arcade::Pacman *entryPoint() { return new arcade::Pacman(); }
+extern "C" arcade::ModuleType getType()
+{
+  return arcade::ModuleType::GAME;
+}
+
+extern "C" std::string getName()
+{
+  return "snake";
+}

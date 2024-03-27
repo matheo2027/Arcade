@@ -18,12 +18,10 @@ class Sdl2 : virtual public arcade::ADisplayModule {
 public:
   Sdl2();
   ~Sdl2();
-  void init();
-  void stop();
   void display();
+  std::string updateMenuText();
   void displayMenu();
   void displayGame();
-  arcade::IModule::LibName getName() const;
 
 protected:
   SDL_Window *_window;

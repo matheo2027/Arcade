@@ -14,8 +14,6 @@ class ADisplayModule : virtual public arcade::IDisplayModule {
 public:
   ADisplayModule();
   ~ADisplayModule();
-  virtual void init() = 0;
-  virtual void stop() = 0;
 
   virtual void display() = 0;
   virtual void displayMenu() = 0;
@@ -23,11 +21,8 @@ public:
   void setDisplayStatus(DisplayStatus status);
   DisplayStatus getDisplayStatus() const;
 
-  virtual arcade::IModule::LibName getName() const = 0;
-  arcade::IModule::ModuleType getType() const;
-
-  void sendGameData(arcade::IModule::GameData data);
-  void sendMenuData(arcade::IModule::MenuData data);
+  void sendGameData(arcade::GameData data);
+  void sendMenuData(arcade::MenuData data);
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;
