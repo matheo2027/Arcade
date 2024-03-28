@@ -130,7 +130,6 @@ add_custom_command(
 set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sfml)
 add_custom_command(
   TARGET arcade
-  POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sfml>
           ${LIB_DESTINATION}/arcade_sfml.so
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

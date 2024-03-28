@@ -2,7 +2,7 @@ include (FindSDL)
 include (FindSDL_ttf)
 include (FindSDL_image)
 
-set (SDL_NEED_MAIN TRUE)
+set(SDL_NEED_MAIN TRUE)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED)

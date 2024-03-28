@@ -14,6 +14,8 @@
 namespace arcade {
 class Sfml : virtual public arcade::ADisplayModule {
 public:
+  #define SCALE_X 30
+  #define SCALE_Y 30
   Sfml();
   ~Sfml();
 
