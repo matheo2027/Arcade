@@ -13,6 +13,11 @@
 namespace arcade {
 class Snake : virtual public arcade::AGameModule {
 public:
+  #define HEAD 'P'
+  #define BODY '-'
+  #define FOOD 'C'
+  #define WALL '#'
+  #define EMPTY ' '
   Snake();
   ~Snake();
   void init();

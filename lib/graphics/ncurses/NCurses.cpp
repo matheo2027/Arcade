@@ -51,7 +51,6 @@ void arcade::NCurses::clearWindow()
     throw std::exception();
   }
   wclear(this->_window);   // Clear the window
-  wrefresh(this->_window); // Refresh the window
 }
 
 void arcade::NCurses::drawSprite(
@@ -59,7 +58,6 @@ void arcade::NCurses::drawSprite(
 {
   // Draw the sprite at the specified position
   mvwprintw(this->_window, y, x, &(sprite.first));
-  wrefresh(this->_window);
 }
 
 void arcade::NCurses::drawText(const std::string text, int x, int y, int size)

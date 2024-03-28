@@ -33,11 +33,8 @@ arcade::Sfml::~Sfml()
 
 void arcade::Sfml::clearWindow() { this->_window.clear(sf::Color::Black); }
 
-void arcade::Sfml::drawSprite(std::pair<char, std::string> sprite,
-                              int x,
-                              int y,
-                              int width,
-                              int height)
+void arcade::Sfml::drawSprite(
+    std::pair<char, std::string> sprite, int x, int y, int width, int height)
 {
   sf::Texture texture;
   if (!texture.loadFromFile(sprite.second)) {

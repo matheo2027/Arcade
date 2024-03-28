@@ -22,23 +22,23 @@ void arcade::Snake::init()
     gameData.display_info.push_back(std::vector<int>(width));
     for (int j = 0; j < width; j++) {
       if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
-        gameData.display_info[i][j] = '#';
+        gameData.display_info[i][j] = WALL;
       else
-        gameData.display_info[i][j] = ' ';
+        gameData.display_info[i][j] = EMPTY;
     }
   }
   std::vector<std::pair<int, int>> snake;
-  gameData.display_info[height / 2][width / 2] = 'P';
+  gameData.display_info[height / 2][width / 2] = HEAD;
   snake.push_back(std::make_pair(height / 2, width / 2));
   for (int i = 1; i < 4; i++) {
-    gameData.display_info[height / 2][width / 2 + i] = '-';
+    gameData.display_info[height / 2][width / 2 + i] = BODY;
     snake.push_back(std::make_pair(height / 2, width / 2 + i));
   }
-  gameData.sprite_value[' '] = "assets/default/map/map1.png";
-  gameData.sprite_value['#'] = "assets/default/map/map2.png";
-  gameData.sprite_value['P'] = "assets/default/npc/npc1.png";
-  gameData.sprite_value['-'] = "assets/default/npc/npc2.png";
-  gameData.sprite_value['C'] = "assets/default/item/item1.png";
+  gameData.sprite_value[EMPTY] = "assets/default/map/map1.png";
+  gameData.sprite_value[WALL] = "assets/default/map/map2.png";
+  gameData.sprite_value[HEAD] = "assets/default/npc/npc1.png";
+  gameData.sprite_value[BODY] = "assets/default/npc/npc2.png";
+  gameData.sprite_value[FOOD] = "assets/default/item/item1.png";
   this->getCoreModule()->setGameData(gameData);
   this->setSnake(snake);
   this->setDirection(arcade::KeyboardInput::RIGHT);
@@ -72,10 +72,10 @@ arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
     new_head = std::make_pair(head.first, head.second + 1);
 
   // Check if the snake is eating a coin
-  if (display_info[new_head.first][new_head.second] == 'C') {
+  if (display_info[new_head.first][new_head.second] == FOOD) {
     is_eating = true;
     snake.push_back(new_tail);
-    display_info[new_tail.first][new_tail.second] = '-';
+    display_info[new_tail.first][new_tail.second] = BODY;
   }
   // Check if the snake is eating itself
   // for (int i = 1; i < snake.size(); i++) {
@@ -86,15 +86,15 @@ arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
   // }
 
   // Check if the snake is hitting a wall
-  if (display_info[new_head.first][new_head.second] == '#') {
+  if (display_info[new_head.first][new_head.second] == WALL) {
     return display_info;
   }
 
   // clear the map
   for (int i = 0; i < display_info.size(); i++) {
     for (int j = 0; j < display_info[i].size(); j++) {
-      if (display_info[i][j] == 'P' || display_info[i][j] == '-')
-        display_info[i][j] = ' ';
+      if (display_info[i][j] == 'P' || display_info[i][j] == BODY)
+        display_info[i][j] = EMPTY;
     }
   }
 
@@ -105,20 +105,20 @@ arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
   // Update the map
   for (int i = 0; i < snake.size(); i++) {
     if (i == 0)
-      display_info[snake[i].first][snake[i].second] = 'P';
+      display_info[snake[i].first][snake[i].second] = HEAD;
     else
-      display_info[snake[i].first][snake[i].second] = '-';
+      display_info[snake[i].first][snake[i].second] = BODY;
   }
 
   // add a coin
   if (is_eating == true) {
     int x = rand() % 20;
     int y = rand() % 20;
-    while (display_info[x][y] != ' ') {
+    while (display_info[x][y] != EMPTY) {
       x = rand() % 20;
       y = rand() % 20;
     }
-    display_info[x][y] = 'C';
+    display_info[x][y] = FOOD;
   }
 
   this->setSnake(snake);
@@ -133,24 +133,24 @@ arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
 void arcade::Snake::handdleKeyEvents(arcade::KeyboardInput key)
 {
   switch (key) {
-    case arcade::KeyboardInput::UP:
-      if (this->getDirection() != arcade::KeyboardInput::DOWN)
-        this->setDirection(arcade::KeyboardInput::UP);
-      break;
-    case arcade::KeyboardInput::DOWN:
-      if (this->getDirection() != arcade::KeyboardInput::UP)
-        this->setDirection(arcade::KeyboardInput::DOWN);
-      break;
-    case arcade::KeyboardInput::LEFT:
-      if (this->getDirection() != arcade::KeyboardInput::RIGHT)
-        this->setDirection(arcade::KeyboardInput::LEFT);
-      break;
-    case arcade::KeyboardInput::RIGHT:
-      if (this->getDirection() != arcade::KeyboardInput::LEFT)
-        this->setDirection(arcade::KeyboardInput::RIGHT);
-      break;
-    default:
-      break;
+  case arcade::KeyboardInput::UP:
+    if (this->getDirection() != arcade::KeyboardInput::DOWN)
+      this->setDirection(arcade::KeyboardInput::UP);
+    break;
+  case arcade::KeyboardInput::DOWN:
+    if (this->getDirection() != arcade::KeyboardInput::UP)
+      this->setDirection(arcade::KeyboardInput::DOWN);
+    break;
+  case arcade::KeyboardInput::LEFT:
+    if (this->getDirection() != arcade::KeyboardInput::RIGHT)
+      this->setDirection(arcade::KeyboardInput::LEFT);
+    break;
+  case arcade::KeyboardInput::RIGHT:
+    if (this->getDirection() != arcade::KeyboardInput::LEFT)
+      this->setDirection(arcade::KeyboardInput::RIGHT);
+    break;
+  default:
+    break;
   }
 }
 
