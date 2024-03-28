@@ -18,14 +18,11 @@ arcade::NCurses::NCurses() : arcade::ADisplayModule()
   nodelay(stdscr, TRUE); // Do not block when reading input
   curs_set(0);           // Hide the cursor
   // Create a new window
-  int height = 10;
-  int width = 30;
-  int starty = (LINES - height) / 2;
-  int startx = (COLS - width) / 2;
-  WINDOW *win = newwin(height, width, starty, startx);
+  int height = COLS;
+  int width = LINES;
 
+  this->_window = newwin(height, width, 0, 0);
   refresh(); // Refresh the screen to reflect changes
-  this->_window = win;
 }
 
 arcade::NCurses::~NCurses()
@@ -47,11 +44,7 @@ arcade::NCurses::~NCurses()
 
 void arcade::NCurses::clearWindow()
 {
-  if (this->_window == nullptr) {
-    throw std::exception();
-  }
-  wclear(this->_window);   // Clear the window
-  wrefresh(this->_window); // Refresh the window
+  wclear(this->_window); // Clear the window
 }
 
 void arcade::NCurses::drawSprite(
@@ -59,7 +52,6 @@ void arcade::NCurses::drawSprite(
 {
   // Draw the sprite at the specified position
   mvwprintw(this->_window, y, x, &(sprite.first));
-  wrefresh(this->_window);
 }
 
 void arcade::NCurses::drawText(const std::string text, int x, int y, int size)

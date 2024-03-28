@@ -29,7 +29,15 @@ Press TAB to switch between Graphical Library and Game selection";
  * @brief Destroy the arcade::Core Module::Core Module object
  *
  */
-arcade::CoreModule::~CoreModule() {}
+arcade::CoreModule::~CoreModule()
+{
+  if (this->_gameModule) {
+    delete this->_gameModule;
+  }
+  if (this->_graphicModule) {
+    delete this->_graphicModule;
+  }
+}
 
 /**
  * @brief get the status of the core module
@@ -375,12 +383,12 @@ void arcade::CoreModule::updateRunning()
   std::pair<char, std::string> sprite;
   this->getGameModule()->updateGame();
   this->getGraphicModule()->clearWindow();
-  for (size_t i = 0; i < this->getGameData().display_info.size(); i += 1)
-  {
+  for (size_t i = 0; i < this->getGameData().display_info.size(); i += 1) {
     for (size_t j = 0; j < this->getGameData().display_info[i].size(); j += 1) {
       sprite.first = this->getGameData().display_info[i][j];
-      sprite.second = this->getGameData().sprite_value[this->getGameData().display_info[i][j]];
-      this->getGraphicModule()->drawSprite(sprite, j * 30, i * 30, 30, 30);
+      sprite.second = this->getGameData()
+                          .sprite_value[this->getGameData().display_info[i][j]];
+      this->getGraphicModule()->drawSprite(sprite, j, i, 30, 30);
     }
   }
   this->getGraphicModule()->displayWindow();
@@ -394,29 +402,27 @@ void arcade::CoreModule::runningLoop()
 {
   arcade::KeyboardInput input;
   this->getGraphicModule()->clearWindow();
-  while (this->_coreStatus == CoreStatus::RUNNING)
-  {
+  while (this->_coreStatus == CoreStatus::RUNNING) {
     this->updateRunning();
-    switch (input = this->getGraphicModule()->getInput())
-    {
-      case arcade::KeyboardInput::UP:
-        this->handleKeyEvent(arcade::KeyboardInput::UP);
-        break;
-      case arcade::KeyboardInput::DOWN:
-        this->handleKeyEvent(arcade::KeyboardInput::DOWN);
-        break;
-      case arcade::KeyboardInput::LEFT:
-        this->handleKeyEvent(arcade::KeyboardInput::LEFT);
-        break;
-      case arcade::KeyboardInput::RIGHT:
-        this->handleKeyEvent(arcade::KeyboardInput::RIGHT);
-        break;
-      case arcade::KeyboardInput::ENTER:
-        this->handleKeyEvent(arcade::KeyboardInput::ENTER);
-        break;
-      case arcade::KeyboardInput::CROSS:
-        this->handleKeyEvent(arcade::KeyboardInput::CROSS);
-        break;
+    switch (input = this->getGraphicModule()->getInput()) {
+    case arcade::KeyboardInput::UP:
+      this->handleKeyEvent(arcade::KeyboardInput::UP);
+      break;
+    case arcade::KeyboardInput::DOWN:
+      this->handleKeyEvent(arcade::KeyboardInput::DOWN);
+      break;
+    case arcade::KeyboardInput::LEFT:
+      this->handleKeyEvent(arcade::KeyboardInput::LEFT);
+      break;
+    case arcade::KeyboardInput::RIGHT:
+      this->handleKeyEvent(arcade::KeyboardInput::RIGHT);
+      break;
+    case arcade::KeyboardInput::ENTER:
+      this->handleKeyEvent(arcade::KeyboardInput::ENTER);
+      break;
+    case arcade::KeyboardInput::CROSS:
+      this->handleKeyEvent(arcade::KeyboardInput::CROSS);
+      break;
     }
     this->getGameModule()->handdleKeyEvents(input);
   }
