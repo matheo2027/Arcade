@@ -181,6 +181,31 @@ void arcade::Sfml::displayGame()
             this->getCoreModule()->handleKeyEvent(arcade::IModule::KeyboardInput::CROSS);
             window->close();
         }
+        if (event.type == sf::Event::KeyPressed) {
+            switch (event.key.code) {
+                case sf::Keyboard::Up:
+                    printf("UP in SFML\n");
+                    this->getCoreModule()->handleKeyEvent(arcade::IModule::KeyboardInput::UP);
+                    break;
+                case sf::Keyboard::Down:
+                    this->getCoreModule()->handleKeyEvent(arcade::IModule::KeyboardInput::DOWN);
+                    break;
+                case sf::Keyboard::Left:
+                    this->getCoreModule()->handleKeyEvent(arcade::IModule::KeyboardInput::LEFT);
+                    break;
+                case sf::Keyboard::Right:
+                    this->getCoreModule()->handleKeyEvent(arcade::IModule::KeyboardInput::RIGHT);
+                    break;
+                case sf::Keyboard::Space:
+                    this->getCoreModule()->handleKeyEvent(arcade::IModule::KeyboardInput::SPACE);
+                    break;
+                case sf::Keyboard::Escape:
+                    this->getCoreModule()->handleKeyEvent(arcade::IModule::KeyboardInput::ESCAPE);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
 

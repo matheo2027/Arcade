@@ -293,6 +293,7 @@ void arcade::CoreModule::handleKeyRunning(arcade::IModule::KeyboardInput key)
   switch (key) {
     case arcade::IModule::KeyboardInput::UP:
       this->_keyInput = arcade::IModule::KeyboardInput::UP;
+      // this
       break;
   // case arcade::IModule::KeyboardInput::ESCAPE:
   //   this->_coreStatus = CoreStatus::SELECTION;

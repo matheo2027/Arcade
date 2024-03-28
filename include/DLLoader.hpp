@@ -9,7 +9,7 @@ private:
 public:
   DLLoader(const std::string &libPath)
   {
-    handle = dlopen(libPath.c_str(), RTLD_LAZY);
+    handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
     if (!handle) {
       std::cerr << dlerror() << std::endl;
       exit(1);

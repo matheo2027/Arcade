@@ -67,10 +67,10 @@ std::vector<std::vector<int>> arcade::Pacman::movePacman(
   arcade::IModule::KeyboardInput key;
 
   key = this->getInput();
+  printf("key: [%d]\n", key);
   switch (key) {
   case arcade::IModule::KeyboardInput::UP:
     printf("UP\n");
-    return;
   }
   // if (key == arcade::IModule::KeyboardInput::UP) {
   //   if (map[this->pacman_pos.y - 1][this->pacman_pos.x] != 1)
