@@ -8,21 +8,13 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
-#include "Arcade.hpp"
-#include "DLLoader.hpp"
-#include "IDisplayModule.hpp"
-#include "IGameModule.hpp"
-#include <dirent.h>
+#include "ICoreModule.hpp"
 
 namespace arcade {
-class IDisplayModule;
-class IGameModule;
-class CoreModule {
+class CoreModule : virtual public ICoreModule{
 public:
   CoreModule();
   ~CoreModule();
-
-  enum CoreStatus { RUNNING, SELECTION, EXIT };
 
   void setCoreStatus(CoreStatus status);
   CoreStatus getCoreStatus() const;
@@ -46,12 +38,11 @@ public:
   void setGameData(arcade::GameData gameData);
   arcade::GameData getGameData() const;
 
-protected:
-  CoreStatus _coreStatus;
-  arcade::IDisplayModule *_graphicModule;
-  arcade::IGameModule *_gameModule;
-  arcade::MenuData _menuData;
-  arcade::GameData _gameData;
+  int coreLoop();
+  void runningLoop();
+  void updateRunning();
+  void selectionLoop();
+  void updateSelection();
 };
 }; // namespace arcade
 

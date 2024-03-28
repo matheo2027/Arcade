@@ -18,13 +18,11 @@
  */
 int arcadeRe(std::string path_graphic_lib)
 {
-  std::cout << "start arcade" << std::endl;
   arcade::CoreModule core;
   core.getLib("./lib/");
-  std::cout << "Graphic library loaded" << std::endl;
   core.loadLib(path_graphic_lib);
   while (core.getCoreStatus() != arcade::CoreModule::EXIT) {
-    core.getGraphicModule()->display();
+    core.coreLoop();
   }
   return OK;
 }
@@ -68,12 +66,10 @@ int main(int ac, char **av)
     help();
     return KO;
   }
-  std::cout << "before is_good_lib" << std::endl;
   if (is_good_graphic_lib(av[1]) == false) {
     std::cerr << "Error: The graphic library is not found" << std::endl;
     return KO;
   }
-  std::cout << "after ais_good_lib" << std::endl;
   arcadeRe(av[1]);
   return OK;
 }

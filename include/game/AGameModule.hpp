@@ -16,6 +16,9 @@ public:
   AGameModule();
   ~AGameModule();
 
+  virtual void init() = 0;
+  virtual void updateGame() = 0;
+
   void setGameStatus(GameStatus status);
   GameStatus getDisplayStatus() const;
 
@@ -24,6 +27,15 @@ public:
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;
+
+  void updateTimer();
+  void resetTimer();
+  timer getTimer() const;
+
+  void setDirection(arcade::KeyboardInput direction);
+  arcade::KeyboardInput getDirection() const;
+
+  virtual void handdleKeyEvents(arcade::KeyboardInput key) = 0;
 };
 }; // namespace arcade
 

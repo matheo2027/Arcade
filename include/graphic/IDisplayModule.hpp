@@ -14,17 +14,8 @@ namespace arcade {
 class CoreModule;
 class IDisplayModule {
 public:
-  enum DisplayStatus { RUNNING, PAUSED, SELECTION, GAMEOVER, WIN };
-
   IDisplayModule(){};
   virtual ~IDisplayModule(){};
-
-  virtual void display() = 0;
-  virtual void displayMenu() = 0;
-  virtual void displayGame() = 0;
-
-  virtual void setDisplayStatus(DisplayStatus status) = 0;
-  virtual DisplayStatus getDisplayStatus() const = 0;
 
   void sendGameData(arcade::GameData data);
   void sendMenuData(arcade::MenuData data);
@@ -32,8 +23,14 @@ public:
   virtual void setCoreModule(arcade::CoreModule *coreModule) = 0;
   virtual arcade::CoreModule *getCoreModule() const = 0;
 
+  virtual void clearWindow() = 0;
+  virtual void displayWindow() = 0;
+  virtual arcade::KeyboardInput getInput() = 0;
+  virtual void
+  drawSprite(std::pair<char, std::string> sprite, int x, int y, int width, int height) = 0;
+  virtual void drawText(const std::string text, int x, int y, int size) = 0;
+
 protected:
-  DisplayStatus _displayStatus;
   arcade::CoreModule *_coreModule;
 };
 }; // namespace arcade

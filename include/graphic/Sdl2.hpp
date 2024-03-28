@@ -10,18 +10,20 @@
 
 #include "ADisplayModule.hpp"
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 namespace arcade {
 class Sdl2 : virtual public arcade::ADisplayModule {
 public:
   Sdl2();
   ~Sdl2();
-  void display();
-  std::string updateMenuText();
-  void displayMenu();
-  void displayGame();
+  void clearWindow();
+  void displayWindow();
+  arcade::KeyboardInput getInput();
+  void drawText(const std::string text, int x, int y, int size);
+  void drawSprite(
+      std::pair<char, std::string> sprite, int x, int y, int width, int height);
 
 protected:
   SDL_Window *_window;

@@ -15,9 +15,11 @@ class Pacman : virtual public arcade::AGameModule {
 public:
   Pacman();
   ~Pacman();
+  void init();
+  void updateGame();
+  void handdleKeyEvents(arcade::KeyboardInput key){};
 
 protected:
-private:
 };
 }; // namespace arcade
 

@@ -17,10 +17,12 @@ public:
   Sfml();
   ~Sfml();
 
+  void clearWindow();
+  void displayWindow();
   arcade::KeyboardInput getInput();
-  void display();
-  void displayMenu();
-  void displayGame();
+  void drawSprite(
+      std::pair<char, std::string> sprite, int x, int y, int width, int height);
+  void drawText(const std::string text, int x, int y, int size);
 
 protected:
   sf::RenderWindow _window;

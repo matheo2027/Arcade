@@ -31,169 +31,89 @@ arcade::Sfml::~Sfml()
   this->_window.close();
 }
 
-void arcade::Sfml::displayMenu()
+void arcade::Sfml::clearWindow() { this->_window.clear(sf::Color::Black); }
+
+void arcade::Sfml::drawSprite(std::pair<char, std::string> sprite,
+                              int x,
+                              int y,
+                              int width,
+                              int height)
 {
-  // Font loading
+  sf::Texture texture;
+  if (!texture.loadFromFile(sprite.second)) {
+    // Handle error
+    std::cerr << "Failed to load texture: " << sprite.second << std::endl;
+    return;
+  }
+
+  sf::Sprite mySprite;
+  mySprite.setTexture(texture);
+  mySprite.setPosition(x, y);
+
+  // Calculate the scale factors
+  float scaleX = static_cast<float>(width) / texture.getSize().x;
+  float scaleY = static_cast<float>(height) / texture.getSize().y;
+  mySprite.setScale(scaleX, scaleY);
+
+  this->_window.draw(mySprite);
+}
+
+void arcade::Sfml::displayWindow() { this->_window.display(); }
+
+void arcade::Sfml::drawText(const std::string text, int x, int y, int size)
+{
   sf::Font font;
   if (!font.loadFromFile("assets/default/font/font1.ttf")) {
     std::cerr << "Failed to load font" << std::endl;
     return;
   }
-
-  // Text setup
-  sf::Text text;
-  text.setFont(font);
-  text.setCharacterSize(24);
-  text.setFillColor(sf::Color::White);
-  text.setPosition(20.f, 20.f);
-
-  // Render the menu
-  while (this->_window.isOpen()) {
-    sf::Event event;
-    while (this->_window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) {
-        this->getCoreModule()->handleKeyEvent(
-            arcade::KeyboardInput::CROSS);
-      }
-      if (event.type == sf::Event::KeyPressed) {
-        switch (event.key.code) {
-        case sf::Keyboard::Up:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::KeyboardInput::UP);
-          break;
-        case sf::Keyboard::Down:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::KeyboardInput::DOWN);
-          break;
-        case sf::Keyboard::Tab:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::KeyboardInput::TAB);
-          break;
-        case sf::Keyboard::Return:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::KeyboardInput::ENTER);
-          return;
-        }
-      }
-    }
-
-    // Update text
-    std::string menuText = "Select Graphical Library:\n";
-    for (size_t i = 0;
-         i < this->getCoreModule()->getMenuData()._graphicLibList.size();
-         ++i) {
-      if (i == this->getCoreModule()->getMenuData().indexGraphic) {
-        menuText += "-> " +
-                    this->getCoreModule()->getMenuData()._graphicLibList[i] +
-                    "\n";
-      } else {
-        menuText += "   " +
-                    this->getCoreModule()->getMenuData()._graphicLibList[i] +
-                    "\n";
-      }
-    }
-    menuText += "\nSelect Game:\n";
-    for (size_t i = 0;
-         i < this->getCoreModule()->getMenuData()._gameLibList.size();
-         ++i) {
-      if (i == this->getCoreModule()->getMenuData().indexGame) {
-        menuText +=
-            "-> " + this->getCoreModule()->getMenuData()._gameLibList[i] + "\n";
-      } else {
-        menuText +=
-            "   " + this->getCoreModule()->getMenuData()._gameLibList[i] + "\n";
-      }
-    }
-    menuText += this->getCoreModule()->getMenuData()._description;
-    text.setString(menuText);
-
-    // Draw
-    this->_window.clear(sf::Color::Black);
-    this->_window.draw(text);
-    this->_window.display();
-  }
+  sf::Text sfText;
+  sfText.setFont(font);
+  sfText.setCharacterSize(size);
+  sfText.setFillColor(sf::Color::White);
+  sfText.setPosition(x, y);
+  sfText.setString(text);
+  this->_window.draw(sfText);
 }
 
-void arcade::Sfml::displayGame()
+arcade::KeyboardInput arcade::Sfml::getInput()
 {
-  // Render the menu
-  while (this->_window.isOpen()) {
-    sf::Event event;
-    while (this->_window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) {
-        this->getCoreModule()->handleKeyEvent(
-            arcade::KeyboardInput::CROSS);
-        this->_window.close();
-        return;
+  sf::Event event;
+
+  while (this->_window.pollEvent(event)) {
+    switch (event.type) {
+    case sf::Event::KeyPressed:
+      switch (event.key.code) {
+
+      case sf::Keyboard::Up:
+        return arcade::KeyboardInput::UP;
+      case sf::Keyboard::Down:
+        return arcade::KeyboardInput::DOWN;
+      case sf::Keyboard::Left:
+        return arcade::KeyboardInput::LEFT;
+      case sf::Keyboard::Right:
+        return arcade::KeyboardInput::RIGHT;
+      case sf::Keyboard::Space:
+        return arcade::KeyboardInput::SPACE;
+      case sf::Keyboard::Escape:
+        return arcade::KeyboardInput::ESCAPE;
+      case sf::Keyboard::Return:
+        return arcade::KeyboardInput::ENTER;
+      case sf::Keyboard::Tab:
+        return arcade::KeyboardInput::TAB;
+        break;
+      default:
+        break;
       }
+      break;
+    case sf::Event::Closed:
+      return arcade::KeyboardInput::CROSS;
+    default:
+      break;
     }
-
-    // Draw
-    this->_window.clear(sf::Color::Black);
-    this->_window.display();
   }
+  return arcade::KeyboardInput::NONE;
 }
-
-void arcade::Sfml::display()
-{
-  switch (this->getDisplayStatus()) {
-  case arcade::ADisplayModule::DisplayStatus::RUNNING:
-    this->displayGame();
-    break;
-  case arcade::ADisplayModule::DisplayStatus::SELECTION:
-    this->displayMenu();
-    break;
-  default:
-    break;
-  }
-}
-
-/**
- * @brief get the keyboard input
- *
- * @return arcade::IModule::KeyboardInput
- */
-// arcade::IModule::KeyboardInput arcade::Sfml::getInput()
-// {
-//   sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
-//   if (window == nullptr) {
-//     try {
-//       throw NoWindowException("No window to stop");
-//     } catch (NoWindowException &e) {
-//       std::cerr << e.what() << std::endl;
-//     }
-//   }
-//   sf::Event event;
-
-//   while (window->pollEvent(event)) {
-//     switch (event.type) {
-//     case sf::Event::KeyPressed:
-//       switch (event.key.code) {
-//         // case sf::Event::Closed:
-
-//       case sf::Keyboard::Up:
-//         return arcade::IModule::KeyboardInput::UP;
-//       case sf::Keyboard::Down:
-//         return arcade::IModule::KeyboardInput::DOWN;
-//       case sf::Keyboard::Left:
-//         return arcade::IModule::KeyboardInput::LEFT;
-//       case sf::Keyboard::Right:
-//         return arcade::IModule::KeyboardInput::RIGHT;
-//       case sf::Keyboard::Space:
-//         return arcade::IModule::KeyboardInput::SPACE;
-//       case sf::Keyboard::Escape:
-//         return arcade::IModule::KeyboardInput::ESCAPE;
-//       default:
-//         break;
-//       }
-//       break;
-
-//     default:
-//       break;
-//     }
-//   }
-//   return arcade::IModule::KeyboardInput::NONE;
-// }
 
 /**
  * @brief entry point for the library
@@ -205,12 +125,6 @@ extern "C" std::unique_ptr<arcade::IDisplayModule> entryPoint()
   return std::make_unique<arcade::Sfml>();
 }
 
-extern "C" arcade::ModuleType getType()
-{
-  return arcade::ModuleType::GRAPHIC;
-}
+extern "C" arcade::ModuleType getType() { return arcade::ModuleType::GRAPHIC; }
 
-extern "C" std::string getName()
-{
-  return "sfml";
-}
+extern "C" std::string getName() { return "sfml"; }

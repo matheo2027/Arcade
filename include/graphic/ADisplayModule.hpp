@@ -15,17 +15,21 @@ public:
   ADisplayModule();
   ~ADisplayModule();
 
-  virtual void display() = 0;
-  virtual void displayMenu() = 0;
-  virtual void displayGame() = 0;
-  void setDisplayStatus(DisplayStatus status);
-  DisplayStatus getDisplayStatus() const;
-
   void sendGameData(arcade::GameData data);
   void sendMenuData(arcade::MenuData data);
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;
+
+  virtual void clearWindow() = 0;
+  virtual void displayWindow() = 0;
+  virtual arcade::KeyboardInput getInput() = 0;
+  virtual void drawSprite(std::pair<char, std::string> sprite,
+                          int x,
+                          int y,
+                          int width,
+                          int height) = 0;
+  virtual void drawText(const std::string text, int x, int y, int size) = 0;
 };
 }; // namespace arcade
 
