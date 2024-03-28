@@ -1,11 +1,15 @@
 # Include subdirectories
 
-add_library(ADisplayModule STATIC
+add_library(a_display_module STATIC
     ADisplayModule.cpp
 )
 
-target_link_libraries(ADisplayModule
-    ArcadeInterfaces
+set_target_properties(a_display_module PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+)
+
+target_link_libraries(a_display_module
+    arcade_interfaces
 )
 
 #add_library(graphics STATIC ADisplayModule.cpp ADisplayModule.hpp)
@@ -17,4 +21,4 @@ target_link_libraries(ADisplayModule
 
 add_subdirectory(sdl2)
 add_subdirectory(ncurses)
-# add_subdirectory(sfml)
+add_subdirectory(sfml)

@@ -8,7 +8,7 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
-#include "ICoreModule.hpp"
+#include <arcade/ICoreModule.hpp>
 
 namespace arcade {
 class CoreModule : virtual public ICoreModule{

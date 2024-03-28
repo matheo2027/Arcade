@@ -11,7 +11,7 @@
  * @brief Construct a new arcade::A Game Module::A Game Module object
  *
  */
-arcade::AGameModule::AGameModule() : arcade::IModule()
+arcade::AGameModule::AGameModule()
 {
   this->_gameStatus = GameStatus::RUNNING;
 }
@@ -38,38 +38,24 @@ arcade::AGameModule::GameStatus arcade::AGameModule::getDisplayStatus() const
 }
 
 /**
- * @brief get the name of the game library
- *
- * @return const arcade::IModule::ModuleType
- */
-arcade::IModule::ModuleType arcade::AGameModule::getType() const
-{
-  return arcade::IModule::ModuleType::GAME;
-}
-
-/**
  * @brief receive input from the graphic module
  *
  * @param input KeyboardInput
  */
-void arcade::AGameModule::sendInput(arcade::IModule::KeyboardInput input)
+void arcade::AGameModule::sendInput(arcade::KeyboardInput input)
 {
   return;
 }
 
-arcade::IModule::KeyboardInput arcade::AGameModule::getInput()
-{
-  return this->getCoreModule()->getKeyboardInput();
-}
 
 /**
  * @brief send the game data to the graphic module
  *
- * @return arcade::IModule::GameData
+ * @return arcade::GameData
  */
-arcade::IModule::GameData arcade::AGameModule::sendGameData()
+arcade::GameData arcade::AGameModule::sendGameData()
 {
-  return arcade::IModule::GameData();
+  return arcade::GameData();
 }
 
 /**
@@ -79,6 +65,7 @@ arcade::IModule::GameData arcade::AGameModule::sendGameData()
  */
 void arcade::AGameModule::setCoreModule(arcade::CoreModule *coreModule)
 {
+  std::cout << "setCoreModule" << std::endl;
   this->_coreModule = coreModule;
 }
 
@@ -92,27 +79,51 @@ arcade::CoreModule *arcade::AGameModule::getCoreModule() const
   return this->_coreModule;
 }
 
-arcade::AGameModule::timer arcade::AGameModule::getTimer()
+/**
+ * @brief update the timer
+ *
+ */
+void arcade::AGameModule::updateTimer()
+{
+  this->_timer.end = std::chrono::steady_clock::now();
+  this->_timer.duration = std::chrono::duration_cast<std::chrono::milliseconds>(this->_timer.end - this->_timer.start);
+}
+
+/**
+ * @brief reset the timer
+ *
+ */
+void arcade::AGameModule::resetTimer()
+{
+  this->_timer.start = this->_timer.end;
+}
+
+/**
+ * @brief get the timer
+ *
+ * @return arcade::AGameModule::timer
+ */
+arcade::AGameModule::timer arcade::AGameModule::getTimer() const
 {
   return this->_timer;
 }
 
-void arcade::AGameModule::updateTimer()
+/**
+ * @brief set the direction of the game
+ *
+ * @param direction
+ */
+void arcade::AGameModule::setDirection(arcade::KeyboardInput direction)
 {
-  this->_timer.end = std::chrono::system_clock::now();
-  this->_timer.elapsed_seconds = this->_timer.end - this->_timer.start;
+  this->_direction = direction;
 }
 
-void arcade::AGameModule::resetTimer()
+/**
+ * @brief get the direction of the game
+ *
+ * @return arcade::KeyboardInput
+ */
+arcade::KeyboardInput arcade::AGameModule::getDirection() const
 {
-  this->_timer.start = std::chrono::system_clock::now();
-  this->_timer.end = std::chrono::system_clock::now();
-  this->_timer.elapsed_seconds = this->_timer.end - this->_timer.start;
-}
-
-void arcade::AGameModule::setTimer()
-{
-  this->_timer.start = std::chrono::system_clock::now();
-  this->_timer.end = std::chrono::system_clock::now();
-  this->_timer.elapsed_seconds = this->_timer.end - this->_timer.start;
+  return this->_direction;
 }

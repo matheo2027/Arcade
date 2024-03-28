@@ -50,5 +50,7 @@ _deps
 
 # Perso
 build
+*.sh
+arcade
+test
 doc_doxygen
-restart.sh

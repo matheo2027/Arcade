@@ -21,15 +21,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # include_directories(${CMAKE_SOURCE_DIR}/include/game)
 
 # Main arcade executable
-add_executable(arcade src/main.cpp) # Add other source files as needed
+add_executable(arcade src/Main.cpp src/CoreModule.cpp)
 
 add_subdirectory(interface)
 add_subdirectory(lib/graphics)
+add_subdirectory(lib/games)
+
+target_link_libraries(
+  arcade
+  arcade_interfaces
+)
 
 # Games
 # add_library(arcade_game SHARED lib/games/AGameModule.cpp)
 
-#add_library(arcade_snake SHARED lib/games/snake/Snake.cpp)
+# add_library(arcade_snake SHARED lib/games/snake/Snake.cpp)
 
 # add_library(arcade_pacman SHARED lib/games/pacman/Pacman.cpp)
 
@@ -85,23 +91,69 @@ add_subdirectory(lib/graphics)
 
 # target_link_libraries(
 #   arcade
-#   ADisplayModule
-#   AGameModule
+#   a_display_module
+#   games_static
 # )
 
-# add_custom_command(
-#   TARGET arcade
-#   POST_BUILD
-#   DEPENDS graphics_module)
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  DEPENDS graphics_module)
 
 # PREFIX
 
 # # Move .so files out of the build folder
-# set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
-# add_custom_command(
-#   TARGET arcade
-#   POST_BUILD
-#   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade> ${CMAKE_SOURCE_DIR})
+set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade> ${CMAKE_SOURCE_DIR})
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/snake)
+
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_snake>
+          ${LIB_DESTINATION}/arcade_snake.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/pacman)
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_pacman>
+          ${LIB_DESTINATION}/arcade_pacman.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sfml)
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sfml>
+          ${LIB_DESTINATION}/arcade_sfml.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/ncurses)
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_ncurses>
+          ${LIB_DESTINATION}/arcade_ncurses.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sdl2)
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sdl2>
+          ${LIB_DESTINATION}/arcade_sdl2.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 # add_custom_command(
 #   TARGET arcade_snake
 #   POST_BUILD
