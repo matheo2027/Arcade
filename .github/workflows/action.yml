@@ -3,35 +3,38 @@ run-name: ${{ github.actor }} asking for main action
 on:
   push:
     branches-ignore:
-      - 'ga-ignore-*'
+      - "ga-ignore-*"
   pull_request:
     branches-ignore:
-      - 'ga-ignore-*'
+      - "ga-ignore-*"
 
 jobs:
   check_program_compilation:
     name: check_program_compilation
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    # container:
-      # image: epitechcontent/epitest-docker:latest
     steps:
-
       - name: Checkout GH repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          repository: ''
+          repository: ""
+
+      - name: Install SDL2
+        run: sudo apt install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsfml-dev
 
       - name: Compile project
-        run: make
+        run: cmake -S . -B build
 
-      - name: Clean project
-        run: make clean
+      - name: Build project
+        run: cmake --build build -- -j $(nproc --all)
+
+      # - name: Clean project
+      #   run: make clean
 
       - name: Check executables
         run: |
           for file in ${{ vars.EXECUTABLES }}; do
-            if [ ! -x "$file" ]; then
+            if [ ! -x "./build/${file}" ]; then
                 echo "File $file does not exist or is not executable"
                 exit 1
             fi
@@ -43,15 +46,12 @@ jobs:
     needs: [check_program_compilation]
     if: github.event_name == 'push'
     steps:
-
       - name: Checkout GH repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Push to mirror repository
         uses: pixta-dev/repository-mirroring-action@v1
         with:
-          target_repo_url:
-            ${{ vars.MIRROR_URL }}
-          ssh_private_key:
-            ${{ secrets.SSH_PRIVATE_KEY }}
+          target_repo_url: ${{ vars.MIRROR_URL }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}

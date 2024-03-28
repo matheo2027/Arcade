@@ -1,3 +1,13 @@
+/*
+** EPITECH PROJECT, 2024
+** Arcade
+** File description:
+** DLLoader
+*/
+
+#ifndef DLLOADER_HPP_
+#define DLLOADER_HPP_
+
 #include <dlfcn.h>
 #include <iostream>
 
@@ -32,3 +42,5 @@ public:
     return reinterpret_cast<T *(*)()>(sym)();
   }
 };
+
+#endif /* !DLLOADER_HPP_ */

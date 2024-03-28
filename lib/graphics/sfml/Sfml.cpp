@@ -44,8 +44,6 @@ void arcade::Sfml::stop()
 
 void arcade::Sfml::displayMenu()
 {
-  sf::RenderWindow *window = static_cast<sf::RenderWindow *>(this->_window);
-
   // Font loading
   sf::Font font;
   if (!font.loadFromFile("assets/default/font/font1.ttf")) {
@@ -61,13 +59,12 @@ void arcade::Sfml::displayMenu()
   text.setPosition(20.f, 20.f);
 
   // Render the menu
-  while (window->isOpen()) {
+  while (this->_window->isOpen()) {
     sf::Event event;
-    while (window->pollEvent(event)) {
+    while (this->_window->pollEvent(event)) {
       if (event.type == sf::Event::Closed) {
         this->getCoreModule()->handleKeyEvent(
             arcade::IModule::KeyboardInput::CROSS);
-        window->close();
       }
       if (event.type == sf::Event::KeyPressed) {
         switch (event.key.code) {
@@ -84,7 +81,6 @@ void arcade::Sfml::displayMenu()
               arcade::IModule::KeyboardInput::TAB);
           break;
         case sf::Keyboard::Return:
-          this->_window = window;
           this->getCoreModule()->handleKeyEvent(
               arcade::IModule::KeyboardInput::ENTER);
           return;
@@ -123,9 +119,9 @@ void arcade::Sfml::displayMenu()
     text.setString(menuText);
 
     // Draw
-    window->clear(sf::Color::Black);
-    window->draw(text);
-    window->display();
+    this->_window->clear(sf::Color::Black);
+    this->_window->draw(text);
+    this->_window->display();
   }
 }
 
