@@ -27,6 +27,7 @@ public:
   std::vector<std::vector<int>>
   moveSnake(std::vector<std::vector<int>> display_info);
   void handdleKeyEvents(arcade::KeyboardInput key);
+  void generateFood(std::vector<std::vector<int>> &display_info);
 
 protected:
   std::vector<std::pair<int, int>> _snake;

@@ -147,6 +147,8 @@ void arcade::Sdl2::clearWindow() { SDL_RenderClear(this->_renderer); }
 void arcade::Sdl2::drawSprite(
     std::pair<char, std::string> sprite, int x, int y, int width, int height)
 {
+  x = x * width;
+  y = y * height;
   SDL_Surface *surface = IMG_Load(sprite.second.c_str());
   if (surface == nullptr) {
     std::cerr << "Failed to load image: " << IMG_GetError() << std::endl;
