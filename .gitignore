@@ -50,3 +50,5 @@ _deps
 
 # Perso
 build
+doc_doxygen
+restart.sh
