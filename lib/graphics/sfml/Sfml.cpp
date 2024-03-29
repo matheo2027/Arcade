@@ -31,6 +31,8 @@ arcade::Sfml::~Sfml()
   this->_window.close();
 }
 
+std::string arcade::Sfml::getName() { return "sfml"; }
+
 void arcade::Sfml::clearWindow() { this->_window.clear(sf::Color::Black); }
 
 void arcade::Sfml::drawSprite(
@@ -100,7 +102,60 @@ arcade::KeyboardInput arcade::Sfml::getInput()
         return arcade::KeyboardInput::ENTER;
       case sf::Keyboard::Tab:
         return arcade::KeyboardInput::TAB;
-        break;
+      case sf::Keyboard::BackSpace:
+        return arcade::KeyboardInput::BACKSPACE;
+      case sf::Keyboard::A:
+        return arcade::KeyboardInput::A;
+      case sf::Keyboard::B:
+        return arcade::KeyboardInput::B;
+      case sf::Keyboard::C:
+        return arcade::KeyboardInput::C;
+      case sf::Keyboard::D:
+        return arcade::KeyboardInput::D;
+      case sf::Keyboard::E:
+        return arcade::KeyboardInput::E;
+      case sf::Keyboard::F:
+        return arcade::KeyboardInput::F;
+      case sf::Keyboard::G:
+        return arcade::KeyboardInput::G;
+      case sf::Keyboard::H:
+        return arcade::KeyboardInput::H;
+      case sf::Keyboard::I:
+        return arcade::KeyboardInput::I;
+      case sf::Keyboard::J:
+        return arcade::KeyboardInput::J;
+      case sf::Keyboard::K:
+        return arcade::KeyboardInput::K;
+      case sf::Keyboard::L:
+        return arcade::KeyboardInput::L;
+      case sf::Keyboard::M:
+        return arcade::KeyboardInput::M;
+      case sf::Keyboard::N:
+        return arcade::KeyboardInput::N;
+      case sf::Keyboard::O:
+        return arcade::KeyboardInput::O;
+      case sf::Keyboard::P:
+        return arcade::KeyboardInput::P;
+      case sf::Keyboard::Q:
+        return arcade::KeyboardInput::Q;
+      case sf::Keyboard::R:
+        return arcade::KeyboardInput::R;
+      case sf::Keyboard::S:
+        return arcade::KeyboardInput::S;
+      case sf::Keyboard::T:
+        return arcade::KeyboardInput::T;
+      case sf::Keyboard::U:
+        return arcade::KeyboardInput::U;
+      case sf::Keyboard::V:
+        return arcade::KeyboardInput::V;
+      case sf::Keyboard::W:
+        return arcade::KeyboardInput::W;
+      case sf::Keyboard::X:
+        return arcade::KeyboardInput::X;
+      case sf::Keyboard::Y:
+        return arcade::KeyboardInput::Y;
+      case sf::Keyboard::Z:
+        return arcade::KeyboardInput::Z;
       default:
         break;
       }

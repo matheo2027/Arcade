@@ -30,10 +30,12 @@ public:
   void addLibList(std::string pathLib);
 
   void handleKeyEvent(arcade::KeyboardInput key);
+  void launchSelection();
+  void addCharUsername(char c);
   void handleKeySelection(arcade::KeyboardInput key);
   void handleKeyRunning(arcade::KeyboardInput key);
 
-  arcade::MenuData getMenuData() const;
+  arcade::ICoreModule::MenuData getMenuData() const;
 
   void setGameData(arcade::GameData gameData);
   arcade::GameData getGameData() const;

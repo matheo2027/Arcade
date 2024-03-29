@@ -21,9 +21,7 @@ int arcadeRe(std::string path_graphic_lib)
   arcade::CoreModule core;
   core.getLib("./lib/");
   core.loadLib(path_graphic_lib);
-  while (core.getCoreStatus() != arcade::CoreModule::EXIT) {
-    core.coreLoop();
-  }
+  core.coreLoop();
   return OK;
 }
 

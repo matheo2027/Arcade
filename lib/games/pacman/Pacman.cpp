@@ -58,6 +58,8 @@ void arcade::Pacman::init()
   return;
 }
 
+std::string arcade::Pacman::getName() { return "pacman"; }
+
 void arcade::Pacman::updateGame()
 {
   return;

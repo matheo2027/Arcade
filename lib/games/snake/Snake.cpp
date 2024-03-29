@@ -50,6 +50,8 @@ void arcade::Snake::init()
  */
 arcade::Snake::~Snake() {}
 
+std::string arcade::Snake::getName() { return "snake"; }
+
 void arcade::Snake::generateFood(std::vector<std::vector<int>> &display_info)
 {
   int x = rand() % 20;
@@ -171,8 +173,7 @@ void arcade::Snake::updateGame()
   if (this->getTimer().duration.count() >= 500) {
     this->resetTimer();
     // Update the game
-    data.display_info =
-        this->moveSnake(this->getCoreModule()->getGameData().display_info);
+    data.display_info = this->moveSnake(data.display_info);
   }
   this->getCoreModule()->setGameData(data);
   return;

@@ -27,6 +27,8 @@ public:
   IGameModule(){};
   virtual ~IGameModule(){};
 
+  virtual std::string getName() = 0;
+
   virtual void init() = 0;
   virtual void updateGame() = 0;
 

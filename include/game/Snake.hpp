@@ -20,6 +20,7 @@ public:
   #define EMPTY ' '
   Snake();
   ~Snake();
+  std::string getName();
   void init();
   void updateGame();
   std::vector<std::pair<int, int>> getSnake() const;

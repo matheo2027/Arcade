@@ -24,7 +24,6 @@ public:
   virtual ~ICoreModule(){};
 
   enum CoreStatus { RUNNING, SELECTION, EXIT };
-
   virtual void setCoreStatus(CoreStatus status) = 0;
   virtual CoreStatus getCoreStatus() const = 0;
 
@@ -43,7 +42,19 @@ public:
   virtual void handleKeySelection(arcade::KeyboardInput key) = 0;
   virtual void handleKeyRunning(arcade::KeyboardInput key) = 0;
 
-  virtual arcade::MenuData getMenuData() const = 0;
+  // MENU SELECTION
+  enum MenuSelection { USERNAME, GAME, GRAPHIC };
+  struct MenuData {
+    std::string _username;
+    int indexGame;
+    std::vector<std::string> _gameLibList;
+    int indexGraphic;
+    std::vector<std::string> _graphicLibList;
+    std::string _description;
+    MenuSelection _type;
+  };
+
+  virtual MenuData getMenuData() const = 0;
 
   virtual void setGameData(arcade::GameData gameData) = 0;
   virtual arcade::GameData getGameData() const = 0;
@@ -58,7 +69,7 @@ protected:
   CoreStatus _coreStatus;
   arcade::IDisplayModule *_graphicModule;
   arcade::IGameModule *_gameModule;
-  arcade::MenuData _menuData;
+  arcade::ICoreModule::MenuData _menuData;
   arcade::GameData _gameData;
 };
 }; // namespace arcade
