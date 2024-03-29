@@ -5,44 +5,46 @@
 ** DLLoader
 */
 
-#ifndef DLLOADER_HPP_
-#define DLLOADER_HPP_
+// #ifndef DLLOADER_HPP_
+// #define DLLOADER_HPP_
 
-#include <dlfcn.h>
-#include <iostream>
-#include <memory>
-#include "Arcade.hpp"
+// #include <dlfcn.h>
+// #include <iostream>
+// #include <memory>
+// #include <Arcade.hpp>
 
-template <typename T>
-class DLLoader {
-private:
-  void *handle;
+// template <typename T>
+// class DLLoader {
+// private:
+//   void *handle;
 
-public:
-  DLLoader(const std::string &libPath)
-  {
-    handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
-    if (!handle) {
-      std::cerr << dlerror() << std::endl;
-      exit(1);
-    }
-  }
+// public:
+//   DLLoader(const std::string &libPath)
+//   {
+//     handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
+//     if (!handle) {
+//       std::cerr << dlerror() << std::endl;
+//       exit(1);
+//     }
+//   }
 
-  ~DLLoader()
-  {
-    if (handle)
-      dlclose(handle);
-  }
+//   ~DLLoader()
+//   {
+//     if (handle) {
+//       std::cout << "Closing Lib" << std::endl;
+//       dlclose(handle);
+//     }
+//   }
 
-  T getInstance(const std::string &funcName)
-  {
-    void *sym = dlsym(handle, funcName.c_str());
-    if (!sym) {
-      std::cerr << dlerror() << std::endl;
-      exit(1);
-    }
-    return reinterpret_cast<T (*)()>(sym)();
-  }
-};
+//   T getInstance(const std::string &funcName)
+//   {
+//     void *sym = dlsym(handle, funcName.c_str());
+//     if (!sym) {
+//       std::cerr << dlerror() << std::endl;
+//       exit(1);
+//     }
+//     return reinterpret_cast<T (*)()>(sym)();
+//   }
+// };
 
-#endif /* !DLLOADER_HPP_ */
+// #endif /* !DLLOADER_HPP_ */

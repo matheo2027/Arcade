@@ -133,7 +133,7 @@ arcade::Sdl2::~Sdl2()
  * @brief clear the window
  *
  */
-void arcade::Sdl2::clearWindow() { SDL_RenderClear(this->_renderer); }
+void arcade::Sdl2::clearWindow() {SDL_RenderClear(this->_renderer); }
 
 /**
  * @brief draw a sprite on the window

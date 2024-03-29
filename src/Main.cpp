@@ -43,7 +43,7 @@ bool is_good_graphic_lib(char *path_graphic_lib)
     return false;
   if (strncmp(&(lib_name[strlen(lib_name) - 3]), ".so", 3) != OK)
     return false;
-  DLLoader<arcade::ModuleType> loader(path_graphic_lib);
+  arcade::CoreModule::DLLoader<arcade::ModuleType> loader(path_graphic_lib);
   arcade::ModuleType graphicModule = loader.getInstance("getType");
   if (graphicModule != arcade::ModuleType::GRAPHIC)
     return false;

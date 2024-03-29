@@ -8,8 +8,8 @@
 #ifndef IDISPLAYMODULE_HPP_
 #define IDISPLAYMODULE_HPP_
 
-#include "Arcade.hpp"
-#include "CoreModule.hpp"
+#include <Arcade.hpp>
+#include <CoreModule.hpp>
 namespace arcade {
 class CoreModule;
 class IDisplayModule {
@@ -17,8 +17,8 @@ public:
   IDisplayModule(){};
   virtual ~IDisplayModule(){};
 
-  void sendGameData(arcade::GameData data);
-  void sendMenuData(arcade::MenuData data);
+  virtual arcade::GameData sendGameData() = 0;
+  virtual arcade::MenuData sendMenuData() = 0;
 
   virtual void setCoreModule(arcade::CoreModule *coreModule) = 0;
   virtual arcade::CoreModule *getCoreModule() const = 0;

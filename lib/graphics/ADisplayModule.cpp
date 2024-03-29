@@ -26,9 +26,14 @@ arcade::ADisplayModule::~ADisplayModule() {}
  *
  * @param data of the game module (score, map, player position)
  */
-void arcade::ADisplayModule::sendGameData(arcade::GameData data)
+arcade::GameData arcade::ADisplayModule::sendGameData()
 {
-  return;
+  return arcade::GameData();
+}
+
+arcade::MenuData arcade::ADisplayModule::sendMenuData()
+{
+  return arcade::MenuData();
 }
 
 /**

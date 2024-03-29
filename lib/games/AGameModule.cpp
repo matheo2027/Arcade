@@ -65,7 +65,6 @@ arcade::GameData arcade::AGameModule::sendGameData()
  */
 void arcade::AGameModule::setCoreModule(arcade::CoreModule *coreModule)
 {
-  std::cout << "setCoreModule" << std::endl;
   this->_coreModule = coreModule;
 }
 

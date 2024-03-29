@@ -8,10 +8,10 @@
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
-#include "Arcade.hpp"
-#include "DLLoader.hpp"
-#include "IDisplayModule.hpp"
-#include "IGameModule.hpp"
+#include <Arcade.hpp>
+#include <DLLoader.hpp>
+#include <arcade/IDisplayModule.hpp>
+#include <arcade/IGameModule.hpp>
 #include <dirent.h>
 #include <iostream>
 
