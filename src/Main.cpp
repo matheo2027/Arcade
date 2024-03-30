@@ -21,6 +21,7 @@ int arcadeRe(std::string path_graphic_lib)
   arcade::CoreModule core;
   core.getLib("./lib/");
   core.loadLib(path_graphic_lib);
+  core.generateScore();
   core.coreLoop();
   return OK;
 }

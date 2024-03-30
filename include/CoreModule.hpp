@@ -28,6 +28,7 @@ public:
   void getLib(std::string pathLib);
   void loadLib(std::string pathLib);
   void addLibList(std::string pathLib);
+  void generateScore();
 
   void handleKeyEvent(arcade::KeyboardInput key);
   void launchSelection();

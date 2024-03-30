@@ -25,8 +25,7 @@ public:
   void updateGame();
   std::vector<std::pair<int, int>> getSnake() const;
   void setSnake(std::vector<std::pair<int, int>> snake);
-  std::vector<std::vector<int>>
-  moveSnake(std::vector<std::vector<int>> display_info);
+  void moveSnake(arcade::GameData &data);
   void handdleKeyEvents(arcade::KeyboardInput key);
   void generateFood(std::vector<std::vector<int>> &display_info);
 

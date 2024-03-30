@@ -7,6 +7,10 @@
 
 #include "CoreModule.hpp"
 #include "Error.hpp"
+#include <fcntl.h>
+#include <fstream>
+#include <sstream>
+#include <sys/stat.h>
 #include <unistd.h>
 
 /**
@@ -24,7 +28,7 @@ arcade::CoreModule::CoreModule()
   this->_menuData.indexGraphic = 0;
   this->_menuData._description = "\nLegend:\nPress UP/DOWN to navigate\n\
 Press ENTER to confirm the choice\n\
-Press TAB to switch between Graphical Library and Game selection";
+Press TAB to switch to the next section";
   this->_menuData._type = arcade::ICoreModule::MenuSelection::USERNAME;
 }
 
@@ -200,6 +204,33 @@ void arcade::CoreModule::loadLib(std::string pathLib)
   }
   this->_menuData.indexGame = this->_menuData._gameLibList.size() / 2;
   this->_menuData.indexGraphic = this->_menuData._graphicLibList.size() / 2;
+}
+
+void arcade::CoreModule::generateScore()
+{
+  mkdir("scoreArcade", 0777);
+
+  // Create a file
+  std::ofstream outputFile;
+
+  for (std::string game_lib_path : this->_menuData._gameLibList) {
+    DLLoader<std::string> loaderTypeModule(game_lib_path);
+    std::string moduleName = loaderTypeModule.getInstance("getName");
+    std::cout << moduleName << std::endl;
+    FILE *fd = fopen(("scoreArcade/" + moduleName + ".txt").c_str(), "r");
+    if (fd) {
+      fclose(fd);
+      break;
+    } else {
+      outputFile.open("scoreArcade/" + moduleName + ".txt");
+      if (!outputFile.is_open()) {
+        std::cerr << "Error creating file!" << std::endl;
+      }
+      outputFile.close();
+    }
+  }
+
+  std::cout << "File created and written successfully!" << std::endl;
 }
 
 void arcade::CoreModule::launchSelection()
@@ -465,6 +496,73 @@ int arcade::CoreModule::coreLoop()
   return 0;
 }
 
+std::vector<std::string> split_str(std::string const &str, const char delim)
+{
+  // create a stream from the string
+  std::stringstream s(str);
+  std::vector<std::string> out;
+  std::string s2;
+  while (std::getline(s, s2, delim)) {
+    out.push_back(s2); // store the string in s2
+  }
+  return out;
+}
+
+static void generateFocusVersion(std::string &section, int len)
+{
+  for (int i = 0; i < len; i += 1) {
+    section = "#" + section;
+  }
+  for (int i = 1; i < section.size(); i += 1) {
+    if (section[i - 1] == '\n')
+      section[i] = '#';
+  }
+  section.pop_back();
+  for (int i = 0; i < len; i += 1) {
+    section += "#";
+  }
+  section += "\n";
+}
+
+int max_len_line(std::string str)
+{
+  int max = 0;
+  for (std::string line : split_str(str, '\n')) {
+    if (line.size() > max)
+      max = line.size();
+  }
+  return max;
+}
+
+std::vector<std::pair<std::string, int>>
+getScoreFromFile(std::string moduleName)
+{
+  std::ifstream file("scoreArcade/" + moduleName + ".txt");
+  std::string line;
+  std::vector<std::pair<std::string, int>> all_file;
+  if (file.is_open()) {
+    while (std::getline(file, line)) {
+      if (!line.empty()) {
+        std::vector<std::string> line_split = split_str(line, ':');
+        all_file.push_back(
+            std::make_pair(line_split[0], std::stoi(line_split[1])));
+      }
+    }
+    file.close();
+  }
+  // display all_file
+  for (size_t i = 0; i < all_file.size(); i += 1) {
+    for (size_t j = i + 1; j < all_file.size(); j += 1) {
+      if (all_file[i].second < all_file[j].second) {
+        std::pair<std::string, int> tmp = all_file[i];
+        all_file[i] = all_file[j];
+        all_file[j] = tmp;
+      }
+    }
+  }
+  return all_file;
+}
+
 /**
  * @brief update selection
  *
@@ -472,23 +570,66 @@ int arcade::CoreModule::coreLoop()
 void arcade::CoreModule::updateSelection()
 {
   std::string selection = "";
-  std::string username = "Enter your username :\n";
-  std::string graphic = "selected graphic library:\n";
-  std::string game = "selected game library:\n";
-  username += this->_menuData._username + "\n";
+
+  // Generate the selection
+  std::string username = "\n Enter your username :\n";
+  std::string graphic = "\n selected graphic library:\n";
+  std::string game = "\n selected game library:\n";
+  std::string score = "\n Hight Score of ";
+
+  // Add value to the selection
+  username += " " + this->_menuData._username + " \n\n";
   for (size_t i = 0; i < this->_menuData._graphicLibList.size(); i += 1) {
     if (i == this->_menuData.indexGraphic)
-      graphic += "-> " + this->_menuData._graphicLibList[i] + "\n";
+      graphic += " -> " + this->_menuData._graphicLibList[i] + " \n";
     else
-      graphic += "   " + this->_menuData._graphicLibList[i] + "\n";
+      graphic += "    " + this->_menuData._graphicLibList[i] + " \n";
   }
+  graphic += "\n";
   for (size_t i = 0; i < this->_menuData._gameLibList.size(); i += 1) {
     if (i == this->_menuData.indexGame)
-      game += "-> " + this->_menuData._gameLibList[i] + "\n";
+      game += " -> " + this->_menuData._gameLibList[i] + " \n";
     else
-      game += "   " + this->_menuData._gameLibList[i] + "\n";
+      game += "    " + this->_menuData._gameLibList[i] + " \n";
   }
-  selection = username + "\n" + graphic + "\n" + game + "\n" +
+  game += "\n";
+
+  // Focus version
+  int max_len = std::max(max_len_line(username),
+                         std::max(max_len_line(graphic), max_len_line(game)));
+  switch (this->_menuData._type) {
+  case arcade::ICoreModule::MenuSelection::USERNAME:
+    generateFocusVersion(username, max_len);
+    break;
+  case arcade::ICoreModule::MenuSelection::GRAPHIC:
+    generateFocusVersion(graphic, max_len);
+    break;
+  case arcade::ICoreModule::MenuSelection::GAME:
+    generateFocusVersion(game, max_len);
+    break;
+  }
+
+  // Add Hight score of the game
+  DLLoader<std::string> loaderTypeModule(
+      this->_menuData._gameLibList[this->_menuData.indexGame]);
+  std::string moduleName = loaderTypeModule.getInstance("getName");
+  score += moduleName + " :\n";
+  std::vector<std::string> split_player_score;
+  for (size_t i = 1; i < 6; i += 1) {
+    split_player_score.push_back(std::to_string(i) + ".");
+  }
+  std::vector<std::pair<std::string, int>> all_file =
+      getScoreFromFile(moduleName);
+  // add score of player
+  for (size_t i = 0; i < all_file.size() && i < 5; i += 1) {
+    split_player_score[i] = std::to_string(i + 1) + ". " + all_file[i].first +
+                            " : " + std::to_string(all_file[i].second);
+  }
+  for (std::string line : split_player_score) {
+    score += line + "\n";
+  }
+
+  selection = username + "\n" + graphic + "\n" + game + "\n" + score + "\n" +
               this->_menuData._description;
 
   this->getGraphicModule()->clearWindow();
@@ -503,32 +644,46 @@ void arcade::CoreModule::updateSelection()
 void arcade::CoreModule::selectionLoop()
 {
   this->updateSelection();
-  this->updateSelection();
-  std::cout << "selection loop" << std::endl;
   while (this->_coreStatus == CoreStatus::SELECTION) {
     arcade::KeyboardInput actualKeyPress = this->getGraphicModule()->getInput();
     this->handleKeyEvent(actualKeyPress);
     if (actualKeyPress != arcade::KeyboardInput::NONE)
       this->updateSelection();
-    usleep(1);
   }
 }
 
 void arcade::CoreModule::updateRunning()
 {
+  int game_scale = 30;
   std::pair<char, std::string> sprite;
   this->getGameModule()->updateGame();
   this->getGraphicModule()->clearWindow();
+  this->getGraphicModule()->drawText(
+      "Score: " + std::to_string(this->getGameData().score), 0, 0, game_scale);
   // draw sprites on map
   for (size_t i = 0; i < this->getGameData().display_info.size(); i += 1) {
     for (size_t j = 0; j < this->getGameData().display_info[i].size(); j += 1) {
       sprite.first = this->getGameData().display_info[i][j];
       sprite.second = this->getGameData()
                           .sprite_value[this->getGameData().display_info[i][j]];
-      this->getGraphicModule()->drawSprite(sprite, j, i, 30, 30);
+      this->getGraphicModule()->drawSprite(
+          sprite, j, i + 1, game_scale, game_scale);
     }
   }
+  this->getGraphicModule()->drawText(this->_gameData._description,
+                                     0,
+                                     this->getGameData().display_info.size() +
+                                         1,
+                                     game_scale);
   this->getGraphicModule()->displayWindow();
+}
+
+static void addScoreInFile(std::string path, int score, std::string username)
+{
+  std::ofstream file;
+  file.open(path, std::ios::app);
+  std::string str = username + ":" + std::to_string(score) + "\n";
+  file << str;
 }
 
 /**
@@ -544,5 +699,17 @@ void arcade::CoreModule::runningLoop()
     input = this->getGraphicModule()->getInput();
     this->handleKeyEvent(input);
     this->getGameModule()->handdleKeyEvents(input);
+  }
+  if (this->getGameModule()->getGameStatus() ==
+      arcade::IGameModule::GameStatus::WIN) {
+    this->_gameData.score += 1000;
+    addScoreInFile("scoreArcade/" + this->getGameModule()->getName() + ".txt",
+                   this->_gameData.score,
+                   this->_menuData._username);
+  } else if (this->getGameModule()->getGameStatus() ==
+             arcade::IGameModule::GameStatus::GAMEOVER) {
+    addScoreInFile("scoreArcade/" + this->getGameModule()->getName() + ".txt",
+                   this->_gameData.score,
+                   this->_menuData._username);
   }
 }

@@ -37,6 +37,7 @@ public:
   virtual void getLib(std::string pathLib) = 0;
   virtual void loadLib(std::string pathLib) = 0;
   virtual void addLibList(std::string pathLib) = 0;
+  virtual void generateScore() = 0;
 
   virtual void handleKeyEvent(arcade::KeyboardInput key) = 0;
   virtual void handleKeySelection(arcade::KeyboardInput key) = 0;

@@ -33,7 +33,7 @@ public:
   virtual void updateGame() = 0;
 
   virtual void setGameStatus(GameStatus status) = 0;
-  virtual GameStatus getDisplayStatus() const = 0;
+  virtual GameStatus getGameStatus() const = 0;
 
   virtual void sendInput(arcade::KeyboardInput input) = 0;
   virtual arcade::GameData sendGameData() = 0;

@@ -18,10 +18,7 @@ arcade::NCurses::NCurses() : arcade::ADisplayModule()
   nodelay(stdscr, TRUE); // Do not block when reading input
   curs_set(0);           // Hide the cursor
   // Create a new window
-  int height = COLS;
-  int width = LINES;
-
-  this->_window = newwin(height, width, 0, 0);
+  this->_window = newwin(LINES, COLS, 0, 0);
   refresh(); // Refresh the screen to reflect changes
 }
 

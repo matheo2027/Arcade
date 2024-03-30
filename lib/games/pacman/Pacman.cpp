@@ -80,5 +80,5 @@ extern "C" arcade::ModuleType getType()
 
 extern "C" std::string getName()
 {
-  return "snake";
+  return "pacman";
 }

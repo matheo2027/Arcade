@@ -15,9 +15,14 @@ arcade::Snake::Snake() : arcade::AGameModule() {}
 
 void arcade::Snake::init()
 {
-  arcade::GameData gameData;
   int height = 21;
   int width = 21;
+  arcade::GameData gameData;
+  gameData.score = 0;
+  gameData._description =
+      "RULES:\n- Eat the food to grow\n- Don't hit the walls\n- Don't eat "
+      "yourself\n\nCONTROLS:\n- UP: Move up\n- DOWN: Move down\n- LEFT: Move "
+      "left\n- RIGHT: Move right";
   for (int i = 0; i < height; i += 1) {
     gameData.display_info.push_back(std::vector<int>(width));
     for (int j = 0; j < width; j += 1) {
@@ -63,8 +68,7 @@ void arcade::Snake::generateFood(std::vector<std::vector<int>> &display_info)
   display_info[x][y] = FOOD;
 }
 
-std::vector<std::vector<int>>
-arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
+void arcade::Snake::moveSnake(arcade::GameData &data)
 {
   bool is_eating = false;
   std::pair<int, int> head = this->_snake[0];
@@ -88,10 +92,12 @@ arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
   }
 
   // Check if the snake is eating a coin
-  if (display_info[new_head.first][new_head.second] == FOOD) {
+  if (data.display_info[new_head.first][new_head.second] == FOOD) {
     is_eating = true;
     this->_snake.push_back(tail);
+    data.score += 10;
   }
+
   // Check if the snake is eating itself
   // for (int i = 1; i < snake.size(); i++) {
   //   if (new_head == snake[i]) {
@@ -101,15 +107,17 @@ arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
   // }
 
   // Check if the snake is hitting a wall
-  if (display_info[new_head.first][new_head.second] == WALL) {
-    return display_info;
+  if (data.display_info[new_head.first][new_head.second] == WALL) {
+    this->_gameStatus = arcade::IGameModule::GAMEOVER;
+    this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
+    return;
   }
 
   // clear the map
-  for (int i = 1; i < display_info.size() - 1; i++) {
-    for (int j = 1; j < display_info[i].size() - 1; j++) {
-      if (display_info[i][j] != FOOD)
-        display_info[i][j] = EMPTY;
+  for (int i = 1; i < data.display_info.size() - 1; i++) {
+    for (int j = 1; j < data.display_info[i].size() - 1; j++) {
+      if (data.display_info[i][j] != FOOD)
+        data.display_info[i][j] = EMPTY;
     }
   }
 
@@ -120,17 +128,15 @@ arcade::Snake::moveSnake(std::vector<std::vector<int>> display_info)
   // Update the map
   for (int i = 0; i < this->_snake.size(); i++) {
     if (i == 0)
-      display_info[this->_snake[i].first][this->_snake[i].second] = HEAD;
+      data.display_info[this->_snake[i].first][this->_snake[i].second] = HEAD;
     else
-      display_info[this->_snake[i].first][this->_snake[i].second] = BODY;
+      data.display_info[this->_snake[i].first][this->_snake[i].second] = BODY;
   }
 
   // add a coin
   if (is_eating == true) {
-    this->generateFood(display_info);
+    this->generateFood(data.display_info);
   }
-
-  return display_info;
 }
 
 /**
@@ -173,7 +179,7 @@ void arcade::Snake::updateGame()
   if (this->getTimer().duration.count() >= 500) {
     this->resetTimer();
     // Update the game
-    data.display_info = this->moveSnake(data.display_info);
+    this->moveSnake(data);
   }
   this->getCoreModule()->setGameData(data);
   return;

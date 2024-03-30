@@ -72,7 +72,7 @@ void arcade::Sfml::drawText(const std::string text, int x, int y, int size)
   sfText.setFont(font);
   sfText.setCharacterSize(size);
   sfText.setFillColor(sf::Color::White);
-  sfText.setPosition(x, y);
+  sfText.setPosition(x * size, y * size);
   sfText.setString(text);
   this->_window.draw(sfText);
 }
