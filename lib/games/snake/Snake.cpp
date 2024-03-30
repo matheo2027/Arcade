@@ -20,9 +20,8 @@ void arcade::Snake::init()
   arcade::GameData gameData;
   gameData.score = 0;
   gameData._description =
-      "RULES:\n- Eat the food to grow\n- Don't hit the walls\n- Don't eat "
-      "yourself\n\nCONTROLS:\n- UP: Move up\n- DOWN: Move down\n- LEFT: Move "
-      "left\n- RIGHT: Move right";
+      "RULES:\n- Eat the food to grow\n- Don't hit the walls or "
+      "yourself\nCONTROLS:\n- UP/DOWN/LEFT/RIGHT: Move";
   for (int i = 0; i < height; i += 1) {
     gameData.display_info.push_back(std::vector<int>(width));
     for (int j = 0; j < width; j += 1) {
@@ -36,8 +35,8 @@ void arcade::Snake::init()
   gameData.display_info[height / 2][width / 2] = HEAD;
   this->_snake.push_back(std::make_pair(height / 2, width / 2));
   for (int i = 1; i < 4; i += 1) {
-    gameData.display_info[height / 2][width / 2 + i] = BODY;
-    this->_snake.push_back(std::make_pair(height / 2, width / 2 + i));
+    gameData.display_info[height / 2][width / 2 - i] = BODY;
+    this->_snake.push_back(std::make_pair(height / 2, width / 2 - i));
   }
   gameData.sprite_value[EMPTY] = "assets/default/map/map1.png";
   gameData.sprite_value[WALL] = "assets/default/map/map2.png";
@@ -79,15 +78,27 @@ void arcade::Snake::moveSnake(arcade::GameData &data)
   switch (this->getDirection()) {
   case arcade::KeyboardInput::UP:
     new_head = std::make_pair(head.first - 1, head.second);
+    if (this->_snake[1] == new_head) {
+      new_head = std::make_pair(head.first + 1, head.second);
+    }
     break;
   case arcade::KeyboardInput::DOWN:
     new_head = std::make_pair(head.first + 1, head.second);
+    if (this->_snake[1] == new_head) {
+      new_head = std::make_pair(head.first - 1, head.second);
+    }
     break;
   case arcade::KeyboardInput::LEFT:
     new_head = std::make_pair(head.first, head.second - 1);
+    if (this->_snake[1] == new_head) {
+      new_head = std::make_pair(head.first, head.second + 1);
+    }
     break;
   case arcade::KeyboardInput::RIGHT:
     new_head = std::make_pair(head.first, head.second + 1);
+    if (this->_snake[1] == new_head) {
+      new_head = std::make_pair(head.first, head.second - 1);
+    }
     break;
   }
 
@@ -98,16 +109,9 @@ void arcade::Snake::moveSnake(arcade::GameData &data)
     data.score += 10;
   }
 
-  // Check if the snake is eating itself
-  // for (int i = 1; i < snake.size(); i++) {
-  //   if (new_head == snake[i]) {
-  //     this->getCoreModule()->getGraphicModule()->setDisplayStatus(arcade::ADisplayModule::DisplayStatus::GAMEOVER);
-  //     return display_info;
-  //   }
-  // }
-
   // Check if the snake is hitting a wall
-  if (data.display_info[new_head.first][new_head.second] == WALL) {
+  if (data.display_info[new_head.first][new_head.second] == WALL ||
+      data.display_info[new_head.first][new_head.second] == BODY) {
     this->_gameStatus = arcade::IGameModule::GAMEOVER;
     this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
     return;

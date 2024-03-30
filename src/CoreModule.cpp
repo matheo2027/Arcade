@@ -171,10 +171,6 @@ void arcade::CoreModule::loadLib(std::string pathLib)
   switch (module) {
   case arcade::ModuleType::GAME:
     if (this->_gameModule) {
-      DLLoader<std::string> loaderTypeModule(pathLib);
-      std::string moduleName = loaderTypeModule.getInstance("getName");
-      if (moduleName == this->_graphicModule->getName())
-        return;
       delete this->_gameModule;
     }
     this->_gameModule =
@@ -423,6 +419,23 @@ void arcade::CoreModule::handleKeyRunning(arcade::KeyboardInput key)
     break;
   case arcade::KeyboardInput::Q:
     this->_coreStatus = CoreStatus::EXIT;
+    break;
+  case arcade::KeyboardInput::D:
+    this->_menuData._graphicLibList.push_back(
+        this->_menuData._graphicLibList.front());
+    this->_menuData._graphicLibList.erase(
+        this->_menuData._graphicLibList.begin());
+    this->loadLib(
+        this->_menuData._graphicLibList[this->_menuData.indexGraphic]);
+    break;
+  case arcade::KeyboardInput::G:
+      this->_menuData._gameLibList.push_back(
+          this->_menuData._gameLibList.front());
+      this->_menuData._gameLibList.erase(this->_menuData._gameLibList.begin());
+    this->loadLib(this->_menuData._gameLibList[this->_menuData.indexGame]);
+    break;
+  case arcade::KeyboardInput::R:
+    this->loadLib(this->_menuData._gameLibList[this->_menuData.indexGame]);
     break;
   case arcade::KeyboardInput::ESCAPE:
     this->_coreStatus = CoreStatus::SELECTION;
