@@ -31,8 +31,11 @@ Press TAB to switch between Graphical Library and Game selection";
  */
 arcade::CoreModule::~CoreModule()
 {
-  // CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule("lib/lib_arcade.so");
-  // CoreModule::
+  // if (this->loader) {
+  //   this->loader->DLLunloader();
+  // }
+  // arcade::CoreModule::DLLoader<void> loader("");
+  // loader.DLLunloader();
   if (this->_gameModule) {
     delete this->_gameModule;
   }
@@ -102,7 +105,7 @@ void arcade::CoreModule::setGameModule(
 
 void arcade::CoreModule::addLibList(std::string pathLib)
 {
-  CoreModule::DLLoader<arcade::ModuleType> loader(pathLib);
+  arcade::CoreModule::DLLoader<arcade::ModuleType> loader(pathLib);
   arcade::ModuleType module = loader.getInstance("getType");
   switch (module) {
   case arcade::ModuleType::GAME:
@@ -158,7 +161,7 @@ void arcade::CoreModule::getLib(std::string pathLib)
 void arcade::CoreModule::loadLib(std::string pathLib)
 {
   std::cout << "start Load lib :" << pathLib << std::endl;
-  CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule(pathLib);
+  arcade::CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule(pathLib);
   arcade::ModuleType module = loaderTypeModule.getInstance("getType");
   CoreModule::DLLoader<std::unique_ptr<arcade::IDisplayModule>> loaderGraphic(pathLib);
   CoreModule::DLLoader<std::unique_ptr<arcade::IGameModule>> loaderGame(pathLib);
