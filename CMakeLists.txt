@@ -7,106 +7,91 @@ project(
   LANGUAGES CXX)
 
 # Set C++ Standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Compilation flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-gnu-unique")
+# set(CMAKE_BUILD_TYPE Debug)  # Set build type to Debug
 
-# Include directories
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/include/graphic)
-include_directories(${CMAKE_SOURCE_DIR}/include/game)
+# Enable AddressSanitizer
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+
+# Add debug flags
+# if(CMAKE_COMPILER_IS_GNUCXX)
+#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
+# endif()
+
 
 # Main arcade executable
 add_executable(arcade src/Main.cpp src/CoreModule.cpp)
 
-# Games
-add_library(arcade_game SHARED lib/games/AGameModule.cpp)
+add_subdirectory(interface)
+add_subdirectory(lib/graphics)
+add_subdirectory(lib/games)
 
-add_library(arcade_snake SHARED lib/games/snake/Snake.cpp)
-
-add_library(arcade_pacman SHARED lib/games/pacman/Pacman.cpp)
-
-# Graphics
-add_library(ADisplayModule STATIC lib/graphics/ADisplayModule.cpp)
-
-add_library(AGameModule STATIC lib/games/AGameModule.cpp)
-
-add_library(arcade_ncurses SHARED lib/graphics/ncurses/NCurses.cpp)
-
-add_library(arcade_sdl2 SHARED lib/graphics/sdl2/Sdl2.cpp)
-
-add_library(arcade_sfml SHARED lib/graphics/sfml/Sfml.cpp)
-
-find_package(Curses REQUIRED)
-include_directories(${CURSES_INCLUDE_DIR})
-
-find_package(SDL2 REQUIRED)
-find_package(SDL2_ttf REQUIRED)
-find_package(SDL2_image REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
-
-# Afterwards, link it like this target_link_libraries(arcade PRIVATE
-# ${CURSES_LIBRARIES}) target_link_libraries(arcade PRIVATE ${SDL2_LIBRARIES})
-# target_link_libraries(arcade PRIVATE ${SFML_LIBRARIES})
-# target_link_libraries(arcade_sfml PRIVATE arcade_ADisplayModule)
 target_link_libraries(
   arcade
-  arcade_pacman
-  arcade_snake
-  arcade_ncurses
-  arcade_sdl2
-  arcade_sfml
-  ADisplayModule
-  AGameModule
-  SDL2
-  SDL2_ttf
-  SDL2_image
-  ncurses
-  sfml-graphics)
+  arcade_interfaces
+)
 
-# Move .so files out of the build folder
+
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  DEPENDS graphics_module)
+
+# PREFIX
+
+# # Move .so files out of the build folder
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 add_custom_command(
   TARGET arcade
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade> ${CMAKE_SOURCE_DIR})
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/snake)
+
 add_custom_command(
-  TARGET arcade_snake
+  TARGET arcade
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_snake>
-          ${LIB_DESTINATION}/arcade_snake.so)
+          ${LIB_DESTINATION}/arcade_snake.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/pacman)
 add_custom_command(
-  TARGET arcade_pacman
+  TARGET arcade
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_pacman>
-          ${LIB_DESTINATION}/arcade_pacman.so)
+          ${LIB_DESTINATION}/arcade_pacman.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sfml)
 add_custom_command(
-  TARGET arcade_ncurses
+  TARGET arcade
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sfml>
+          ${LIB_DESTINATION}/arcade_sfml.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/ncurses)
+add_custom_command(
+  TARGET arcade
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_ncurses>
-          ${LIB_DESTINATION}/arcade_ncurses.so)
+          ${LIB_DESTINATION}/arcade_ncurses.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sdl2)
 add_custom_command(
-  TARGET arcade_sdl2
+  TARGET arcade
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sdl2>
-          ${LIB_DESTINATION}/arcade_sdl2.so)
-add_custom_command(
-  TARGET arcade_sfml
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sfml>
-          ${LIB_DESTINATION}/arcade_sfml.so)
-add_custom_command(
-  TARGET arcade
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:ADisplayModule>
-          ${CMAKE_SOURCE_DIR}/lib/ADisplayModule.a)
-add_custom_command(
-  TARGET arcade
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AGameModule>
-          ${CMAKE_SOURCE_DIR}/lib/AGameModule.a)
+          ${LIB_DESTINATION}/arcade_sdl2.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
 
 # ########## DOXYGEN ###########
 

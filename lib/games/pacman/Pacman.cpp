@@ -11,7 +11,7 @@
  * @brief Construct a new arcade::Pacman::Pacman object
  *
  */
-arcade::Pacman::Pacman() : arcade::IModule(), arcade::AGameModule() {}
+arcade::Pacman::Pacman() : arcade::AGameModule() {}
 
 /**
  * @brief Destroy the arcade::Pacman::Pacman object
@@ -19,76 +19,65 @@ arcade::Pacman::Pacman() : arcade::IModule(), arcade::AGameModule() {}
  */
 arcade::Pacman::~Pacman() {}
 
-/**
- * @brief initialize the game
- *
- */
 void arcade::Pacman::init()
 {
-  arcade::IModule::GameData gameData;
-  gameData.sprite_value['#'] = "assets/default/map/map1.png";
-  gameData.sprite_value['P'] = "assets/default/npc/npc3.png";
+  // Initialize the game
+  arcade::GameData data;
+  // Define the sprite values for walls, coins, Pacman, and coins that allow Pacman to eat ghosts
+  data.sprite_value['W'] = "assets/default/map/map1.png";  // Wall
+  data.sprite_value['C'] = "assets/default/item/item3.png";  // Coin
+  data.sprite_value['P'] = "assets/default/npc/npc1.png";  // Pacman
+  data.sprite_value['G'] = "assets/default/npc/npc2.png";  // Ghost
 
-  gameData.display_info = {
-      {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
-      {'#', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-      {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-      {'#', ' ', ' ', '#', '#', '#', '#', ' ', ' ', '#'},
-      {'#', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', '#'},
-      {'#', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', '#'},
-      {'#', ' ', ' ', '#', '#', '#', '#', ' ', ' ', '#'},
-      {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-      {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-      {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#'}
+  data.display_info = {
+      {'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'G', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'C', ' ', 'W'},
+      {'W', ' ', ' ', 'G', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'G', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', 'G', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
+      {'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'}
   };
-  this->getCoreModule()->setGameData(gameData);
-  this->setTimer();
+
+  this->getCoreModule()->setGameData(data);
+  return;
 }
 
-/**
- * @brief stop the game
- *
- */
-void stop() { return; }
+std::string arcade::Pacman::getName() { return "pacman"; }
 
-/**
- * @brief return the name of the game
- *
- * @return const arcade::IModule::LibName
- */
-arcade::IModule::LibName arcade::Pacman::getName() const
+void arcade::Pacman::updateGame()
 {
-  return arcade::IModule::LibName::PACMAN;
+  return;
 }
-
-std::vector<std::vector<int>> arcade::Pacman::movePacman(
-    std::vector<std::vector<int>> map)
-{
-  arcade::IModule::KeyboardInput key;
-
-  key = this->getInput();
-  switch (key) {
-  case arcade::IModule::KeyboardInput::UP:
-    printf("UP\n");
-    return;
-  }
-  // if (key == arcade::IModule::KeyboardInput::UP) {
-  //   if (map[this->pacman_pos.y - 1][this->pacman_pos.x] != 1)
-  //     this->pacman_pos.y -= 1;
-  // } else if (key == arcade::IModule::KeyboardInput::DOWN) {
-  //   if (map[this->pacman_pos.y + 1][this->pacman_pos.x] != 1)
-  //     this->pacman_pos.y += 1;
-  // } else if (key == arcade::IModule::KeyboardInput::LEFT) {
-  //   if (map[this->pacman_pos.y][this->pacman_pos.x - 1] != 1)
-  //     this->pacman_pos.x -= 1;
-  // } else if (key == arcade::IModule::KeyboardInput::RIGHT) {
-  //   if (map[this->pacman_pos.y][this->pacman_pos.x + 1] != 1)
-  //     this->pacman_pos.x += 1;
-  // }
-}
-
 /**
  * @brief generate entry point for the game library
  *
  */
-extern "C" arcade::Pacman *entryPoint() { return new arcade::Pacman(); }
+extern "C" std::unique_ptr<arcade::IGameModule> entryPoint()
+{
+  return std::make_unique<arcade::Pacman>();
+}
+
+extern "C" arcade::ModuleType getType()
+{
+  return arcade::ModuleType::GAME;
+}
+
+extern "C" std::string getName()
+{
+  return "pacman";
+}

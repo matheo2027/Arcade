@@ -9,222 +9,10 @@
 #include "Error.hpp"
 #include <iostream>
 
-arcade::Sdl2::Sdl2() : IModule(), ADisplayModule()
+arcade::Sdl2::Sdl2() : arcade::ADisplayModule()
 {
-  this->_renderer = nullptr;
-}
+  std::cout << "Sdl2 created start" << std::endl;
 
-arcade::Sdl2::~Sdl2() {}
-
-void arcade::Sdl2::displayMenu()
-{
-  SDL_Color textColor = {255, 255, 255, 255}; // White color for the text
-
-  // Function to update menu text based on selected items
-  auto updateMenuText = [&]() {
-    std::string menuText = "Select Graphical Library:\n";
-    for (size_t i = 0;
-         i < this->getCoreModule()->getMenuData()._graphicLibList.size();
-         i += 1) {
-      if (i == this->getCoreModule()->getMenuData().indexGraphic) {
-        menuText += "-> " +
-                    this->getCoreModule()->getMenuData()._graphicLibList[i] +
-                    "\n";
-      } else {
-        menuText += "   " +
-                    this->getCoreModule()->getMenuData()._graphicLibList[i] +
-                    "\n";
-      }
-    }
-    menuText += "\nSelect Game:\n";
-    for (size_t i = 0;
-         i < this->getCoreModule()->getMenuData()._gameLibList.size();
-         i += 1) {
-      if (i == this->getCoreModule()->getMenuData().indexGame) {
-        menuText +=
-            "-> " + this->getCoreModule()->getMenuData()._gameLibList[i] + "\n";
-      } else {
-        menuText +=
-            "   " + this->getCoreModule()->getMenuData()._gameLibList[i] + "\n";
-      }
-    }
-    menuText += this->getCoreModule()->getMenuData()._description;
-    return menuText;
-  };
-
-  std::string menuText = updateMenuText();
-
-  SDL_Surface *textSurface = TTF_RenderText_Blended_Wrapped(
-      this->_font, menuText.c_str(), textColor, 500);
-  if (textSurface == nullptr) {
-    std::cerr << "Failed to create text surface: " << TTF_GetError()
-              << std::endl;
-    TTF_CloseFont(this->_font);
-    return;
-  }
-
-  SDL_Texture *textTexture =
-      SDL_CreateTextureFromSurface(this->_renderer, textSurface);
-  if (textTexture == nullptr) {
-    std::cerr << "Failed to create text texture: " << SDL_GetError()
-              << std::endl;
-    SDL_FreeSurface(textSurface);
-    TTF_CloseFont(this->_font);
-    return;
-  }
-
-  int textWidth = textSurface->w;
-  int textHeight = textSurface->h;
-  SDL_FreeSurface(textSurface);
-
-  // Position the menu at the top left corner
-  int x = 20;
-  int y = 20;
-
-  SDL_Rect renderQuad = {x, y, textWidth, textHeight};
-
-  int running = 1;
-  // Render the menu
-  while (running) {
-    SDL_Event event;
-    if (SDL_PollEvent(&event)) {
-      if (event.type == SDL_QUIT) {
-        this->getCoreModule()->handleKeyEvent(
-            arcade::IModule::KeyboardInput::CROSS);
-        running = 0;
-      }
-      if (event.type == SDL_KEYDOWN) {
-        switch (event.key.keysym.sym) {
-        case SDLK_UP:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::UP);
-          menuText = updateMenuText();
-          break;
-        case SDLK_DOWN:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::DOWN);
-          menuText = updateMenuText();
-          break;
-        case SDLK_TAB:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::TAB);
-          menuText = updateMenuText();
-          break;
-        case SDLK_RETURN:
-          this->getCoreModule()->handleKeyEvent(
-              arcade::IModule::KeyboardInput::ENTER);
-          running = 0;
-        }
-      }
-    }
-
-    SDL_SetRenderDrawColor(this->_renderer, 30, 30, 30, 255); // Dark gray background
-    SDL_RenderClear(this->_renderer);
-
-    // Render our text
-    textSurface = TTF_RenderText_Blended_Wrapped(
-        this->_font, menuText.c_str(), textColor, 500);
-    textTexture = SDL_CreateTextureFromSurface(this->_renderer, textSurface);
-    SDL_RenderCopy(this->_renderer, textTexture, nullptr, &renderQuad);
-
-    SDL_RenderPresent(this->_renderer); // Update screen
-
-    SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(textTexture);
-  }
-}
-
-void arcade::Sdl2::displayGame()
-{
-  // Clear the screen
-  SDL_SetRenderDrawColor(
-      this->_renderer, 0, 0, 0, 0); // Dark gray background
-  SDL_RenderClear(this->_renderer);
-
-  // Generate the sprite map
-  std::map<int, SDL_Surface *> spriteSurfaces;
-  for (std::pair<int, std::string> sprite :
-       this->getCoreModule()->getGameData().sprite_value) {
-    spriteSurfaces[sprite.first] = IMG_Load(sprite.second.c_str());
-    if (!spriteSurfaces[sprite.first]) {
-      std::cerr << "Failed to load sprite: " << sprite.second << std::endl;
-      return;
-    }
-  }
-
-  // Get the game data
-  arcade::IModule::GameData gameData = this->getCoreModule()->getGameData();
-
-  // Update the screen
-  SDL_Texture *spriteTexture = nullptr;
-  SDL_Rect spriteRect;
-  for (int i = 0; i < gameData.display_info.size(); i += 1) {
-    for (int j = 0; j < gameData.display_info[i].size(); j += 1) {
-      spriteTexture = SDL_CreateTextureFromSurface(
-          this->_renderer, spriteSurfaces[gameData.display_info[i][j]]);
-      if (!spriteTexture) {
-        std::cerr << "Failed to create sprite texture: " << SDL_GetError()
-                  << std::endl;
-        return;
-      }
-      spriteRect = {j * 40, i * 40, 40, 40};
-      if (SDL_RenderCopy(this->_renderer, spriteTexture, nullptr, &spriteRect) <
-          0) {
-        std::cerr << "Failed to render sprite: " << SDL_GetError() << std::endl;
-        return;
-      }
-    }
-  }
-
-  SDL_RenderPresent(this->_renderer);
-
-  int running = 1;
-  while (running) {
-    SDL_Event event;
-    if (SDL_PollEvent(&event)) {
-      if (event.type == SDL_QUIT) {
-        this->getCoreModule()->handleKeyEvent(
-            arcade::IModule::KeyboardInput::CROSS);
-        running = 0;
-      }
-    }
-  }
-  SDL_DestroyTexture(spriteTexture);
-}
-
-/**
- * @brief display information on the window
- *
- */
-void arcade::Sdl2::display()
-{
-  switch (this->getDisplayStatus()) {
-  case arcade::ADisplayModule::DisplayStatus::RUNNING:
-    this->displayGame();
-    break;
-  case arcade::ADisplayModule::DisplayStatus::PAUSED:
-    /* code */
-    break;
-  case arcade::ADisplayModule::DisplayStatus::SELECTION:
-    this->displayMenu();
-    break;
-  case arcade::ADisplayModule::DisplayStatus::GAMEOVER:
-    /* code */
-    break;
-  case arcade::ADisplayModule::DisplayStatus::WIN:
-    /* code */
-    break;
-  default:
-    break;
-  }
-}
-
-/**
- * @brief initailize the SDL2 module and create a window
- *
- */
-void arcade::Sdl2::init()
-{
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     try {
@@ -285,7 +73,6 @@ void arcade::Sdl2::init()
   if (!this->_renderer) {
     std::cerr << "Renderer could not be created! SDL Error: " << SDL_GetError()
               << std::endl;
-    this->stop();
     try {
       throw SdlQuitException("SDL Quit\n");
     } catch (SdlQuitException &e) {
@@ -297,64 +84,206 @@ void arcade::Sdl2::init()
   if (!this->_font) {
     std::cerr << "Failed to load font! TTF Error: " << TTF_GetError()
               << std::endl;
-    this->stop();
     try {
       throw SdlQuitException("SDL Quit\n");
     } catch (SdlQuitException &e) {
       std::cerr << e.what() << std::endl;
     }
   }
-
-  // Get window surface
-  SDL_Surface *surface = SDL_GetWindowSurface(this->_window);
-  // Check if surface is null
-  if (!surface) {
-    try {
-      throw SdlNullSurfaceException(
-          "Surface could not be created! SDL_Error: " +
-          std::string(SDL_GetError()));
-    } catch (SdlNullSurfaceException &e) {
-      std::cerr << e.what() << std::endl;
-    }
-  } else {
-    // Fill the surface white
-    SDL_FillRect(surface,
-                 NULL,
-                 SDL_MapRGB(surface->format, 0, 0, 0)); // RGB value for black
-    // Update the window with the new surface
-    SDL_UpdateWindowSurface(this->_window);
-  }
 }
 
-/**
- * @brief stop the SDL2 module and destroy the window
- *
- */
-void arcade::Sdl2::stop()
+arcade::Sdl2::~Sdl2()
 {
-  // Destroy window
-  SDL_DestroyWindow(this->_window);
-  this->_window = nullptr;
+  std::cout << "Sdl2 destroyed" << std::endl;
+  // Destroy renderer
+  SDL_DestroyRenderer(this->_renderer);
 
   // Destroy font
   TTF_CloseFont(this->_font);
-  this->_font = nullptr;
 
-  if (this->_renderer)
-    SDL_DestroyRenderer(this->_renderer);
+  // Destroy window
+  SDL_DestroyWindow(this->_window);
+
+  IMG_Quit();
+
   TTF_Quit();
   // Quit SDL subsystems
   SDL_Quit();
 }
 
+std::string arcade::Sdl2::getName() { return "sdl2"; }
+
 /**
- * @brief return the name of the module
+ * @brief clear the window
  *
- * @return arcade::IModule::LibName
  */
-arcade::IModule::LibName arcade::Sdl2::getName() const
+void arcade::Sdl2::clearWindow()
 {
-  return arcade::IModule::LibName::SDL;
+  SDL_SetRenderDrawColor(this->_renderer, 0, 0, 0, 255);
+  SDL_RenderClear(this->_renderer);
+}
+
+/**
+ * @brief draw a sprite on the window
+ *
+ * @param path path to the sprite
+ * @param x x position of the sprite
+ * @param y y position of the sprite
+ * @param width width of the sprite
+ * @param height height of the sprite
+ */
+void arcade::Sdl2::drawSprite(
+    std::pair<char, std::string> sprite, int x, int y, int width, int height)
+{
+  SDL_Surface *surface = IMG_Load(sprite.second.c_str());
+  if (surface == nullptr) {
+    std::cerr << "Failed to load image: " << IMG_GetError() << std::endl;
+    return;
+  }
+
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(this->_renderer, surface);
+  if (texture == nullptr) {
+    std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
+    SDL_FreeSurface(surface);
+    return;
+  }
+
+  SDL_Rect rect = {x * width, y * height, width, height};
+  SDL_RenderCopy(this->_renderer, texture, nullptr, &rect);
+
+  SDL_DestroyTexture(texture);
+  SDL_FreeSurface(surface);
+}
+
+/**
+ * @brief draw text on the window
+ *
+ * @param text text to display
+ * @param x x position of the text
+ * @param y y position of the text
+ * @param size size of the text
+ */
+void arcade::Sdl2::drawText(const std::string text, int x, int y, int size)
+{
+  SDL_Color textColor = {255, 255, 255, 255}; // White color for the text
+
+  SDL_Surface *textSurface =
+      TTF_RenderText_Blended_Wrapped(this->_font, text.c_str(), textColor, 500);
+  if (textSurface == nullptr) {
+    std::cerr << "Failed to create text surface: " << TTF_GetError()
+              << std::endl;
+    return;
+  }
+
+  SDL_Texture *textTexture =
+      SDL_CreateTextureFromSurface(this->_renderer, textSurface);
+  if (textTexture == nullptr) {
+    std::cerr << "Failed to create text texture: " << SDL_GetError()
+              << std::endl;
+    SDL_FreeSurface(textSurface);
+    return;
+  }
+
+  int textWidth = textSurface->w;
+  int textHeight = textSurface->h;
+  SDL_FreeSurface(textSurface);
+
+  SDL_Rect renderQuad = {x * size, y * size, textWidth, textHeight};
+  SDL_RenderCopy(this->_renderer, textTexture, nullptr, &renderQuad);
+
+  SDL_DestroyTexture(textTexture);
+}
+
+void arcade::Sdl2::displayWindow() { SDL_RenderPresent(this->_renderer); }
+
+/**
+ * @brief get the input from the window
+ *
+ * @return arcade::KeyboardInput
+ */
+arcade::KeyboardInput arcade::Sdl2::getInput()
+{
+  SDL_Event event;
+  if (SDL_PollEvent(&event)) {
+    if (event.type == SDL_QUIT) {
+      return arcade::KeyboardInput::CROSS;
+    }
+    if (event.type == SDL_KEYDOWN) {
+      switch (event.key.keysym.sym) {
+      case SDLK_UP:
+        return arcade::KeyboardInput::UP;
+      case SDLK_DOWN:
+        return arcade::KeyboardInput::DOWN;
+      case SDLK_LEFT:
+        return arcade::KeyboardInput::LEFT;
+      case SDLK_RIGHT:
+        return arcade::KeyboardInput::RIGHT;
+      case SDLK_RETURN:
+        return arcade::KeyboardInput::ENTER;
+      case SDLK_TAB:
+        return arcade::KeyboardInput::TAB;
+      case SDLK_ESCAPE:
+        return arcade::KeyboardInput::ESCAPE;
+      case SDLK_SPACE:
+        return arcade::KeyboardInput::SPACE;
+      case SDLK_BACKSPACE:
+        return arcade::KeyboardInput::BACKSPACE;
+      case SDLK_a:
+        return arcade::KeyboardInput::A;
+      case SDLK_b:
+        return arcade::KeyboardInput::B;
+      case SDLK_c:
+        return arcade::KeyboardInput::C;
+      case SDLK_d:
+        return arcade::KeyboardInput::D;
+      case SDLK_e:
+        return arcade::KeyboardInput::E;
+      case SDLK_f:
+        return arcade::KeyboardInput::F;
+      case SDLK_g:
+        return arcade::KeyboardInput::G;
+      case SDLK_h:
+        return arcade::KeyboardInput::H;
+      case SDLK_i:
+        return arcade::KeyboardInput::I;
+      case SDLK_j:
+        return arcade::KeyboardInput::J;
+      case SDLK_k:
+        return arcade::KeyboardInput::K;
+      case SDLK_l:
+        return arcade::KeyboardInput::L;
+      case SDLK_m:
+        return arcade::KeyboardInput::M;
+      case SDLK_n:
+        return arcade::KeyboardInput::N;
+      case SDLK_o:
+        return arcade::KeyboardInput::O;
+      case SDLK_p:
+        return arcade::KeyboardInput::P;
+      case SDLK_q:
+        return arcade::KeyboardInput::Q;
+      case SDLK_r:
+        return arcade::KeyboardInput::R;
+      case SDLK_s:
+        return arcade::KeyboardInput::S;
+      case SDLK_t:
+        return arcade::KeyboardInput::T;
+      case SDLK_u:
+        return arcade::KeyboardInput::U;
+      case SDLK_v:
+        return arcade::KeyboardInput::V;
+      case SDLK_w:
+        return arcade::KeyboardInput::W;
+      case SDLK_x:
+        return arcade::KeyboardInput::X;
+      case SDLK_y:
+        return arcade::KeyboardInput::Y;
+      case SDLK_z:
+        return arcade::KeyboardInput::Z;
+      }
+    }
+  }
+  return arcade::KeyboardInput::NONE;
 }
 
 /**
@@ -362,4 +291,11 @@ arcade::IModule::LibName arcade::Sdl2::getName() const
  *
  * @return arcade::Sdl2 *
  */
-extern "C" arcade::Sdl2 *entryPoint() { return new arcade::Sdl2(); }
+extern "C" std::unique_ptr<arcade::IDisplayModule> entryPoint()
+{
+  return std::make_unique<arcade::Sdl2>();
+}
+
+extern "C" arcade::ModuleType getType() { return arcade::ModuleType::GRAPHIC; }
+
+extern "C" std::string getName() { return "sdl2"; }

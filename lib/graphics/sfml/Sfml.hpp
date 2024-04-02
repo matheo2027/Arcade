@@ -8,7 +8,7 @@
 #ifndef SFML_HPP_
 #define SFML_HPP_
 
-#include "ADisplayModule.hpp"
+#include "../ADisplayModule.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace arcade {
@@ -16,17 +16,17 @@ class Sfml : virtual public arcade::ADisplayModule {
 public:
   Sfml();
   ~Sfml();
+  std::string getName();
 
-  arcade::IModule::KeyboardInput getInput();
-  void init();
-  void stop();
-  void display();
-  void displayMenu();
-  void displayGame();
-  arcade::IModule::LibName getName() const;
+  void clearWindow();
+  void displayWindow();
+  arcade::KeyboardInput getInput();
+  void drawSprite(
+      std::pair<char, std::string> sprite, int x, int y, int width, int height);
+  void drawText(const std::string text, int x, int y, int size);
 
 protected:
-  sf::RenderWindow *_window;
+  sf::RenderWindow _window;
   sf::Texture _texture;
   sf::Font _font;
 };
