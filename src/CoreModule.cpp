@@ -36,6 +36,17 @@ arcade::CoreModule::~CoreModule()
   // }
   // arcade::CoreModule::DLLoader<void> loader("");
   // loader.DLLunloader();
+  if (this->_libList.size() > 0) {
+    for (auto &loader : arcade::CoreModule::_libList) {
+      loader.DLLunloader();
+    }
+  }
+  if (this->_interfaceList.size() > 0) {
+    for (auto &loader : arcade::CoreModule::_interfaceList) {
+      loader.first.DLLunloader();
+      loader.second.DLLunloader();
+    }
+  }
   if (this->_gameModule) {
     delete this->_gameModule;
   }
@@ -105,8 +116,10 @@ void arcade::CoreModule::setGameModule(
 
 void arcade::CoreModule::addLibList(std::string pathLib)
 {
-  arcade::CoreModule::DLLoader<arcade::ModuleType> loader(pathLib);
-  arcade::ModuleType module = loader.getInstance("getType");
+  // arcade::CoreModule::DLLoader<arcade::ModuleType> loader(pathLib);
+  arcade::CoreModule::_libList.push_back(DLLoader<arcade::ModuleType>(pathLib));
+  arcade::ModuleType module = arcade::CoreModule::_libList.back().getInstance("getType");
+  // arcade::ModuleType module = loader.getInstance("getType");
   switch (module) {
   case arcade::ModuleType::GAME:
     this->_menuData._gameLibList.push_back(pathLib);
@@ -161,16 +174,19 @@ void arcade::CoreModule::getLib(std::string pathLib)
 void arcade::CoreModule::loadLib(std::string pathLib)
 {
   std::cout << "start Load lib :" << pathLib << std::endl;
-  arcade::CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule(pathLib);
-  arcade::ModuleType module = loaderTypeModule.getInstance("getType");
-  CoreModule::DLLoader<std::unique_ptr<arcade::IDisplayModule>> loaderGraphic(pathLib);
-  CoreModule::DLLoader<std::unique_ptr<arcade::IGameModule>> loaderGame(pathLib);
+  // arcade::CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule(pathLib);
+  arcade::CoreModule::_libList.push_back(arcade::CoreModule::DLLoader<arcade::ModuleType>(pathLib));
+  arcade::ModuleType module = arcade::CoreModule::_libList.back().getInstance("getType");
+  // arcade::ModuleType module = loaderTypeModule.getInstance("getType");
+  // CoreModule::DLLoader<std::unique_ptr<arcade::IDisplayModule>> loaderGraphic(pathLib);
+  // CoreModule::DLLoader<std::unique_ptr<arcade::IGameModule>> loaderGame(pathLib);
+  arcade::CoreModule::_interfaceList.emplace_back(DLLoader<std::unique_ptr<arcade::IDisplayModule>>(pathLib), DLLoader<std::unique_ptr<arcade::IGameModule>>(pathLib));
   switch (module) {
   case arcade::ModuleType::GAME:
     if (this->_gameModule != nullptr)
       delete this->_gameModule;
     this->_gameModule =
-        std::move(loaderGame.getInstance("entryPoint")).release();
+        std::move(arcade::CoreModule::_interfaceList.back().second.getInstance("entryPoint")).release();
     this->_gameModule->setCoreModule(this);
     this->_gameModule->init();
     break;
@@ -178,7 +194,7 @@ void arcade::CoreModule::loadLib(std::string pathLib)
     if (this->_graphicModule != nullptr)
       delete this->_graphicModule;
     this->_graphicModule =
-        std::move(loaderGraphic.getInstance("entryPoint")).release();
+        std::move(arcade::CoreModule::_interfaceList.back().first.getInstance("entryPoint")).release();
     this->_graphicModule->setCoreModule(this);
     break;
   default:

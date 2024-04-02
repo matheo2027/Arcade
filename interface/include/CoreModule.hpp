@@ -13,6 +13,7 @@
 #include <iostream>
 #include <memory>
 #include <Arcade.hpp>
+#include <vector>
 
 namespace arcade {
 class CoreModule : virtual public ICoreModule {
@@ -48,7 +49,6 @@ public:
   void selectionLoop();
   void updateSelection();
 
-
   template <typename T>
   class DLLoader {
   public:
@@ -61,7 +61,7 @@ public:
         std::cerr << dlerror() << std::endl;
         exit(1);
       }
-    }
+    };
 
     ~DLLoader() {};
 
@@ -72,15 +72,19 @@ public:
         exit(1);
       }
       return reinterpret_cast<T (*)()>(sym)();
-    }
+    };
 
     void DLLunloader() {
       if (handle) {
         std::cout << "Closing Lib" << std::endl;
         dlclose(handle);
       }
-    }
+    };
   };
+  std::vector<DLLoader<arcade::ModuleType>> _libList;
+  // std::vector<DLLoader<std::unique_ptr<arcade::IDisplayModule>>()> _graphicList;
+  // std::vector<DLLoader<std::unique_ptr<arcade::IGameModule>>()> _gameList;
+  std::vector<std::pair<DLLoader<std::unique_ptr<arcade::IDisplayModule>>, DLLoader<std::unique_ptr<arcade::IGameModule>>>> _interfaceList;
 };
 }; // namespace arcade
 
