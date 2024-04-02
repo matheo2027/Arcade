@@ -180,7 +180,7 @@ void arcade::Snake::updateGame()
 {
   arcade::GameData data = this->getCoreModule()->getGameData();
   this->updateTimer();
-  if (this->getTimer().duration.count() >= 500) {
+  if (this->getTimer().duration.count() >= 250) {
     this->resetTimer();
     // Update the game
     this->moveSnake(data);

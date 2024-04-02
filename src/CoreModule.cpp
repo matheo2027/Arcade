@@ -43,6 +43,11 @@ arcade::CoreModule::~CoreModule()
       loader.DLLunloader();
     }
   }
+  if (this->_nameLoader.size() > 0) {
+    for (auto &loader : arcade::CoreModule::_nameLoader) {
+      loader.DLLunloader();
+    }
+  }
   if (this->_interfaceList.size() > 0) {
     for (auto &loader : arcade::CoreModule::_interfaceList) {
       loader.first.DLLunloader();
