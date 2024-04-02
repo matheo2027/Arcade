@@ -16,8 +16,7 @@ public:
   ADisplayModule();
   ~ADisplayModule();
 
-  arcade::GameData sendGameData();
-  arcade::MenuData sendMenuData();
+  virtual std::string getName() = 0;
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;

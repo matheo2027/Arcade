@@ -22,21 +22,6 @@ arcade::ADisplayModule::ADisplayModule() : arcade::IDisplayModule()
 arcade::ADisplayModule::~ADisplayModule() {}
 
 /**
- * @brief receive send data of the game module to the display module
- *
- * @param data of the game module (score, map, player position)
- */
-arcade::GameData arcade::ADisplayModule::sendGameData()
-{
-  return arcade::GameData();
-}
-
-arcade::MenuData arcade::ADisplayModule::sendMenuData()
-{
-  return arcade::MenuData();
-}
-
-/**
  * @brief set the core module to the display module
  *
  * @param coreModule

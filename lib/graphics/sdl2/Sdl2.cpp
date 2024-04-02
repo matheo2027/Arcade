@@ -90,37 +90,19 @@ arcade::Sdl2::Sdl2() : arcade::ADisplayModule()
       std::cerr << e.what() << std::endl;
     }
   }
-
-  // Get window surface
-  SDL_Surface *surface = SDL_GetWindowSurface(this->_window);
-  // Check if surface is null
-  if (!surface) {
-    try {
-      throw SdlNullSurfaceException(
-          "Surface could not be created! SDL_Error: " +
-          std::string(SDL_GetError()));
-    } catch (SdlNullSurfaceException &e) {
-      std::cerr << e.what() << std::endl;
-    }
-  } else {
-    // Fill the surface back
-    SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 0, 0, 0));
-    // Update the window with the new surface
-    SDL_UpdateWindowSurface(this->_window);
-  }
-  std::cout << "Sdl2 created finish" << std::endl;
 }
 
 arcade::Sdl2::~Sdl2()
 {
   std::cout << "Sdl2 destroyed" << std::endl;
-  // Destroy window
-  SDL_DestroyWindow(this->_window);
+  // Destroy renderer
+  SDL_DestroyRenderer(this->_renderer);
 
   // Destroy font
   TTF_CloseFont(this->_font);
 
-  SDL_DestroyRenderer(this->_renderer);
+  // Destroy window
+  SDL_DestroyWindow(this->_window);
 
   IMG_Quit();
 
@@ -129,11 +111,17 @@ arcade::Sdl2::~Sdl2()
   SDL_Quit();
 }
 
+std::string arcade::Sdl2::getName() { return "sdl2"; }
+
 /**
  * @brief clear the window
  *
  */
-void arcade::Sdl2::clearWindow() {SDL_RenderClear(this->_renderer); }
+void arcade::Sdl2::clearWindow()
+{
+  SDL_SetRenderDrawColor(this->_renderer, 0, 0, 0, 255);
+  SDL_RenderClear(this->_renderer);
+}
 
 /**
  * @brief draw a sprite on the window
@@ -147,8 +135,6 @@ void arcade::Sdl2::clearWindow() {SDL_RenderClear(this->_renderer); }
 void arcade::Sdl2::drawSprite(
     std::pair<char, std::string> sprite, int x, int y, int width, int height)
 {
-  x = x * width;
-  y = y * height;
   SDL_Surface *surface = IMG_Load(sprite.second.c_str());
   if (surface == nullptr) {
     std::cerr << "Failed to load image: " << IMG_GetError() << std::endl;
@@ -162,7 +148,7 @@ void arcade::Sdl2::drawSprite(
     return;
   }
 
-  SDL_Rect rect = {x, y, width, height};
+  SDL_Rect rect = {x * width, y * height, width, height};
   SDL_RenderCopy(this->_renderer, texture, nullptr, &rect);
 
   SDL_DestroyTexture(texture);
@@ -202,9 +188,8 @@ void arcade::Sdl2::drawText(const std::string text, int x, int y, int size)
   int textHeight = textSurface->h;
   SDL_FreeSurface(textSurface);
 
-  SDL_Rect renderQuad = {x, y, textWidth, textHeight};
+  SDL_Rect renderQuad = {x * size, y * size, textWidth, textHeight};
   SDL_RenderCopy(this->_renderer, textTexture, nullptr, &renderQuad);
-  SDL_RenderPresent(this->_renderer);
 
   SDL_DestroyTexture(textTexture);
 }
@@ -241,6 +226,8 @@ arcade::KeyboardInput arcade::Sdl2::getInput()
         return arcade::KeyboardInput::ESCAPE;
       case SDLK_SPACE:
         return arcade::KeyboardInput::SPACE;
+      case SDLK_BACKSPACE:
+        return arcade::KeyboardInput::BACKSPACE;
       case SDLK_a:
         return arcade::KeyboardInput::A;
       case SDLK_b:
@@ -271,6 +258,28 @@ arcade::KeyboardInput arcade::Sdl2::getInput()
         return arcade::KeyboardInput::N;
       case SDLK_o:
         return arcade::KeyboardInput::O;
+      case SDLK_p:
+        return arcade::KeyboardInput::P;
+      case SDLK_q:
+        return arcade::KeyboardInput::Q;
+      case SDLK_r:
+        return arcade::KeyboardInput::R;
+      case SDLK_s:
+        return arcade::KeyboardInput::S;
+      case SDLK_t:
+        return arcade::KeyboardInput::T;
+      case SDLK_u:
+        return arcade::KeyboardInput::U;
+      case SDLK_v:
+        return arcade::KeyboardInput::V;
+      case SDLK_w:
+        return arcade::KeyboardInput::W;
+      case SDLK_x:
+        return arcade::KeyboardInput::X;
+      case SDLK_y:
+        return arcade::KeyboardInput::Y;
+      case SDLK_z:
+        return arcade::KeyboardInput::Z;
       }
     }
   }

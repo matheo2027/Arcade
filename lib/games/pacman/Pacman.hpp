@@ -15,6 +15,7 @@ class Pacman : virtual public arcade::AGameModule {
 public:
   Pacman();
   ~Pacman();
+  std::string getName();
   void init();
   void updateGame();
   void handdleKeyEvents(arcade::KeyboardInput key){};

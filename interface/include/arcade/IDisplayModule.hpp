@@ -17,8 +17,7 @@ public:
   IDisplayModule(){};
   virtual ~IDisplayModule(){};
 
-  virtual arcade::GameData sendGameData() = 0;
-  virtual arcade::MenuData sendMenuData() = 0;
+  virtual std::string getName() = 0;
 
   virtual void setCoreModule(arcade::CoreModule *coreModule) = 0;
   virtual arcade::CoreModule *getCoreModule() const = 0;

@@ -33,12 +33,15 @@ public:
   void getLib(std::string pathLib);
   void loadLib(std::string pathLib);
   void addLibList(std::string pathLib);
+  void generateScore();
 
   void handleKeyEvent(arcade::KeyboardInput key);
+  void launchSelection();
+  void addCharUsername(char c);
   void handleKeySelection(arcade::KeyboardInput key);
   void handleKeyRunning(arcade::KeyboardInput key);
 
-  arcade::MenuData getMenuData() const;
+  arcade::ICoreModule::MenuData getMenuData() const;
 
   void setGameData(arcade::GameData gameData);
   arcade::GameData getGameData() const;
@@ -81,9 +84,8 @@ public:
       }
     };
   };
+  std::vector<DLLoader<std::string>> _nameLoader;
   std::vector<DLLoader<arcade::ModuleType>> _libList;
-  // std::vector<DLLoader<std::unique_ptr<arcade::IDisplayModule>>()> _graphicList;
-  // std::vector<DLLoader<std::unique_ptr<arcade::IGameModule>>()> _gameList;
   std::vector<std::pair<DLLoader<std::unique_ptr<arcade::IDisplayModule>>, DLLoader<std::unique_ptr<arcade::IGameModule>>>> _interfaceList;
 };
 }; // namespace arcade

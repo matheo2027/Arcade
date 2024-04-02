@@ -16,6 +16,7 @@ class NCurses : virtual public arcade::ADisplayModule {
 public:
   NCurses();
   ~NCurses();
+  std::string getName();
   void clearWindow();
   void displayWindow();
   arcade::KeyboardInput getInput();

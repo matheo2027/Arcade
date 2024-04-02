@@ -16,10 +16,9 @@
 namespace arcade {
 class Sdl2 : virtual public arcade::ADisplayModule {
 public:
-  #define SCALE_X 30
-  #define SCALE_Y 30
   Sdl2();
   ~Sdl2();
+  std::string getName();
   void clearWindow();
   void displayWindow();
   arcade::KeyboardInput getInput();

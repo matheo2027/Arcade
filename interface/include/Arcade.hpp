@@ -28,6 +28,8 @@ namespace arcade {
 struct GameData {
   std::vector<std::vector<int>> display_info;
   std::map<unsigned int, std::string> sprite_value;
+  std::string _description;
+  int score;
 };
 
 /**
@@ -35,15 +37,6 @@ struct GameData {
  *
  */
 enum ModuleType { GRAPHIC, GAME, CORE };
-
-struct MenuData {
-  std::vector<std::string> _graphicLibList;
-  std::vector<std::string> _gameLibList;
-  int indexGraphic;
-  int indexGame;
-  std::string _description;
-  ModuleType _type;
-};
 
 /**
  * @brief all the possible keyboard inputs
@@ -55,10 +48,12 @@ enum KeyboardInput {
   LEFT,
   RIGHT,
   SPACE,
-  ENTER,
+  ENTER,     // big enter key
+  BACKSPACE, // suppress left text
+  DELETE,    // suppress right text
   ESCAPE,
   TAB,
-  CROSS,
+  CROSS, // window cross
   A,
   B,
   C,

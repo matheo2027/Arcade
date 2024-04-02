@@ -57,6 +57,8 @@ void arcade::Pacman::init()
   return;
 }
 
+std::string arcade::Pacman::getName() { return "pacman"; }
+
 void arcade::Pacman::updateGame()
 {
   return;
@@ -77,5 +79,5 @@ extern "C" arcade::ModuleType getType()
 
 extern "C" std::string getName()
 {
-  return "snake";
+  return "pacman";
 }

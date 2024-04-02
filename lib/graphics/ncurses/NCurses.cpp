@@ -18,10 +18,7 @@ arcade::NCurses::NCurses() : arcade::ADisplayModule()
   nodelay(stdscr, TRUE); // Do not block when reading input
   curs_set(0);           // Hide the cursor
   // Create a new window
-  int height = COLS;
-  int width = LINES;
-
-  this->_window = newwin(height, width, 0, 0);
+  this->_window = newwin(LINES, COLS, 0, 0);
   refresh(); // Refresh the screen to reflect changes
 }
 
@@ -41,6 +38,8 @@ arcade::NCurses::~NCurses()
   delwin(win); // Delete the window
   endwin();    // Restore normal terminal behavior
 }
+
+std::string arcade::NCurses::getName() { return "ncurses"; }
 
 void arcade::NCurses::clearWindow()
 {
@@ -83,8 +82,62 @@ arcade::KeyboardInput arcade::NCurses::getInput()
     return arcade::KeyboardInput::TAB;
   case '\n':
     return arcade::KeyboardInput::ENTER;
+  case 27: // escape
+    return arcade::KeyboardInput::ESCAPE;
+  case KEY_BACKSPACE:
+    return arcade::KeyboardInput::BACKSPACE;
+  case 'a':
+    return arcade::KeyboardInput::A;
+  case 'b':
+    return arcade::KeyboardInput::B;
+  case 'c':
+    return arcade::KeyboardInput::C;
+  case 'd':
+    return arcade::KeyboardInput::D;
+  case 'e':
+    return arcade::KeyboardInput::E;
+  case 'f':
+    return arcade::KeyboardInput::F;
+  case 'g':
+    return arcade::KeyboardInput::G;
+  case 'h':
+    return arcade::KeyboardInput::H;
+  case 'i':
+    return arcade::KeyboardInput::I;
+  case 'j':
+    return arcade::KeyboardInput::J;
+  case 'k':
+    return arcade::KeyboardInput::K;
+  case 'l':
+    return arcade::KeyboardInput::L;
+  case 'm':
+    return arcade::KeyboardInput::M;
+  case 'n':
+    return arcade::KeyboardInput::N;
+  case 'o':
+    return arcade::KeyboardInput::O;
+  case 'p':
+    return arcade::KeyboardInput::P;
   case 'q':
-    return arcade::KeyboardInput::CROSS;
+    return arcade::KeyboardInput::Q;
+  case 'r':
+    return arcade::KeyboardInput::R;
+  case 's':
+    return arcade::KeyboardInput::S;
+  case 't':
+    return arcade::KeyboardInput::T;
+  case 'u':
+    return arcade::KeyboardInput::U;
+  case 'v':
+    return arcade::KeyboardInput::V;
+  case 'w':
+    return arcade::KeyboardInput::W;
+  case 'x':
+    return arcade::KeyboardInput::X;
+  case 'y':
+    return arcade::KeyboardInput::Y;
+  case 'z':
+    return arcade::KeyboardInput::Z;
   default:
     return arcade::KeyboardInput::NONE;
   }
