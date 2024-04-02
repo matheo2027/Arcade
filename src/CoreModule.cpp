@@ -429,9 +429,9 @@ void arcade::CoreModule::handleKeyRunning(arcade::KeyboardInput key)
         this->_menuData._graphicLibList[this->_menuData.indexGraphic]);
     break;
   case arcade::KeyboardInput::G:
-      this->_menuData._gameLibList.push_back(
-          this->_menuData._gameLibList.front());
-      this->_menuData._gameLibList.erase(this->_menuData._gameLibList.begin());
+    this->_menuData._gameLibList.push_back(
+        this->_menuData._gameLibList.front());
+    this->_menuData._gameLibList.erase(this->_menuData._gameLibList.begin());
     this->loadLib(this->_menuData._gameLibList[this->_menuData.indexGame]);
     break;
   case arcade::KeyboardInput::R:
@@ -646,7 +646,7 @@ void arcade::CoreModule::updateSelection()
               this->_menuData._description;
 
   this->getGraphicModule()->clearWindow();
-  this->getGraphicModule()->drawText(selection, 0, 0, 20);
+  this->getGraphicModule()->drawText(selection, 0, 0, 30);
   this->getGraphicModule()->displayWindow();
 }
 
@@ -672,7 +672,12 @@ void arcade::CoreModule::updateRunning()
   this->getGameModule()->updateGame();
   this->getGraphicModule()->clearWindow();
   this->getGraphicModule()->drawText(
-      "Score: " + std::to_string(this->getGameData().score), 0, 0, game_scale);
+      "Graphic:" + this->getGraphicModule()->getName() +
+          " | Game:" + this->getGameModule()->getName() +
+          " | Score: " + std::to_string(this->getGameData().score),
+      0,
+      0,
+      game_scale);
   // draw sprites on map
   for (size_t i = 0; i < this->getGameData().display_info.size(); i += 1) {
     for (size_t j = 0; j < this->getGameData().display_info[i].size(); j += 1) {
