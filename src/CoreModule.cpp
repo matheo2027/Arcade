@@ -699,11 +699,11 @@ void arcade::CoreModule::updateRunning()
       0,
       game_scale);
   // draw sprites on map
-  for (size_t i = 0; i < this->getGameData().display_info.size(); i += 1) {
-    for (size_t j = 0; j < this->getGameData().display_info[i].size(); j += 1) {
+  for (size_t i = 0; i < this->getGameData()[0].display_info.size(); i += 1) {
+    for (size_t j = 0; j < this->getGameData()[0].display_info[i].size(); j += 1) {
       sprite.first = this->getGameData().display_info[i][j];
       sprite.second = this->getGameData()
-                          .sprite_value[this->getGameData().display_info[i][j]];
+                          .sprite_value[this->getGameData()[0].display_info[i][j]];
       this->getGraphicModule()->drawSprite(
           sprite, j, i + 1, game_scale, game_scale);
     }

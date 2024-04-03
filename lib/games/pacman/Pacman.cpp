@@ -29,7 +29,7 @@ void arcade::Pacman::init()
   data.sprite_value['P'] = "assets/default/npc/npc1.png";  // Pacman
   data.sprite_value['G'] = "assets/default/npc/npc2.png";  // Ghost
 
-  data.display_info = {
+  data.display_info[0] = {
       {'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'},
       {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'G', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W'},
       {'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'C', ' ', 'W'},

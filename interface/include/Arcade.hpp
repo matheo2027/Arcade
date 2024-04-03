@@ -26,7 +26,7 @@ namespace arcade {
  *
  */
 struct GameData {
-  std::vector<std::vector<int>> display_info;
+  std::vector<std::vector<std::vector<int>>> display_info;
   std::map<unsigned int, std::string> sprite_value;
   std::string _description;
   int score;

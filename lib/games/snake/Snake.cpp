@@ -23,19 +23,20 @@ void arcade::Snake::init()
       "RULES:\n- Eat the food to grow\n- Don't hit the walls or "
       "yourself\nCONTROLS:\n- UP/DOWN/LEFT/RIGHT: Move";
   for (int i = 0; i < height; i += 1) {
-    gameData.display_info.push_back(std::vector<int>(width));
+    gameData.display_info.push_back(std::vector<std::vector<int>>(1));
+    gameData.display_info[0].push_back(std::vector<int>(width));
     for (int j = 0; j < width; j += 1) {
       if (i == 0 || i == height - 1 || j == 0 || j == width - 1) {
-        gameData.display_info[i][j] = WALL;
+        gameData.display_info[0][i][j] = WALL;
       } else {
-        gameData.display_info[i][j] = EMPTY;
+        gameData.display_info[0][i][j] = EMPTY;
       }
     }
   }
-  gameData.display_info[height / 2][width / 2] = HEAD;
+  gameData.display_info[0][height / 2][width / 2] = HEAD;
   this->_snake.push_back(std::make_pair(height / 2, width / 2));
   for (int i = 1; i < 4; i += 1) {
-    gameData.display_info[height / 2][width / 2 - i] = BODY;
+    gameData.display_info[0][height / 2][width / 2 - i] = BODY;
     this->_snake.push_back(std::make_pair(height / 2, width / 2 - i));
   }
   gameData.sprite_value[EMPTY] = "assets/default/map/map1.png";
@@ -43,7 +44,7 @@ void arcade::Snake::init()
   gameData.sprite_value[HEAD] = "assets/default/npc/npc1.png";
   gameData.sprite_value[BODY] = "assets/default/npc/npc2.png";
   gameData.sprite_value[FOOD] = "assets/default/item/item1.png";
-  this->generateFood(gameData.display_info);
+  this->generateFood(gameData.display_info[0]);
   this->getCoreModule()->setGameData(gameData);
   this->setDirection(arcade::KeyboardInput::RIGHT);
 }
@@ -139,7 +140,7 @@ void arcade::Snake::moveSnake(arcade::GameData &data)
 
   // add a coin
   if (is_eating == true) {
-    this->generateFood(data.display_info);
+    this->generateFood(data.display_info[0]);
   }
 }
 
