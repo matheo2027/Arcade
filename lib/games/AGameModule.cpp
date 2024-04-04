@@ -126,3 +126,20 @@ arcade::KeyboardInput arcade::AGameModule::getDirection() const
 {
   return this->_direction;
 }
+
+/**
+ * @brief get the cell of the map
+ * 
+ * @param x
+ * @param y
+ * @return int
+ */
+int arcade::AGameModule::getLayerCell(int layer, int x, int y) const
+{
+  std::vector<std::pair<int, std::pair<int, int>>> map = this->_coreModule->getGameData().entities[layer];
+  for (size_t cell = 0; cell < map.size(); cell++) {
+    if (map[cell].second.first == x && map[cell].second.second == y)
+      return map[cell].first;
+  }
+  return -1;
+}

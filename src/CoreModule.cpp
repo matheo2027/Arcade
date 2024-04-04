@@ -120,7 +120,8 @@ void arcade::CoreModule::addLibList(std::string pathLib)
 {
   // arcade::CoreModule::DLLoader<arcade::ModuleType> loader(pathLib);
   arcade::CoreModule::_libList.push_back(DLLoader<arcade::ModuleType>(pathLib));
-  arcade::ModuleType module = arcade::CoreModule::_libList.back().getInstance("getType");
+  arcade::ModuleType module =
+      arcade::CoreModule::_libList.back().getInstance("getType");
   // arcade::ModuleType module = loader.getInstance("getType");
   switch (module) {
   case arcade::ModuleType::GAME:
@@ -177,19 +178,27 @@ void arcade::CoreModule::loadLib(std::string pathLib)
 {
   std::cout << "start Load lib :" << pathLib << std::endl;
   // arcade::CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule(pathLib);
-  arcade::CoreModule::_libList.push_back(arcade::CoreModule::DLLoader<arcade::ModuleType>(pathLib));
-  arcade::ModuleType module = arcade::CoreModule::_libList.back().getInstance("getType");
+  arcade::CoreModule::_libList.push_back(
+      arcade::CoreModule::DLLoader<arcade::ModuleType>(pathLib));
+  arcade::ModuleType module =
+      arcade::CoreModule::_libList.back().getInstance("getType");
   // arcade::ModuleType module = loaderTypeModule.getInstance("getType");
-  // CoreModule::DLLoader<std::unique_ptr<arcade::IDisplayModule>> loaderGraphic(pathLib);
-  // CoreModule::DLLoader<std::unique_ptr<arcade::IGameModule>> loaderGame(pathLib);
-  arcade::CoreModule::_interfaceList.emplace_back(DLLoader<std::unique_ptr<arcade::IDisplayModule>>(pathLib), DLLoader<std::unique_ptr<arcade::IGameModule>>(pathLib));
+  // CoreModule::DLLoader<std::unique_ptr<arcade::IDisplayModule>>
+  // loaderGraphic(pathLib);
+  // CoreModule::DLLoader<std::unique_ptr<arcade::IGameModule>>
+  // loaderGame(pathLib);
+  arcade::CoreModule::_interfaceList.emplace_back(
+      DLLoader<std::unique_ptr<arcade::IDisplayModule>>(pathLib),
+      DLLoader<std::unique_ptr<arcade::IGameModule>>(pathLib));
   switch (module) {
   case arcade::ModuleType::GAME:
     if (this->_gameModule) {
       delete this->_gameModule;
     }
     this->_gameModule =
-        std::move(arcade::CoreModule::_interfaceList.back().second.getInstance("entryPoint")).release();
+        std::move(arcade::CoreModule::_interfaceList.back().second.getInstance(
+                      "entryPoint"))
+            .release();
     this->_gameModule->setCoreModule(this);
     this->_gameModule->init();
     break;
@@ -203,7 +212,9 @@ void arcade::CoreModule::loadLib(std::string pathLib)
       delete this->_graphicModule;
     }
     this->_graphicModule =
-        std::move(arcade::CoreModule::_interfaceList.back().first.getInstance("entryPoint")).release();
+        std::move(arcade::CoreModule::_interfaceList.back().first.getInstance(
+                      "entryPoint"))
+            .release();
     this->_graphicModule->setCoreModule(this);
     break;
   default:
@@ -228,7 +239,8 @@ void arcade::CoreModule::generateScore()
   for (std::string game_lib_path : this->_menuData._gameLibList) {
 
     // DLLoader<std::string> loaderTypeModule(game_lib_path);
-    arcade::CoreModule::_nameLoader.push_back(DLLoader<std::string>(game_lib_path));
+    arcade::CoreModule::_nameLoader.push_back(
+        DLLoader<std::string>(game_lib_path));
     std::string moduleName = _nameLoader.back().getInstance("getName");
     std::cout << moduleName << std::endl;
     FILE *fd = fopen(("scoreArcade/" + moduleName + ".txt").c_str(), "r");
@@ -699,20 +711,25 @@ void arcade::CoreModule::updateRunning()
       0,
       game_scale);
   // draw sprites on map
-  for (size_t i = 0; i < this->getGameData().display_info.size(); i += 1) {
-    for (size_t j = 0; j < this->getGameData().display_info[i].size(); j += 1) {
-      sprite.first = this->getGameData().display_info[i][j];
-      sprite.second = this->getGameData()
-                          .sprite_value[this->getGameData().display_info[i][j]];
+  for (size_t i = 0; i < this->getGameData().entities.size(); i += 1) {
+    for (size_t j = 0; j < this->getGameData().entities[i].size(); j += 1) {
+      sprite.first = this->getGameData().entities[i][j].first;
+      sprite.second =
+          this->getGameData()
+              .sprite_value[this->getGameData().entities[i][j].first];
       this->getGraphicModule()->drawSprite(
-          sprite, j, i + 1, game_scale, game_scale);
+          sprite,
+          this->getGameData().entities[i][j].second.first,
+          this->getGameData().entities[i][j].second.second + 1,
+          game_scale,
+          game_scale);
     }
   }
-  this->getGraphicModule()->drawText(this->_gameData._description,
-                                     0,
-                                     this->getGameData().display_info.size() +
-                                         1,
-                                     game_scale);
+  this->getGraphicModule()->drawText(
+      this->_gameData._description,
+      0,
+      this->getGameData().entities[0].back().second.second + 1,
+      game_scale);
   this->getGraphicModule()->displayWindow();
 }
 

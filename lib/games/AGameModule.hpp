@@ -38,6 +38,8 @@ public:
   void setDirection(arcade::KeyboardInput direction);
   arcade::KeyboardInput getDirection() const;
 
+  int getLayerCell(int layer, int x, int y) const;
+
   virtual void handdleKeyEvents(arcade::KeyboardInput key) = 0;
 };
 }; // namespace arcade
