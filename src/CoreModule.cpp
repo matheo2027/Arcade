@@ -728,7 +728,7 @@ void arcade::CoreModule::updateRunning()
   this->getGraphicModule()->drawText(
       this->_gameData._description,
       0,
-      this->getGameData().entities[0].back().second.second + 1,
+      this->getGameData().entities[0].back().second.second + 2,
       game_scale);
   this->getGraphicModule()->displayWindow();
 }

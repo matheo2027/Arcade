@@ -67,16 +67,16 @@ bool arcade::Snake::generateFood(
   bool is_empty = false;
   for (int i = 0; i < entities[0].size(); i += 1) {
     is_empty = true;
-    if (entities[0][i].first != EMPTY) {
+    if (entities[0][i].first != EMPTY)
       is_empty = false;
-    }
     for (int j = 0; j < entities[1].size(); j += 1) {
       if (entities[1][j].second == entities[0][i].second) {
         is_empty = false;
         break;
       }
     }
-    listPossibleEmpty.push_back(entities[0][i].second);
+    if (is_empty == true)
+      listPossibleEmpty.push_back(entities[0][i].second);
   }
   if (listPossibleEmpty.empty())
     return false;
