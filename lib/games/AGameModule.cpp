@@ -38,27 +38,6 @@ arcade::AGameModule::GameStatus arcade::AGameModule::getGameStatus() const
 }
 
 /**
- * @brief receive input from the graphic module
- *
- * @param input KeyboardInput
- */
-void arcade::AGameModule::sendInput(arcade::KeyboardInput input)
-{
-  return;
-}
-
-
-/**
- * @brief send the game data to the graphic module
- *
- * @return arcade::GameData
- */
-arcade::GameData arcade::AGameModule::sendGameData()
-{
-  return arcade::GameData();
-}
-
-/**
  * @brief set the core module to the game module
  *
  * @param coreModule

@@ -701,6 +701,25 @@ void arcade::CoreModule::updateRunning()
 {
   int game_scale = 30;
   std::pair<char, std::string> sprite;
+
+  std::vector<std::vector<std::pair<int, std::vector<std::pair<int, int>>>>>
+      allLayerSpritesCoordinates;
+  std::vector<std::pair<int, std::vector<std::pair<int, int>>>>
+      allSpritesCoordinates;
+  for (int j = 0; j < this->_gameData.entities.size(); j += 1) {
+    for (auto &i : this->_gameData.sprite_value) {
+      std::vector<std::pair<int, int>> coordinates;
+      for (size_t k = 0; k < this->_gameData.entities[j].size(); k += 1) {
+        if (this->_gameData.entities[j][k].first == i.first)
+          coordinates.push_back(
+              std::make_pair(this->_gameData.entities[j][k].second.first,
+                             this->_gameData.entities[j][k].second.second + 1));
+      }
+      allSpritesCoordinates.push_back(std::make_pair(i.first, coordinates));
+    }
+    allLayerSpritesCoordinates.push_back(allSpritesCoordinates);
+  }
+
   this->getGameModule()->updateGame();
   this->getGraphicModule()->clearWindow();
   this->getGraphicModule()->drawText(
@@ -712,15 +731,13 @@ void arcade::CoreModule::updateRunning()
       game_scale);
   // draw sprites on map
   for (size_t i = 0; i < this->getGameData().entities.size(); i += 1) {
-    for (size_t j = 0; j < this->getGameData().entities[i].size(); j += 1) {
-      sprite.first = this->getGameData().entities[i][j].first;
-      sprite.second =
-          this->getGameData()
-              .sprite_value[this->getGameData().entities[i][j].first];
-      this->getGraphicModule()->drawSprite(
+    for (size_t j = 0; j < allLayerSpritesCoordinates[i].size(); j += 1) {
+      sprite.first = allLayerSpritesCoordinates[i][j].first;
+      sprite.second = this->getGameData()
+                          .sprite_value[allLayerSpritesCoordinates[i][j].first];
+      this->getGraphicModule()->drawAllSprite(
           sprite,
-          this->getGameData().entities[i][j].second.first,
-          this->getGameData().entities[i][j].second.second + 1,
+          allLayerSpritesCoordinates[i][j].second,
           game_scale,
           game_scale);
     }

@@ -59,6 +59,33 @@ void arcade::Sfml::drawSprite(
   this->_window.draw(mySprite);
 }
 
+void arcade::Sfml::drawAllSprite(std::pair<char, std::string> sprite,
+                                 std::vector<std::pair<int, int>> coordinates,
+                                 int width,
+                                 int height)
+{
+  sf::Texture texture;
+  if (!texture.loadFromFile(sprite.second)) {
+    // Handle error
+    std::cerr << "Failed to load texture: " << sprite.second << std::endl;
+    return;
+  }
+
+  sf::Sprite mySprite;
+  mySprite.setTexture(texture);
+
+  for (std::pair<int, int> coord : coordinates) {
+    mySprite.setPosition(coord.first * width, coord.second * height);
+
+    // Calculate the scale factors
+    float scaleX = static_cast<float>(width) / texture.getSize().x;
+    float scaleY = static_cast<float>(height) / texture.getSize().y;
+    mySprite.setScale(scaleX, scaleY);
+
+    this->_window.draw(mySprite);
+  }
+}
+
 void arcade::Sfml::displayWindow() { this->_window.display(); }
 
 void arcade::Sfml::drawText(const std::string text, int x, int y, int size)

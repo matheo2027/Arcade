@@ -35,9 +35,6 @@ public:
   virtual void setGameStatus(GameStatus status) = 0;
   virtual GameStatus getGameStatus() const = 0;
 
-  virtual void sendInput(arcade::KeyboardInput input) = 0;
-  virtual arcade::GameData sendGameData() = 0;
-
   virtual void setCoreModule(arcade::CoreModule *coreModule) = 0;
   virtual arcade::CoreModule *getCoreModule() const = 0;
 
@@ -46,6 +43,8 @@ public:
   virtual timer getTimer() const = 0;
 
   virtual void handdleKeyEvents(arcade::KeyboardInput key) = 0;
+
+  virtual int getLayerCell(int layer, int x, int y) const = 0;
 
 protected:
   timer _timer;
