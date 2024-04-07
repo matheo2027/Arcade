@@ -757,7 +757,7 @@ void arcade::CoreModule::runningLoop()
 {
   arcade::KeyboardInput input;
   this->getGraphicModule()->clearWindow();
-  while (this->_coreStatus == CoreStatus::RUNNING) {
+  while (this->_coreStatus == arcade::IGameModule::GameStatus::RUNNING) {
     this->updateTimers();
     this->updateRunning();
     input = this->getGraphicModule()->getInput();
