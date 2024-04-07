@@ -758,7 +758,7 @@ void arcade::CoreModule::runningLoop()
 {
   arcade::KeyboardInput input;
   this->getGraphicModule()->clearWindow();
-  while (this->_coreStatus == CoreStatus::RUNNING) {
+  while (this->getGameModule()->getGameStatus() == arcade::IGameModule::RUNNING) {
     this->updateTimers();
     this->updateRunning();
     input = this->getGraphicModule()->getInput();
@@ -767,12 +767,14 @@ void arcade::CoreModule::runningLoop()
   }
   if (this->getGameModule()->getGameStatus() ==
       arcade::IGameModule::GameStatus::WIN) {
+    this->_coreStatus = arcade::ICoreModule::SELECTION;
     this->_gameData.score += 1000;
     addScoreInFile("scoreArcade/" + this->getGameModule()->getName() + ".txt",
                    this->_gameData.score,
                    this->_menuData._username);
   } else if (this->getGameModule()->getGameStatus() ==
              arcade::IGameModule::GameStatus::GAMEOVER) {
+    this->_coreStatus = arcade::ICoreModule::SELECTION;
     addScoreInFile("scoreArcade/" + this->getGameModule()->getName() + ".txt",
                    this->_gameData.score,
                    this->_menuData._username);

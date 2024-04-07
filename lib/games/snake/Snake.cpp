@@ -149,7 +149,6 @@ arcade::GameData arcade::Snake::moveSnake()
   for (int i = 2; i < snake.size(); i += 1) {
     if (snake[0].position == snake[i].position) {
       this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
-      this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
       return data;
     } else {
       for (int j = 1; j < snake.size(); j += 1) {
@@ -159,8 +158,6 @@ arcade::GameData arcade::Snake::moveSnake()
                              snake[0].position.second + j) ==
               snake[i].position) {
             this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
-            this->getCoreModule()->setCoreStatus(
-                arcade::ICoreModule::SELECTION);
             return data;
           }
           break;
@@ -169,8 +166,6 @@ arcade::GameData arcade::Snake::moveSnake()
                              snake[0].position.second - j) ==
               snake[i].position) {
             this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
-            this->getCoreModule()->setCoreStatus(
-                arcade::ICoreModule::SELECTION);
             return data;
           }
           break;
@@ -178,8 +173,6 @@ arcade::GameData arcade::Snake::moveSnake()
           if (std::make_pair(snake[0].position.first + j,
                              snake[0].position.second) == snake[i].position) {
             this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
-            this->getCoreModule()->setCoreStatus(
-                arcade::ICoreModule::SELECTION);
             return data;
           }
           break;
@@ -187,8 +180,6 @@ arcade::GameData arcade::Snake::moveSnake()
           if (std::make_pair(snake[0].position.first - j,
                              snake[0].position.second) == snake[i].position) {
             this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
-            this->getCoreModule()->setCoreStatus(
-                arcade::ICoreModule::SELECTION);
             return data;
           }
           break;
@@ -214,7 +205,6 @@ arcade::GameData arcade::Snake::moveSnake()
                          snake[0].position.second - (30 - SNAKE_SPEED)) ==
           WALL) {
     this->_gameStatus = arcade::IGameModule::GAMEOVER;
-    this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
     return data;
   }
 
@@ -261,7 +251,6 @@ arcade::GameData arcade::Snake::moveSnake()
   if (is_eating == true) {
     if (this->generateFood(data.entities) == false) {
       this->_gameStatus = arcade::IGameModule::WIN;
-      this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
     }
   }
   data.entities[SNAKE_LAYER] = snake;
