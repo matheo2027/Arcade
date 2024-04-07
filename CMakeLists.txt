@@ -23,7 +23,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 # Main arcade executable
-add_executable(arcade src/Main.cpp src/CoreModule.cpp)
+add_executable(arcade src/Main.cpp src/CoreModule.cpp src/Shell.cpp)
 
 add_subdirectory(interface)
 add_subdirectory(lib/graphics)
