@@ -13,14 +13,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_BUILD_TYPE Debug)  # Set build type to Debug
 
 # Enable AddressSanitizer
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+# set(CMAKE_CXX_FLAGS
+#     "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+# set(CMAKE_EXE_LINKER_FLAGS
+#     "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
 
 # Add debug flags
-if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
-endif()
-
+# if(CMAKE_COMPILER_IS_GNUCXX)
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
+# endif()
 
 # Main arcade executable
 add_executable(arcade src/Main.cpp src/CoreModule.cpp src/Shell.cpp)
@@ -29,16 +30,9 @@ add_subdirectory(interface)
 add_subdirectory(lib/graphics)
 add_subdirectory(lib/games)
 
-target_link_libraries(
-  arcade
-  arcade_interfaces
-)
+target_link_libraries(arcade arcade_interfaces)
 
-
-add_custom_command(
-  TARGET arcade
-  POST_BUILD
-  DEPENDS graphics_module)
+add_custom_command(TARGET arcade POST_BUILD DEPENDS graphics_module)
 
 # PREFIX
 
@@ -56,8 +50,7 @@ add_custom_command(
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_snake>
           ${LIB_DESTINATION}/arcade_snake.so
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/pacman)
 add_custom_command(
@@ -65,15 +58,13 @@ add_custom_command(
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_pacman>
           ${LIB_DESTINATION}/arcade_pacman.so
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sfml)
 add_custom_command(
   TARGET arcade
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sfml>
           ${LIB_DESTINATION}/arcade_sfml.so
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/ncurses)
 add_custom_command(
@@ -81,8 +72,7 @@ add_custom_command(
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_ncurses>
           ${LIB_DESTINATION}/arcade_ncurses.so
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sdl2)
 add_custom_command(
@@ -90,8 +80,7 @@ add_custom_command(
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_sdl2>
           ${LIB_DESTINATION}/arcade_sdl2.so
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # ########## DOXYGEN ###########
 
@@ -103,7 +92,7 @@ option(BUILD_DOC "Build documentation" ON)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   # set input and output files
-  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
+  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in)
   set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
   # request to configure the file
@@ -118,6 +107,29 @@ if(DOXYGEN_FOUND)
     WORKING_DIRECTORY ${MAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen"
     VERBATIM)
+
+  # Conditionally compile LaTeX to PDF and copy it
+  # Ensure Doxygen and LaTeX are available
+  find_package(LATEX) # This check is optional and serves to ensure Latex is
+                      # installed
+  if(LATEX_FOUND)
+    add_custom_command(
+      TARGET doc_doxygen
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E make_directory
+              ${CMAKE_CURRENT_SOURCE_DIR}/doc_doxygen/latex
+      COMMAND ${CMAKE_COMMAND} -E chdir
+              ${CMAKE_CURRENT_SOURCE_DIR}/doc_doxygen/latex make
+      COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/doc_doxygen/latex/refman.pdf
+        ${CMAKE_CURRENT_SOURCE_DIR}/doc
+      COMMENT
+        "Building PDF documentation with LaTeX and copying to doc directory")
+  else()
+    message("LaTeX not found, PDF documentation will not be generated.")
+  endif()
+
 else(DOXYGEN_FOUND)
   message("Doxygen need to be installed to generate the doxygen documentation")
 endif(DOXYGEN_FOUND)

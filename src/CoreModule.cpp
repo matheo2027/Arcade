@@ -58,12 +58,6 @@ arcade::CoreModule::~CoreModule()
       loader.second.DLLunloader();
     }
   }
-  if (this->_gameModule) {
-    delete this->_gameModule;
-  }
-  if (this->_graphicModule) {
-    delete this->_graphicModule;
-  }
 }
 
 /**
@@ -763,7 +757,7 @@ void arcade::CoreModule::runningLoop()
 {
   arcade::KeyboardInput input;
   this->getGraphicModule()->clearWindow();
-  while (this->getGameModule()->getGameStatus() == arcade::IGameModule::RUNNING) {
+  while (this->_coreStatus == CoreStatus::RUNNING) {
     this->updateTimers();
     this->updateRunning();
     input = this->getGraphicModule()->getInput();
@@ -816,7 +810,7 @@ void arcade::CoreModule::resetTimers(int index)
  *
  * @return arcade::AGameModule::timer
  */
-std::vector<arcade::ICoreModule::timer> arcade::CoreModule::getTimers() const
+std::vector<arcade::timer> arcade::CoreModule::getTimers() const
 {
   return this->_timers;
 }
@@ -826,7 +820,7 @@ std::vector<arcade::ICoreModule::timer> arcade::CoreModule::getTimers() const
  *
  * @return arcade::AGameModule::timer
  */
-void arcade::CoreModule::setTimers(std::vector<arcade::ICoreModule::timer> timers)
+void arcade::CoreModule::setTimers(std::vector<arcade::timer> timers)
 {
   this->_timers = timers;
 }

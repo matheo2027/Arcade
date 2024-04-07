@@ -9,6 +9,7 @@
 #define ARCADE_HPP_
 
 #include <Macros.hpp>
+#include <chrono>
 #include <map>
 #include <memory>
 #include <string.h>
@@ -36,6 +37,13 @@ struct GameData {
   std::string _description;
   int score;
 };
+
+struct timer {
+  std::chrono::_V2::steady_clock::time_point start;
+  std::chrono::_V2::steady_clock::time_point end;
+  std::chrono::milliseconds duration;
+};
+
 
 /**
  * @brief all the possible module types

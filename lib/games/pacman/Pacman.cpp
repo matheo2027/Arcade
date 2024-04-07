@@ -24,7 +24,11 @@ void arcade::Pacman::init()
   // Initialize the game
 
   //Ghosts clock
-  std::vector<arcade::ICoreModule::timer> timers =  this->getCoreModule()->getTimers();
+  std::vector<arcade::timer> timers =  this->getCoreModule()->getTimers();
+  timers.push_back({std::chrono::steady_clock::now(),
+                           std::chrono::steady_clock::now(),
+                           std::chrono::milliseconds(0)});
+  // Ghost unlock
   timers.push_back({std::chrono::steady_clock::now(),
                            std::chrono::steady_clock::now(),
                            std::chrono::milliseconds(0)});
@@ -129,7 +133,7 @@ std::string arcade::Pacman::getName() { return "pacman"; }
 void arcade::Pacman::updateGame()
 {
   arcade::GameData data = this->getCoreModule()->getGameData();
-  std::vector<arcade::ICoreModule::timer> timers =
+  std::vector<arcade::timer> timers =
       this->getCoreModule()->getTimers();
   int speedVector = timers[0].duration.count() / 10;
   if (speedVector > 0)
@@ -325,6 +329,13 @@ arcade::GameData arcade::Pacman::moveGhosts(arcade::GameData &data)
 {
   std::vector<arcade::entity> ghosts = data.entities[GHOSTS_LAYER];
 
+  // if ((this->_ghostState == FEAR || this->_ghostState == DEATH) && this->getCoreModule()->getTimers()[2].duration.count() > 10000) {
+  //   this->_ghostState = HUNTING;
+  //   for (int i = 0; i < ghosts.size(); i += 1) {
+  //     ghosts[i].sprite = GHOSTS;
+  //     deleteElementInLayer(data.entities[COIN_LAYER], ghosts[i].position.first, ghosts[i].position.second);
+  //   }
+  // }
 
   for (int i = 0; i < ghosts.size(); i += 1) {
     std::pair<int, int> ghostPos = ghosts[i].position;
@@ -391,6 +402,8 @@ arcade::GameData arcade::Pacman::moveGhosts(arcade::GameData &data)
       }
     }
   }
+
+
   data.entities[GHOSTS_LAYER] = ghosts;
   return data;
 }

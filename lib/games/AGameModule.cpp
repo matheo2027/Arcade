@@ -54,7 +54,6 @@ arcade::CoreModule *arcade::AGameModule::getCoreModule() const
   return this->_coreModule;
 }
 
-
 /**
  * @brief set the direction of the game
  *
