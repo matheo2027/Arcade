@@ -11,8 +11,6 @@
 
 arcade::Sdl2::Sdl2() : arcade::ADisplayModule()
 {
-  std::cout << "Sdl2 created start" << std::endl;
-
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     try {
@@ -94,7 +92,6 @@ arcade::Sdl2::Sdl2() : arcade::ADisplayModule()
 
 arcade::Sdl2::~Sdl2()
 {
-  std::cout << "Sdl2 destroyed" << std::endl;
   // Destroy renderer
   SDL_DestroyRenderer(this->_renderer);
 
@@ -148,8 +145,35 @@ void arcade::Sdl2::drawSprite(
     return;
   }
 
-  SDL_Rect rect = {x * width, y * height, width, height};
+  SDL_Rect rect = {x, y, width, height};
   SDL_RenderCopy(this->_renderer, texture, nullptr, &rect);
+
+  SDL_DestroyTexture(texture);
+  SDL_FreeSurface(surface);
+}
+
+void arcade::Sdl2::drawAllSprite(std::pair<char, std::string> sprite,
+                                 std::vector<std::pair<int, int>> coordinates,
+                                 int width,
+                                 int height)
+{
+  SDL_Surface *surface = IMG_Load(sprite.second.c_str());
+  if (surface == nullptr) {
+    std::cerr << "Failed to load image: " << IMG_GetError() << std::endl;
+    return;
+  }
+
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(this->_renderer, surface);
+  if (texture == nullptr) {
+    std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
+    SDL_FreeSurface(surface);
+    return;
+  }
+
+  for (std::pair<int, int> coord : coordinates) {
+    SDL_Rect rect = {coord.first, coord.second, width, height};
+    SDL_RenderCopy(this->_renderer, texture, nullptr, &rect);
+  }
 
   SDL_DestroyTexture(texture);
   SDL_FreeSurface(surface);
@@ -188,7 +212,7 @@ void arcade::Sdl2::drawText(const std::string text, int x, int y, int size)
   int textHeight = textSurface->h;
   SDL_FreeSurface(textSurface);
 
-  SDL_Rect renderQuad = {x * size, y * size, textWidth, textHeight};
+  SDL_Rect renderQuad = {x, y, textWidth, textHeight};
   SDL_RenderCopy(this->_renderer, textTexture, nullptr, &renderQuad);
 
   SDL_DestroyTexture(textTexture);

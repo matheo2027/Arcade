@@ -20,13 +20,18 @@
  *
  */
 namespace arcade {
+struct entity {
+  int sprite;
+  std::pair<int, int> position;
+};
+
 /**
  * @brief information about the game from the game module to the graphic
  * module
  *
  */
 struct GameData {
-  std::vector<std::vector<int>> display_info;
+  std::vector<std::vector<entity>> entities;
   std::map<unsigned int, std::string> sprite_value;
   std::string _description;
   int score;

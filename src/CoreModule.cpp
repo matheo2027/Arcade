@@ -30,6 +30,10 @@ arcade::CoreModule::CoreModule()
 Press ENTER to confirm the choice\n\
 Press TAB to switch to the next section";
   this->_menuData._type = arcade::ICoreModule::MenuSelection::USERNAME;
+  this->_timers.push_back({std::chrono::steady_clock::now(),
+                           std::chrono::steady_clock::now(),
+                           std::chrono::milliseconds(0)});
+  srand(time(NULL));
 }
 
 /**
@@ -125,7 +129,8 @@ void arcade::CoreModule::addLibList(std::string pathLib)
 {
   // arcade::CoreModule::DLLoader<arcade::ModuleType> loader(pathLib);
   arcade::CoreModule::_libList.push_back(DLLoader<arcade::ModuleType>(pathLib));
-  arcade::ModuleType module = arcade::CoreModule::_libList.back().getInstance("getType");
+  arcade::ModuleType module =
+      arcade::CoreModule::_libList.back().getInstance("getType");
   // arcade::ModuleType module = loader.getInstance("getType");
   switch (module) {
   case arcade::ModuleType::GAME:
@@ -180,21 +185,22 @@ void arcade::CoreModule::getLib(std::string pathLib)
 
 void arcade::CoreModule::loadLib(std::string pathLib)
 {
-  std::cout << "start Load lib :" << pathLib << std::endl;
-  // arcade::CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule(pathLib);
-  arcade::CoreModule::_libList.push_back(arcade::CoreModule::DLLoader<arcade::ModuleType>(pathLib));
-  arcade::ModuleType module = arcade::CoreModule::_libList.back().getInstance("getType");
-  // arcade::ModuleType module = loaderTypeModule.getInstance("getType");
-  // CoreModule::DLLoader<std::unique_ptr<arcade::IDisplayModule>> loaderGraphic(pathLib);
-  // CoreModule::DLLoader<std::unique_ptr<arcade::IGameModule>> loaderGame(pathLib);
-  arcade::CoreModule::_interfaceList.emplace_back(DLLoader<std::unique_ptr<arcade::IDisplayModule>>(pathLib), DLLoader<std::unique_ptr<arcade::IGameModule>>(pathLib));
+  arcade::CoreModule::_libList.push_back(
+      arcade::CoreModule::DLLoader<arcade::ModuleType>(pathLib));
+  arcade::ModuleType module =
+      arcade::CoreModule::_libList.back().getInstance("getType");
+  arcade::CoreModule::_interfaceList.emplace_back(
+      DLLoader<std::unique_ptr<arcade::IDisplayModule>>(pathLib),
+      DLLoader<std::unique_ptr<arcade::IGameModule>>(pathLib));
   switch (module) {
   case arcade::ModuleType::GAME:
     if (this->_gameModule) {
       delete this->_gameModule;
     }
     this->_gameModule =
-        std::move(arcade::CoreModule::_interfaceList.back().second.getInstance("entryPoint")).release();
+        std::move(arcade::CoreModule::_interfaceList.back().second.getInstance(
+                      "entryPoint"))
+            .release();
     this->_gameModule->setCoreModule(this);
     this->_gameModule->init();
     break;
@@ -208,7 +214,9 @@ void arcade::CoreModule::loadLib(std::string pathLib)
       delete this->_graphicModule;
     }
     this->_graphicModule =
-        std::move(arcade::CoreModule::_interfaceList.back().first.getInstance("entryPoint")).release();
+        std::move(arcade::CoreModule::_interfaceList.back().first.getInstance(
+                      "entryPoint"))
+            .release();
     this->_graphicModule->setCoreModule(this);
     break;
   default:
@@ -231,11 +239,9 @@ void arcade::CoreModule::generateScore()
   std::ofstream outputFile;
 
   for (std::string game_lib_path : this->_menuData._gameLibList) {
-
-    // DLLoader<std::string> loaderTypeModule(game_lib_path);
-    arcade::CoreModule::_nameLoader.push_back(DLLoader<std::string>(game_lib_path));
+    arcade::CoreModule::_nameLoader.push_back(
+        DLLoader<std::string>(game_lib_path));
     std::string moduleName = _nameLoader.back().getInstance("getName");
-    std::cout << moduleName << std::endl;
     FILE *fd = fopen(("scoreArcade/" + moduleName + ".txt").c_str(), "r");
     if (fd) {
       fclose(fd);
@@ -248,8 +254,6 @@ void arcade::CoreModule::generateScore()
       outputFile.close();
     }
   }
-
-  std::cout << "File created and written successfully!" << std::endl;
 }
 
 void arcade::CoreModule::launchSelection()
@@ -694,6 +698,25 @@ void arcade::CoreModule::updateRunning()
 {
   int game_scale = 30;
   std::pair<char, std::string> sprite;
+
+  std::vector<std::vector<std::pair<int, std::vector<std::pair<int, int>>>>>
+      allLayerSpritesCoordinates;
+  std::vector<std::pair<int, std::vector<std::pair<int, int>>>>
+      allSpritesCoordinates;
+  for (int j = 0; j < this->_gameData.entities.size(); j += 1) {
+    for (auto &i : this->_gameData.sprite_value) {
+      std::vector<std::pair<int, int>> coordinates;
+      for (size_t k = 0; k < this->_gameData.entities[j].size(); k += 1) {
+        if (this->_gameData.entities[j][k].sprite == i.first)
+          coordinates.push_back(std::make_pair(
+              this->_gameData.entities[j][k].position.first,
+              this->_gameData.entities[j][k].position.second + 30));
+      }
+      allSpritesCoordinates.push_back(std::make_pair(i.first, coordinates));
+    }
+    allLayerSpritesCoordinates.push_back(allSpritesCoordinates);
+  }
+
   this->getGameModule()->updateGame();
   this->getGraphicModule()->clearWindow();
   this->getGraphicModule()->drawText(
@@ -704,20 +727,23 @@ void arcade::CoreModule::updateRunning()
       0,
       game_scale);
   // draw sprites on map
-  for (size_t i = 0; i < this->getGameData().display_info.size(); i += 1) {
-    for (size_t j = 0; j < this->getGameData().display_info[i].size(); j += 1) {
-      sprite.first = this->getGameData().display_info[i][j];
+  for (size_t i = 0; i < this->getGameData().entities.size(); i += 1) {
+    for (size_t j = 0; j < allLayerSpritesCoordinates[i].size(); j += 1) {
+      sprite.first = allLayerSpritesCoordinates[i][j].first;
       sprite.second = this->getGameData()
-                          .sprite_value[this->getGameData().display_info[i][j]];
-      this->getGraphicModule()->drawSprite(
-          sprite, j, i + 1, game_scale, game_scale);
+                          .sprite_value[allLayerSpritesCoordinates[i][j].first];
+      this->getGraphicModule()->drawAllSprite(
+          sprite,
+          allLayerSpritesCoordinates[i][j].second,
+          game_scale,
+          game_scale);
     }
   }
-  this->getGraphicModule()->drawText(this->_gameData._description,
-                                     0,
-                                     this->getGameData().display_info.size() +
-                                         1,
-                                     game_scale);
+  this->getGraphicModule()->drawText(
+      this->_gameData._description,
+      0,
+      this->getGameData().entities[0].back().position.second + (2 * 30),
+      game_scale);
   this->getGraphicModule()->displayWindow();
 }
 
@@ -738,6 +764,7 @@ void arcade::CoreModule::runningLoop()
   arcade::KeyboardInput input;
   this->getGraphicModule()->clearWindow();
   while (this->_coreStatus == CoreStatus::RUNNING) {
+    this->updateTimers();
     this->updateRunning();
     input = this->getGraphicModule()->getInput();
     this->handleKeyEvent(input);
@@ -755,4 +782,39 @@ void arcade::CoreModule::runningLoop()
                    this->_gameData.score,
                    this->_menuData._username);
   }
+}
+
+/**
+ * @brief update the timer
+ *
+ */
+void arcade::CoreModule::updateTimers()
+{
+  for (int i = 0; i < this->_timers.size(); i += 1) {
+    this->_timers[i].end = std::chrono::steady_clock::now();
+    this->_timers[i].duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            this->_timers[i].end - this->_timers[i].start);
+  }
+}
+
+/**
+ * @brief reset the timer
+ *
+ */
+void arcade::CoreModule::resetTimers(int index)
+{
+  if (index >= this->_timers.size())
+    throw std::exception();
+  this->_timers[index].start = std::chrono::steady_clock::now();
+}
+
+/**
+ * @brief get the timer
+ *
+ * @return arcade::AGameModule::timer
+ */
+std::vector<arcade::ICoreModule::timer> arcade::CoreModule::getTimers() const
+{
+  return this->_timers;
 }

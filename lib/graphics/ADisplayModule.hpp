@@ -29,6 +29,10 @@ public:
                           int y,
                           int width,
                           int height) = 0;
+  virtual void drawAllSprite(std::pair<char, std::string> sprite,
+                             std::vector<std::pair<int, int>> coordinates,
+                             int width,
+                             int height) = 0;
   virtual void drawText(const std::string text, int x, int y, int size) = 0;
 };
 }; // namespace arcade

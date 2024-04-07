@@ -11,10 +11,7 @@
  * @brief Construct a new arcade::A Game Module::A Game Module object
  *
  */
-arcade::AGameModule::AGameModule()
-{
-  this->_gameStatus = GameStatus::RUNNING;
-}
+arcade::AGameModule::AGameModule() { this->_gameStatus = GameStatus::RUNNING; }
 
 /**
  * @brief Destroy the arcade::A Game Module::A Game Module object
@@ -38,27 +35,6 @@ arcade::AGameModule::GameStatus arcade::AGameModule::getGameStatus() const
 }
 
 /**
- * @brief receive input from the graphic module
- *
- * @param input KeyboardInput
- */
-void arcade::AGameModule::sendInput(arcade::KeyboardInput input)
-{
-  return;
-}
-
-
-/**
- * @brief send the game data to the graphic module
- *
- * @return arcade::GameData
- */
-arcade::GameData arcade::AGameModule::sendGameData()
-{
-  return arcade::GameData();
-}
-
-/**
  * @brief set the core module to the game module
  *
  * @param coreModule
@@ -78,34 +54,6 @@ arcade::CoreModule *arcade::AGameModule::getCoreModule() const
   return this->_coreModule;
 }
 
-/**
- * @brief update the timer
- *
- */
-void arcade::AGameModule::updateTimer()
-{
-  this->_timer.end = std::chrono::steady_clock::now();
-  this->_timer.duration = std::chrono::duration_cast<std::chrono::milliseconds>(this->_timer.end - this->_timer.start);
-}
-
-/**
- * @brief reset the timer
- *
- */
-void arcade::AGameModule::resetTimer()
-{
-  this->_timer.start = this->_timer.end;
-}
-
-/**
- * @brief get the timer
- *
- * @return arcade::AGameModule::timer
- */
-arcade::AGameModule::timer arcade::AGameModule::getTimer() const
-{
-  return this->_timer;
-}
 
 /**
  * @brief set the direction of the game
@@ -125,4 +73,23 @@ void arcade::AGameModule::setDirection(arcade::KeyboardInput direction)
 arcade::KeyboardInput arcade::AGameModule::getDirection() const
 {
   return this->_direction;
+}
+
+/**
+ * @brief get the cell of the map
+ *
+ * @param x
+ * @param y
+ * @return int
+ */
+int arcade::AGameModule::getLayerCell(int layer, int x, int y) const
+{
+  std::vector<arcade::entity> selectedLayer =
+      this->_coreModule->getGameData().entities[layer];
+  for (size_t cell = 0; cell < selectedLayer.size(); cell++) {
+    if (selectedLayer[cell].position.first == x &&
+        selectedLayer[cell].position.second == y)
+      return selectedLayer[cell].sprite;
+  }
+  return -1;
 }

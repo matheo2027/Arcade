@@ -28,7 +28,7 @@ public:
   void movePacman(arcade::GameData &data);
   std::vector<std::pair<int, int>> getPacman() const;
   void setPacman(std::vector<std::pair<int, int>> pacman);
-  std::pair<int, int> getPacmanPos(arcade::GameData &data);
+  // std::pair<int, int> getPacmanPos(arcade::GameData &data);
 
 protected:
   std::vector<std::pair<int, int>> _pacman;

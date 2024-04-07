@@ -15,35 +15,47 @@ arcade::Snake::Snake() : arcade::AGameModule() {}
 
 void arcade::Snake::init()
 {
-  int height = 21;
-  int width = 21;
+  int height = 21 * 30;
+  int width = 21 * 30;
+  int nb_sprite_x = width / 30;
+  int nb_sprite_y = height / 30;
+  this->_oldDirection = arcade::KeyboardInput::RIGHT;
   arcade::GameData gameData;
   gameData.score = 0;
   gameData._description =
       "RULES:\n- Eat the food to grow\n- Don't hit the walls or "
       "yourself\nCONTROLS:\n- UP/DOWN/LEFT/RIGHT: Move";
-  for (int i = 0; i < height; i += 1) {
-    gameData.display_info.push_back(std::vector<int>(width));
-    for (int j = 0; j < width; j += 1) {
-      if (i == 0 || i == height - 1 || j == 0 || j == width - 1) {
-        gameData.display_info[i][j] = WALL;
+  std::vector<arcade::entity> map;
+  for (int i = 0; i < nb_sprite_y; i += 1) {
+    for (int j = 0; j < nb_sprite_x; j += 1) {
+      if (i == 0 || i == nb_sprite_y - 1 || j == 0 || j == nb_sprite_x - 1) {
+        map.push_back((arcade::entity){
+            .sprite = WALL, .position = std::make_pair(j * 30, i * 30)});
       } else {
-        gameData.display_info[i][j] = EMPTY;
+        map.push_back((arcade::entity){
+            .sprite = EMPTY, .position = std::make_pair(j * 30, i * 30)});
       }
     }
   }
-  gameData.display_info[height / 2][width / 2] = HEAD;
-  this->_snake.push_back(std::make_pair(height / 2, width / 2));
+  gameData.entities.push_back(map);
+
+  std::vector<arcade::entity> food;
+  gameData.entities.push_back(food);
+
+  std::vector<arcade::entity> snake;
+  snake.push_back(
+      (arcade::entity){.sprite = HEAD, .position = std::make_pair(300, 300)});
   for (int i = 1; i < 4; i += 1) {
-    gameData.display_info[height / 2][width / 2 - i] = BODY;
-    this->_snake.push_back(std::make_pair(height / 2, width / 2 - i));
+    snake.push_back((arcade::entity){
+        .sprite = BODY, .position = std::make_pair(300 - (i * 30), 300)});
   }
-  gameData.sprite_value[EMPTY] = "assets/default/map/map1.png";
+  gameData.entities.push_back(snake);
+  gameData.sprite_value[EMPTY] = "assets/snake/map/map1.png";
   gameData.sprite_value[WALL] = "assets/default/map/map2.png";
-  gameData.sprite_value[HEAD] = "assets/default/npc/npc1.png";
-  gameData.sprite_value[BODY] = "assets/default/npc/npc2.png";
-  gameData.sprite_value[FOOD] = "assets/default/item/item1.png";
-  this->generateFood(gameData.display_info);
+  gameData.sprite_value[HEAD] = "assets/snake/npc/npc1.png";
+  gameData.sprite_value[BODY] = "assets/snake/npc/npc2.png";
+  gameData.sprite_value[FOOD] = "assets/snake/item/item1.png";
+  this->generateFood(gameData.entities);
   this->getCoreModule()->setGameData(gameData);
   this->setDirection(arcade::KeyboardInput::RIGHT);
 }
@@ -56,91 +68,149 @@ arcade::Snake::~Snake() {}
 
 std::string arcade::Snake::getName() { return "snake"; }
 
-void arcade::Snake::generateFood(std::vector<std::vector<int>> &display_info)
+bool arcade::Snake::generateFood(
+    std::vector<std::vector<arcade::entity>> &entities)
 {
-  int x = rand() % 20;
-  int y = rand() % 20;
-  while (display_info[x][y] != EMPTY) {
-    x = rand() % 20;
-    y = rand() % 20;
+  std::vector<std::pair<int, int>> listPossibleEmpty;
+  bool is_empty = false;
+  for (int i = 0; i < entities[MAP_LAYER].size(); i += 1) {
+    is_empty = true;
+    if (entities[MAP_LAYER][i].sprite != EMPTY)
+      is_empty = false;
+    for (int j = 0; j < entities[SNAKE_LAYER].size(); j += 1) {
+      if (entities[SNAKE_LAYER][j].position == entities[MAP_LAYER][i].position) {
+        is_empty = false;
+        break;
+      }
+    }
+    if (is_empty == true)
+      listPossibleEmpty.push_back(entities[MAP_LAYER][i].position);
   }
-  display_info[x][y] = FOOD;
+  if (listPossibleEmpty.empty())
+    return false;
+  int index = rand() % listPossibleEmpty.size();
+  if (!entities[FOOD_LAYER].empty())
+    entities[FOOD_LAYER].clear();
+  entities[FOOD_LAYER].push_back(
+      (arcade::entity){.sprite = FOOD, .position = listPossibleEmpty[index]});
+  return true;
 }
 
-void arcade::Snake::moveSnake(arcade::GameData &data)
+arcade::GameData arcade::Snake::moveSnake()
 {
+  arcade::GameData data = this->getCoreModule()->getGameData();
   bool is_eating = false;
-  std::pair<int, int> head = this->_snake[0];
-  std::pair<int, int> new_head = head;
-  std::pair<int, int> tail = this->_snake[this->_snake.size() - 1];
+  std::vector<arcade::entity> snake = data.entities[SNAKE_LAYER];
+  std::pair<int, int> head = snake.front().position;
+  std::pair<int, int> tail = snake.back().position;
 
   // Move the snake
-  switch (this->getDirection()) {
+  if (this->_direction == arcade::KeyboardInput::UP && head.first % 30 == 0) {
+    this->_oldDirection = this->_direction;
+  } else if (this->_direction == arcade::KeyboardInput::DOWN &&
+             head.first % 30 == 0) {
+    this->_oldDirection = this->_direction;
+  } else if (this->_direction == arcade::KeyboardInput::LEFT &&
+             head.second % 30 == 0) {
+    this->_oldDirection = this->_direction;
+  } else if (this->_direction == arcade::KeyboardInput::RIGHT &&
+             head.second % 30 == 0) {
+    this->_oldDirection = this->_direction;
+  }
+
+  switch (this->_oldDirection) {
   case arcade::KeyboardInput::UP:
-    new_head = std::make_pair(head.first - 1, head.second);
-    if (this->_snake[1] == new_head) {
-      new_head = std::make_pair(head.first + 1, head.second);
-    }
+    snake.front().position.second -= SNAKE_SPEED;
     break;
   case arcade::KeyboardInput::DOWN:
-    new_head = std::make_pair(head.first + 1, head.second);
-    if (this->_snake[1] == new_head) {
-      new_head = std::make_pair(head.first - 1, head.second);
-    }
+    snake.front().position.second += SNAKE_SPEED;
     break;
   case arcade::KeyboardInput::LEFT:
-    new_head = std::make_pair(head.first, head.second - 1);
-    if (this->_snake[1] == new_head) {
-      new_head = std::make_pair(head.first, head.second + 1);
-    }
+    snake.front().position.first -= SNAKE_SPEED;
     break;
   case arcade::KeyboardInput::RIGHT:
-    new_head = std::make_pair(head.first, head.second + 1);
-    if (this->_snake[1] == new_head) {
-      new_head = std::make_pair(head.first, head.second - 1);
-    }
+    snake.front().position.first += SNAKE_SPEED;
     break;
   }
 
-  // Check if the snake is eating a coin
-  if (data.display_info[new_head.first][new_head.second] == FOOD) {
+  // Check if the snake is eating a FOOD
+  if (snake.front().position == data.entities[FOOD_LAYER].front().position) {
     is_eating = true;
-    this->_snake.push_back(tail);
+    snake.push_back((arcade::entity){.sprite = BODY, .position = tail});
     data.score += 10;
   }
 
+  // Check if the snake eats itself
+  for (int i = 1; i < snake.size(); i++) {
+    if (snake[0].position == snake[i].position) {
+      this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
+      return data;
+    }
+  }
   // Check if the snake is hitting a wall
-  if (data.display_info[new_head.first][new_head.second] == WALL ||
-      data.display_info[new_head.first][new_head.second] == BODY) {
+  if (this->getLayerCell(
+          0, snake[0].position.first, snake[0].position.second) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first + 29, snake[0].position.second) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first - 29, snake[0].position.second) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first, snake[0].position.second + 29) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first, snake[0].position.second - 29) == WALL) {
     this->_gameStatus = arcade::IGameModule::GAMEOVER;
     this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
-    return;
+    return data;
   }
 
-  // clear the map
-  for (int i = 1; i < data.display_info.size() - 1; i++) {
-    for (int j = 1; j < data.display_info[i].size() - 1; j++) {
-      if (data.display_info[i][j] != FOOD)
-        data.display_info[i][j] = EMPTY;
+  // update body position
+  for (int i = 1; i < snake.size(); i++) {
+    if (snake[i].position.first + 30 < snake[i - 1].position.first &&
+        snake[i].position.second == snake[i - 1].position.second)
+      snake[i].position = std::make_pair(snake[i].position.first + SNAKE_SPEED,
+                                         snake[i].position.second);
+    else if (snake[i].position.first - 30 > snake[i - 1].position.first &&
+             snake[i].position.second == snake[i - 1].position.second)
+      snake[i].position = std::make_pair(snake[i].position.first - SNAKE_SPEED,
+                                         snake[i].position.second);
+    else if (snake[i].position.second + 30 < snake[i - 1].position.second &&
+             snake[i].position.first == snake[i - 1].position.first)
+      snake[i].position = std::make_pair(
+          snake[i].position.first, snake[i].position.second + SNAKE_SPEED);
+    else if (snake[i].position.second - 30 > snake[i - 1].position.second &&
+             snake[i].position.first == snake[i - 1].position.first)
+      snake[i].position = std::make_pair(
+          snake[i].position.first, snake[i].position.second - SNAKE_SPEED);
+    else {
+      if (snake[i - 1].position.second % 30 != 0 ||
+          snake[i].position.first % 30 != 0) {
+        if (snake[i].position.first < snake[i - 1].position.first)
+          snake[i].position = std::make_pair(
+              snake[i].position.first + SNAKE_SPEED, snake[i].position.second);
+        else
+          snake[i].position = std::make_pair(
+              snake[i].position.first - SNAKE_SPEED, snake[i].position.second);
+      } else if (snake[i - 1].position.first % 30 != 0 ||
+                 snake[i].position.second % 30 != 0) {
+        if (snake[i].position.second < snake[i - 1].position.second)
+          snake[i].position = std::make_pair(
+              snake[i].position.first, snake[i].position.second + SNAKE_SPEED);
+        else
+          snake[i].position = std::make_pair(
+              snake[i].position.first, snake[i].position.second - SNAKE_SPEED);
+      }
     }
   }
 
-  // Update the snake
-  this->_snake.insert(this->_snake.begin(), new_head);
-  this->_snake.pop_back();
-
-  // Update the map
-  for (int i = 0; i < this->_snake.size(); i++) {
-    if (i == 0)
-      data.display_info[this->_snake[i].first][this->_snake[i].second] = HEAD;
-    else
-      data.display_info[this->_snake[i].first][this->_snake[i].second] = BODY;
-  }
-
-  // add a coin
+  // add a food if the snake is eating
   if (is_eating == true) {
-    this->generateFood(data.display_info);
+    if (this->generateFood(data.entities) == false) {
+      this->_gameStatus = arcade::IGameModule::WIN;
+      this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
+    }
   }
+  data.entities[SNAKE_LAYER] = snake;
+  return data;
 }
 
 /**
@@ -179,34 +249,15 @@ void arcade::Snake::handdleKeyEvents(arcade::KeyboardInput key)
 void arcade::Snake::updateGame()
 {
   arcade::GameData data = this->getCoreModule()->getGameData();
-  this->updateTimer();
-  if (this->getTimer().duration.count() >= 250) {
-    this->resetTimer();
-    // Update the game
-    this->moveSnake(data);
+  std::vector<arcade::ICoreModule::timer> timers =
+      this->getCoreModule()->getTimers();
+  int speedVector = timers[0].duration.count() / 10;
+  if (speedVector > 0)
+    this->getCoreModule()->resetTimers(0);
+  for (int i = 0; i < speedVector; i += 1) {
+    data = this->moveSnake();
   }
   this->getCoreModule()->setGameData(data);
-  return;
-}
-
-/**
- * @brief get the snake
- *
- * @return std::vector<std::pair<int, int>>
- */
-std::vector<std::pair<int, int>> arcade::Snake::getSnake() const
-{
-  return this->_snake;
-}
-
-/**
- * @brief set the snake
- *
- * @param snake
- */
-void arcade::Snake::setSnake(std::vector<std::pair<int, int>> snake)
-{
-  this->_snake = snake;
 }
 
 /**

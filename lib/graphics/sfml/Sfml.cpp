@@ -14,7 +14,6 @@
  */
 arcade::Sfml::Sfml() : arcade::ADisplayModule()
 {
-  std::cout << "Sfml created" << std::endl;
   this->_window.create(sf::VideoMode(1920, 1080), "Arcade");
   this->_window.setFramerateLimit(60);
   this->_window.clear(sf::Color::Black);
@@ -25,11 +24,7 @@ arcade::Sfml::Sfml() : arcade::ADisplayModule()
  * @brief Destroy the arcade::Sfml::Sfml object
  *
  */
-arcade::Sfml::~Sfml()
-{
-  std::cout << "Sfml destroyed" << std::endl;
-  this->_window.close();
-}
+arcade::Sfml::~Sfml() { this->_window.close(); }
 
 std::string arcade::Sfml::getName() { return "sfml"; }
 
@@ -59,6 +54,33 @@ void arcade::Sfml::drawSprite(
   this->_window.draw(mySprite);
 }
 
+void arcade::Sfml::drawAllSprite(std::pair<char, std::string> sprite,
+                                 std::vector<std::pair<int, int>> coordinates,
+                                 int width,
+                                 int height)
+{
+  sf::Texture texture;
+  if (!texture.loadFromFile(sprite.second)) {
+    // Handle error
+    std::cerr << "Failed to load texture: " << sprite.second << std::endl;
+    return;
+  }
+
+  sf::Sprite mySprite;
+  mySprite.setTexture(texture);
+
+  for (std::pair<int, int> coord : coordinates) {
+    mySprite.setPosition(coord.first, coord.second);
+
+    // Calculate the scale factors
+    float scaleX = static_cast<float>(width) / texture.getSize().x;
+    float scaleY = static_cast<float>(height) / texture.getSize().y;
+    mySprite.setScale(scaleX, scaleY);
+
+    this->_window.draw(mySprite);
+  }
+}
+
 void arcade::Sfml::displayWindow() { this->_window.display(); }
 
 void arcade::Sfml::drawText(const std::string text, int x, int y, int size)
@@ -72,7 +94,7 @@ void arcade::Sfml::drawText(const std::string text, int x, int y, int size)
   sfText.setFont(font);
   sfText.setCharacterSize(size);
   sfText.setFillColor(sf::Color::White);
-  sfText.setPosition(x * size, y * size);
+  sfText.setPosition(x, y);
   sfText.setString(text);
   this->_window.draw(sfText);
 }
