@@ -818,3 +818,13 @@ std::vector<arcade::ICoreModule::timer> arcade::CoreModule::getTimers() const
 {
   return this->_timers;
 }
+
+/**
+ * @brief get the timer
+ *
+ * @return arcade::AGameModule::timer
+ */
+void arcade::CoreModule::setTimers(std::vector<arcade::ICoreModule::timer> timers)
+{
+  this->_timers = timers;
+}

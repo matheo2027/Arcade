@@ -75,6 +75,8 @@ public:
   virtual void updateTimers() = 0;
   virtual void resetTimers(int index) = 0;
   virtual std::vector<timer> getTimers() const = 0;
+  virtual void setTimers(std::vector<arcade::ICoreModule::timer> timers) = 0;
+
 
 protected:
   CoreStatus _coreStatus;

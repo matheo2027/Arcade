@@ -13,11 +13,31 @@
 namespace arcade {
 class Pacman : virtual public arcade::AGameModule {
 public:
-  #define WALL 'W'
+  #define WALL '#'
   #define EMPTY ' '
   #define GHOSTS 'G'
+  #define SCAREDGHOSTS 'S'
   #define PACMAN 'P'
-  #define PACGUM 'C'
+  #define COIN '*'
+  #define SUPERPACGUM 'F'
+  #define PACMAN_START std::make_pair(300, 360)
+  #define GHOST_START_1 std::make_pair(270, 270)
+  #define GHOST_START_2 std::make_pair(270, 300)
+  #define GHOST_START_3 std::make_pair(330, 270)
+  #define GHOST_START_4 std::make_pair(330, 300)
+  #define MAP_LAYER 0
+  #define COIN_LAYER 1
+  #define PACMAN_LAYER 2
+  #define GHOSTS_LAYER 3
+  #define GHOSTS_DEATH 'D'
+
+  enum ghostState {HUNTING, FEAR, DEATH};
+
+  struct ghost {
+    std::pair<int, int> destination;
+    arcade::KeyboardInput direction;
+  };
+
 
   Pacman();
   ~Pacman();
@@ -25,15 +45,16 @@ public:
   void init();
   void updateGame();
   void handdleKeyEvents(arcade::KeyboardInput key);
-  void movePacman(arcade::GameData &data);
-  std::vector<std::pair<int, int>> getPacman() const;
-  void setPacman(std::vector<std::pair<int, int>> pacman);
-  // std::pair<int, int> getPacmanPos(arcade::GameData &data);
+  arcade::GameData movePacman(arcade::GameData &data);
+  arcade::GameData moveGhosts(arcade::GameData &data);
+  bool isGhostsHittingWall(arcade::entity ghosts);
 
 protected:
-  std::vector<std::pair<int, int>> _pacman;
-  std::vector<std::pair<int, int>> _ghost;
-  std::vector<std::pair<int, int>> _pacgum;
+  std::vector<ghost> _ghost;
+  ghostState _ghostState;
+  int _ghostspeed;
+  int _gameSpeed;
+
 };
 }; // namespace arcade
 
