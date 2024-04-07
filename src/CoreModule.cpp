@@ -758,7 +758,7 @@ void arcade::CoreModule::runningLoop()
 {
   arcade::KeyboardInput input;
   this->getGraphicModule()->clearWindow();
-  while (this->getGameModule()->getGameStatus() == arcade::IGameModule::RUNNING) {
+  while (this->_coreStatus == CoreStatus::RUNNING) {
     this->updateTimers();
     this->updateRunning();
     input = this->getGraphicModule()->getInput();
@@ -811,7 +811,7 @@ void arcade::CoreModule::resetTimers(int index)
  *
  * @return arcade::AGameModule::timer
  */
-std::vector<arcade::ICoreModule::timer> arcade::CoreModule::getTimers() const
+std::vector<arcade::timer> arcade::CoreModule::getTimers() const
 {
   return this->_timers;
 }

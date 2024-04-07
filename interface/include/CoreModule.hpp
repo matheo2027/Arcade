@@ -54,7 +54,7 @@ public:
 
   void updateTimers();
   void resetTimers(int index);
-  std::vector<arcade::ICoreModule::timer> getTimers() const;
+  std::vector<arcade::timer> getTimers() const;
 
   template <typename T>
   class DLLoader {

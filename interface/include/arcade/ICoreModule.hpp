@@ -11,7 +11,6 @@
 #include <Arcade.hpp>
 #include <arcade/IDisplayModule.hpp>
 #include <arcade/IGameModule.hpp>
-#include <chrono>
 #include <dirent.h>
 #include <iostream>
 
@@ -65,12 +64,6 @@ public:
   virtual void updateRunning() = 0;
   virtual void selectionLoop() = 0;
   virtual void updateSelection() = 0;
-
-  struct timer {
-    std::chrono::_V2::steady_clock::time_point start;
-    std::chrono::_V2::steady_clock::time_point end;
-    std::chrono::milliseconds duration;
-  };
 
   virtual void updateTimers() = 0;
   virtual void resetTimers(int index) = 0;
