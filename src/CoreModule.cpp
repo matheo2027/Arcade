@@ -33,6 +33,7 @@ Press TAB to switch to the next section";
   this->_timers.push_back({std::chrono::steady_clock::now(),
                            std::chrono::steady_clock::now(),
                            std::chrono::milliseconds(0)});
+  srand(time(NULL));
 }
 
 /**
@@ -704,7 +705,7 @@ void arcade::CoreModule::updateRunning()
         if (this->_gameData.entities[j][k].sprite == i.first)
           coordinates.push_back(std::make_pair(
               this->_gameData.entities[j][k].position.first,
-              this->_gameData.entities[j][k].position.second + 1));
+              this->_gameData.entities[j][k].position.second + 30));
       }
       allSpritesCoordinates.push_back(std::make_pair(i.first, coordinates));
     }
@@ -736,7 +737,7 @@ void arcade::CoreModule::updateRunning()
   this->getGraphicModule()->drawText(
       this->_gameData._description,
       0,
-      this->getGameData().entities[0].back().position.second + 2,
+      this->getGameData().entities[0].back().position.second + (2 * 30),
       game_scale);
   this->getGraphicModule()->displayWindow();
 }

@@ -38,6 +38,10 @@ void arcade::Snake::init()
     }
   }
   gameData.entities.push_back(map);
+
+  std::vector<arcade::entity> food;
+  gameData.entities.push_back(food);
+
   std::vector<arcade::entity> snake;
   snake.push_back(
       (arcade::entity){.sprite = HEAD, .position = std::make_pair(300, 300)});
@@ -46,13 +50,11 @@ void arcade::Snake::init()
         .sprite = BODY, .position = std::make_pair(300 - (i * 30), 300)});
   }
   gameData.entities.push_back(snake);
-  gameData.sprite_value[EMPTY] = "assets/default/map/map1.png";
+  gameData.sprite_value[EMPTY] = "assets/snake/map/map1.png";
   gameData.sprite_value[WALL] = "assets/default/map/map2.png";
-  gameData.sprite_value[HEAD] = "assets/default/npc/npc1.png";
-  gameData.sprite_value[BODY] = "assets/default/npc/npc2.png";
-  gameData.sprite_value[FOOD] = "assets/default/item/item1.png";
-  std::vector<arcade::entity> food;
-  gameData.entities.push_back(food);
+  gameData.sprite_value[HEAD] = "assets/snake/npc/npc1.png";
+  gameData.sprite_value[BODY] = "assets/snake/npc/npc2.png";
+  gameData.sprite_value[FOOD] = "assets/snake/item/item1.png";
   this->generateFood(gameData.entities);
   this->getCoreModule()->setGameData(gameData);
   this->setDirection(arcade::KeyboardInput::RIGHT);
@@ -71,25 +73,25 @@ bool arcade::Snake::generateFood(
 {
   std::vector<std::pair<int, int>> listPossibleEmpty;
   bool is_empty = false;
-  for (int i = 0; i < entities[0].size(); i += 1) {
+  for (int i = 0; i < entities[MAP_LAYER].size(); i += 1) {
     is_empty = true;
-    if (entities[0][i].sprite != EMPTY)
+    if (entities[MAP_LAYER][i].sprite != EMPTY)
       is_empty = false;
-    for (int j = 0; j < entities[1].size(); j += 1) {
-      if (entities[1][j].position == entities[0][i].position) {
+    for (int j = 0; j < entities[SNAKE_LAYER].size(); j += 1) {
+      if (entities[SNAKE_LAYER][j].position == entities[MAP_LAYER][i].position) {
         is_empty = false;
         break;
       }
     }
     if (is_empty == true)
-      listPossibleEmpty.push_back(entities[0][i].position);
+      listPossibleEmpty.push_back(entities[MAP_LAYER][i].position);
   }
   if (listPossibleEmpty.empty())
     return false;
   int index = rand() % listPossibleEmpty.size();
-  if (!entities[2].empty())
-    entities[2].clear();
-  entities[2].push_back(
+  if (!entities[FOOD_LAYER].empty())
+    entities[FOOD_LAYER].clear();
+  entities[FOOD_LAYER].push_back(
       (arcade::entity){.sprite = FOOD, .position = listPossibleEmpty[index]});
   return true;
 }
@@ -98,10 +100,9 @@ arcade::GameData arcade::Snake::moveSnake()
 {
   arcade::GameData data = this->getCoreModule()->getGameData();
   bool is_eating = false;
-  std::vector<arcade::entity> snake = data.entities[1];
+  std::vector<arcade::entity> snake = data.entities[SNAKE_LAYER];
   std::pair<int, int> head = snake.front().position;
   std::pair<int, int> tail = snake.back().position;
-  std::pair<int, int> new_tail = tail;
 
   // Move the snake
   if (this->_direction == arcade::KeyboardInput::UP && head.first % 30 == 0) {
@@ -133,10 +134,9 @@ arcade::GameData arcade::Snake::moveSnake()
   }
 
   // Check if the snake is eating a FOOD
-  if (snake.front().position == data.entities[2].front().position) {
+  if (snake.front().position == data.entities[FOOD_LAYER].front().position) {
     is_eating = true;
-    snake.push_back(
-        (arcade::entity){.sprite = BODY, .position = tail});
+    snake.push_back((arcade::entity){.sprite = BODY, .position = tail});
     data.score += 10;
   }
 
@@ -148,21 +148,16 @@ arcade::GameData arcade::Snake::moveSnake()
     }
   }
   // Check if the snake is hitting a wall
-  if (this->getLayerCell(0,
-                         snake[0].position.first,
-                         snake[0].position.second) == 'W' ||
-      this->getLayerCell(0,
-                         snake[0].position.first + 29,
-                         snake[0].position.second) == 'W' ||
-      this->getLayerCell(0,
-                         snake[0].position.first - 29,
-                         snake[0].position.second) == 'W' ||
-      this->getLayerCell(0,
-                         snake[0].position.first,
-                         snake[0].position.second + 29) == 'W' ||
-      this->getLayerCell(0,
-                         snake[0].position.first,
-                         snake[0].position.second - 29) == 'W') {
+  if (this->getLayerCell(
+          0, snake[0].position.first, snake[0].position.second) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first + 29, snake[0].position.second) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first - 29, snake[0].position.second) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first, snake[0].position.second + 29) == WALL ||
+      this->getLayerCell(
+          0, snake[0].position.first, snake[0].position.second - 29) == WALL) {
     this->_gameStatus = arcade::IGameModule::GAMEOVER;
     this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
     return data;
@@ -214,7 +209,7 @@ arcade::GameData arcade::Snake::moveSnake()
       this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
     }
   }
-  data.entities[1] = snake;
+  data.entities[SNAKE_LAYER] = snake;
   return data;
 }
 

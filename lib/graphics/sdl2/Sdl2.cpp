@@ -212,7 +212,7 @@ void arcade::Sdl2::drawText(const std::string text, int x, int y, int size)
   int textHeight = textSurface->h;
   SDL_FreeSurface(textSurface);
 
-  SDL_Rect renderQuad = {x * size, y * size, textWidth, textHeight};
+  SDL_Rect renderQuad = {x, y, textWidth, textHeight};
   SDL_RenderCopy(this->_renderer, textTexture, nullptr, &renderQuad);
 
   SDL_DestroyTexture(textTexture);

@@ -24,10 +24,7 @@ arcade::Sfml::Sfml() : arcade::ADisplayModule()
  * @brief Destroy the arcade::Sfml::Sfml object
  *
  */
-arcade::Sfml::~Sfml()
-{
-  this->_window.close();
-}
+arcade::Sfml::~Sfml() { this->_window.close(); }
 
 std::string arcade::Sfml::getName() { return "sfml"; }
 
@@ -97,7 +94,7 @@ void arcade::Sfml::drawText(const std::string text, int x, int y, int size)
   sfText.setFont(font);
   sfText.setCharacterSize(size);
   sfText.setFillColor(sf::Color::White);
-  sfText.setPosition(x * size, y * size);
+  sfText.setPosition(x, y);
   sfText.setString(text);
   this->_window.draw(sfText);
 }

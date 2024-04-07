@@ -14,11 +14,14 @@ namespace arcade {
 class Snake : virtual public arcade::AGameModule {
 public:
 #define HEAD 'P'
-#define BODY '-'
+#define BODY '*'
 #define FOOD 'F'
 #define WALL '#'
 #define EMPTY ' '
 #define SNAKE_SPEED 1
+#define MAP_LAYER 0
+#define FOOD_LAYER 1
+#define SNAKE_LAYER 2
   Snake();
   ~Snake();
   std::string getName();

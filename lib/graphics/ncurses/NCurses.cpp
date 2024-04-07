@@ -57,14 +57,18 @@ void arcade::NCurses::drawAllSprite(
     int height)
 {
   for (std::pair<int, int> coord : coordinates) {
-    mvwprintw(this->_window, coord.second / height, coord.first / width, "%c", sprite.first);
+    mvwprintw(this->_window,
+              coord.second / height,
+              coord.first / width,
+              "%c",
+              sprite.first);
   }
 }
 
 void arcade::NCurses::drawText(const std::string text, int x, int y, int size)
 {
   // Draw the text at the specified position
-  mvwprintw(this->_window, y, x, text.c_str());
+  mvwprintw(this->_window, y / size, x / size, text.c_str());
 }
 
 void arcade::NCurses::displayWindow()
