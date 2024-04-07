@@ -9,22 +9,7 @@
 #include <CoreModule.hpp>
 #include <iostream>
 #include <unistd.h>
-
-/**
- * @brief launch the arcade
- *
- * @param path_graphic_lib path of the graphic library
- * @return int OK if the arcade is launched
- */
-int arcadeRe(std::string path_graphic_lib)
-{
-  arcade::CoreModule core;
-  core.getLib("./lib/");
-  core.loadLib(path_graphic_lib);
-  core.generateScore();
-  core.coreLoop();
-  return OK;
-}
+#include "Shell.hpp"
 
 /**
  * @brief check if the library is a good graphic library
@@ -69,6 +54,7 @@ int main(int ac, char **av)
     std::cerr << "Error: The graphic library is not found" << std::endl;
     return KO;
   }
-  arcadeRe(av[1]);
+  Shell shell;
+  shell.run(av[1]);
   return OK;
 }

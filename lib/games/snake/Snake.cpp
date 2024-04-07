@@ -78,7 +78,8 @@ bool arcade::Snake::generateFood(
     if (entities[MAP_LAYER][i].sprite != EMPTY)
       is_empty = false;
     for (int j = 0; j < entities[SNAKE_LAYER].size(); j += 1) {
-      if (entities[SNAKE_LAYER][j].position == entities[MAP_LAYER][i].position) {
+      if (entities[SNAKE_LAYER][j].position ==
+          entities[MAP_LAYER][i].position) {
         is_empty = false;
         break;
       }
@@ -106,16 +107,20 @@ arcade::GameData arcade::Snake::moveSnake()
 
   // Move the snake
   if (this->_direction == arcade::KeyboardInput::UP && head.first % 30 == 0) {
-    this->_oldDirection = this->_direction;
+    if (this->_oldDirection != arcade::KeyboardInput::DOWN)
+      this->_oldDirection = this->_direction;
   } else if (this->_direction == arcade::KeyboardInput::DOWN &&
              head.first % 30 == 0) {
-    this->_oldDirection = this->_direction;
+    if (this->_oldDirection != arcade::KeyboardInput::UP)
+      this->_oldDirection = this->_direction;
   } else if (this->_direction == arcade::KeyboardInput::LEFT &&
              head.second % 30 == 0) {
-    this->_oldDirection = this->_direction;
+    if (this->_oldDirection != arcade::KeyboardInput::RIGHT)
+      this->_oldDirection = this->_direction;
   } else if (this->_direction == arcade::KeyboardInput::RIGHT &&
              head.second % 30 == 0) {
-    this->_oldDirection = this->_direction;
+    if (this->_oldDirection != arcade::KeyboardInput::LEFT)
+      this->_oldDirection = this->_direction;
   }
 
   switch (this->_oldDirection) {
@@ -141,25 +146,65 @@ arcade::GameData arcade::Snake::moveSnake()
   }
 
   // Check if the snake eats itself
-  for (int i = 1; i < snake.size(); i++) {
+  for (int i = 2; i < snake.size(); i += 1) {
     if (snake[0].position == snake[i].position) {
       this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
       return data;
+    } else {
+      for (int j = 1; j < snake.size(); j += 1) {
+        switch (this->_oldDirection) {
+        case arcade::KeyboardInput::UP:
+          if (std::make_pair(snake[0].position.first,
+                             snake[0].position.second + j) ==
+              snake[i].position) {
+            this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
+            return data;
+          }
+          break;
+        case arcade::KeyboardInput::DOWN:
+          if (std::make_pair(snake[0].position.first,
+                             snake[0].position.second - j) ==
+              snake[i].position) {
+            this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
+            return data;
+          }
+          break;
+        case arcade::KeyboardInput::LEFT:
+          if (std::make_pair(snake[0].position.first + j,
+                             snake[0].position.second) == snake[i].position) {
+            this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
+            return data;
+          }
+          break;
+        case arcade::KeyboardInput::RIGHT:
+          if (std::make_pair(snake[0].position.first - j,
+                             snake[0].position.second) == snake[i].position) {
+            this->setGameStatus(arcade::IGameModule::GameStatus::GAMEOVER);
+            return data;
+          }
+          break;
+        }
+      }
     }
   }
   // Check if the snake is hitting a wall
   if (this->getLayerCell(
           0, snake[0].position.first, snake[0].position.second) == WALL ||
-      this->getLayerCell(
-          0, snake[0].position.first + 29, snake[0].position.second) == WALL ||
-      this->getLayerCell(
-          0, snake[0].position.first - 29, snake[0].position.second) == WALL ||
-      this->getLayerCell(
-          0, snake[0].position.first, snake[0].position.second + 29) == WALL ||
-      this->getLayerCell(
-          0, snake[0].position.first, snake[0].position.second - 29) == WALL) {
+      this->getLayerCell(0,
+                         snake[0].position.first + (30 - SNAKE_SPEED),
+                         snake[0].position.second) == WALL ||
+      this->getLayerCell(0,
+                         snake[0].position.first - (30 - SNAKE_SPEED),
+                         snake[0].position.second) == WALL ||
+      this->getLayerCell(0,
+                         snake[0].position.first,
+                         snake[0].position.second + (30 - SNAKE_SPEED)) ==
+          WALL ||
+      this->getLayerCell(0,
+                         snake[0].position.first,
+                         snake[0].position.second - (30 - SNAKE_SPEED)) ==
+          WALL) {
     this->_gameStatus = arcade::IGameModule::GAMEOVER;
-    this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
     return data;
   }
 
@@ -206,7 +251,6 @@ arcade::GameData arcade::Snake::moveSnake()
   if (is_eating == true) {
     if (this->generateFood(data.entities) == false) {
       this->_gameStatus = arcade::IGameModule::WIN;
-      this->getCoreModule()->setCoreStatus(arcade::ICoreModule::SELECTION);
     }
   }
   data.entities[SNAKE_LAYER] = snake;
