@@ -15,18 +15,18 @@ class Snake : virtual public arcade::AGameModule {
 public:
 #define HEAD 'P'
 #define BODY '-'
-#define FOOD 'C'
+#define FOOD 'F'
 #define WALL '#'
 #define EMPTY ' '
+#define SNAKE_SPEED 1
   Snake();
   ~Snake();
   std::string getName();
   void init();
   void updateGame();
-  void moveSnake(arcade::GameData &data);
+  arcade::GameData moveSnake();
   void handdleKeyEvents(arcade::KeyboardInput key);
-  bool generateFood(
-      std::vector<std::vector<std::pair<int, std::pair<int, int>>>> &entities);
+  bool generateFood(std::vector<std::vector<arcade::entity>> &entities);
 };
 }; // namespace arcade
 

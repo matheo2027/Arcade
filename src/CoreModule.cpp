@@ -30,6 +30,9 @@ arcade::CoreModule::CoreModule()
 Press ENTER to confirm the choice\n\
 Press TAB to switch to the next section";
   this->_menuData._type = arcade::ICoreModule::MenuSelection::USERNAME;
+  this->_timers.push_back({std::chrono::steady_clock::now(),
+                           std::chrono::steady_clock::now(),
+                           std::chrono::milliseconds(0)});
 }
 
 /**
@@ -176,17 +179,10 @@ void arcade::CoreModule::getLib(std::string pathLib)
 
 void arcade::CoreModule::loadLib(std::string pathLib)
 {
-  std::cout << "start Load lib :" << pathLib << std::endl;
-  // arcade::CoreModule::DLLoader<arcade::ModuleType> loaderTypeModule(pathLib);
   arcade::CoreModule::_libList.push_back(
       arcade::CoreModule::DLLoader<arcade::ModuleType>(pathLib));
   arcade::ModuleType module =
       arcade::CoreModule::_libList.back().getInstance("getType");
-  // arcade::ModuleType module = loaderTypeModule.getInstance("getType");
-  // CoreModule::DLLoader<std::unique_ptr<arcade::IDisplayModule>>
-  // loaderGraphic(pathLib);
-  // CoreModule::DLLoader<std::unique_ptr<arcade::IGameModule>>
-  // loaderGame(pathLib);
   arcade::CoreModule::_interfaceList.emplace_back(
       DLLoader<std::unique_ptr<arcade::IDisplayModule>>(pathLib),
       DLLoader<std::unique_ptr<arcade::IGameModule>>(pathLib));
@@ -237,12 +233,9 @@ void arcade::CoreModule::generateScore()
   std::ofstream outputFile;
 
   for (std::string game_lib_path : this->_menuData._gameLibList) {
-
-    // DLLoader<std::string> loaderTypeModule(game_lib_path);
     arcade::CoreModule::_nameLoader.push_back(
         DLLoader<std::string>(game_lib_path));
     std::string moduleName = _nameLoader.back().getInstance("getName");
-    std::cout << moduleName << std::endl;
     FILE *fd = fopen(("scoreArcade/" + moduleName + ".txt").c_str(), "r");
     if (fd) {
       fclose(fd);
@@ -255,8 +248,6 @@ void arcade::CoreModule::generateScore()
       outputFile.close();
     }
   }
-
-  std::cout << "File created and written successfully!" << std::endl;
 }
 
 void arcade::CoreModule::launchSelection()
@@ -710,10 +701,10 @@ void arcade::CoreModule::updateRunning()
     for (auto &i : this->_gameData.sprite_value) {
       std::vector<std::pair<int, int>> coordinates;
       for (size_t k = 0; k < this->_gameData.entities[j].size(); k += 1) {
-        if (this->_gameData.entities[j][k].first == i.first)
-          coordinates.push_back(
-              std::make_pair(this->_gameData.entities[j][k].second.first,
-                             this->_gameData.entities[j][k].second.second + 1));
+        if (this->_gameData.entities[j][k].sprite == i.first)
+          coordinates.push_back(std::make_pair(
+              this->_gameData.entities[j][k].position.first,
+              this->_gameData.entities[j][k].position.second + 1));
       }
       allSpritesCoordinates.push_back(std::make_pair(i.first, coordinates));
     }
@@ -745,7 +736,7 @@ void arcade::CoreModule::updateRunning()
   this->getGraphicModule()->drawText(
       this->_gameData._description,
       0,
-      this->getGameData().entities[0].back().second.second + 2,
+      this->getGameData().entities[0].back().position.second + 2,
       game_scale);
   this->getGraphicModule()->displayWindow();
 }
@@ -767,6 +758,7 @@ void arcade::CoreModule::runningLoop()
   arcade::KeyboardInput input;
   this->getGraphicModule()->clearWindow();
   while (this->_coreStatus == CoreStatus::RUNNING) {
+    this->updateTimers();
     this->updateRunning();
     input = this->getGraphicModule()->getInput();
     this->handleKeyEvent(input);
@@ -784,4 +776,39 @@ void arcade::CoreModule::runningLoop()
                    this->_gameData.score,
                    this->_menuData._username);
   }
+}
+
+/**
+ * @brief update the timer
+ *
+ */
+void arcade::CoreModule::updateTimers()
+{
+  for (int i = 0; i < this->_timers.size(); i += 1) {
+    this->_timers[i].end = std::chrono::steady_clock::now();
+    this->_timers[i].duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            this->_timers[i].end - this->_timers[i].start);
+  }
+}
+
+/**
+ * @brief reset the timer
+ *
+ */
+void arcade::CoreModule::resetTimers(int index)
+{
+  if (index >= this->_timers.size())
+    throw std::exception();
+  this->_timers[index].start = std::chrono::steady_clock::now();
+}
+
+/**
+ * @brief get the timer
+ *
+ * @return arcade::AGameModule::timer
+ */
+std::vector<arcade::ICoreModule::timer> arcade::CoreModule::getTimers() const
+{
+  return this->_timers;
 }

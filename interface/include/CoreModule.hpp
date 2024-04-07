@@ -8,11 +8,11 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
+#include <Arcade.hpp>
 #include <arcade/ICoreModule.hpp>
 #include <dlfcn.h>
 #include <iostream>
 #include <memory>
-#include <Arcade.hpp>
 #include <vector>
 
 namespace arcade {
@@ -52,13 +52,18 @@ public:
   void selectionLoop();
   void updateSelection();
 
+  void updateTimers();
+  void resetTimers(int index);
+  std::vector<arcade::ICoreModule::timer> getTimers() const;
+
   template <typename T>
   class DLLoader {
   public:
     void *handle;
 
     // template <typename T>
-    DLLoader(const std::string &libPath) {
+    DLLoader(const std::string &libPath)
+    {
       handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
       if (!handle) {
         std::cerr << dlerror() << std::endl;
@@ -66,9 +71,10 @@ public:
       }
     };
 
-    ~DLLoader() {};
+    ~DLLoader(){};
 
-    T getInstance(const std::string &funcName) {
+    T getInstance(const std::string &funcName)
+    {
       void *sym = dlsym(handle, funcName.c_str());
       if (!sym) {
         std::cerr << dlerror() << std::endl;
@@ -77,16 +83,18 @@ public:
       return reinterpret_cast<T (*)()>(sym)();
     };
 
-    void DLLunloader() {
+    void DLLunloader()
+    {
       if (handle) {
-        std::cout << "Closing Lib" << std::endl;
         dlclose(handle);
       }
     };
   };
   std::vector<DLLoader<std::string>> _nameLoader;
   std::vector<DLLoader<arcade::ModuleType>> _libList;
-  std::vector<std::pair<DLLoader<std::unique_ptr<arcade::IDisplayModule>>, DLLoader<std::unique_ptr<arcade::IGameModule>>>> _interfaceList;
+  std::vector<std::pair<DLLoader<std::unique_ptr<arcade::IDisplayModule>>,
+                        DLLoader<std::unique_ptr<arcade::IGameModule>>>>
+      _interfaceList;
 };
 }; // namespace arcade
 

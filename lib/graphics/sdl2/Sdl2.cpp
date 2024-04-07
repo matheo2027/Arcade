@@ -11,8 +11,6 @@
 
 arcade::Sdl2::Sdl2() : arcade::ADisplayModule()
 {
-  std::cout << "Sdl2 created start" << std::endl;
-
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     try {
@@ -94,7 +92,6 @@ arcade::Sdl2::Sdl2() : arcade::ADisplayModule()
 
 arcade::Sdl2::~Sdl2()
 {
-  std::cout << "Sdl2 destroyed" << std::endl;
   // Destroy renderer
   SDL_DestroyRenderer(this->_renderer);
 
@@ -148,7 +145,7 @@ void arcade::Sdl2::drawSprite(
     return;
   }
 
-  SDL_Rect rect = {x * width, y * height, width, height};
+  SDL_Rect rect = {x, y, width, height};
   SDL_RenderCopy(this->_renderer, texture, nullptr, &rect);
 
   SDL_DestroyTexture(texture);
@@ -174,7 +171,7 @@ void arcade::Sdl2::drawAllSprite(std::pair<char, std::string> sprite,
   }
 
   for (std::pair<int, int> coord : coordinates) {
-    SDL_Rect rect = {coord.first * width, coord.second * height, width, height};
+    SDL_Rect rect = {coord.first, coord.second, width, height};
     SDL_RenderCopy(this->_renderer, texture, nullptr, &rect);
   }
 

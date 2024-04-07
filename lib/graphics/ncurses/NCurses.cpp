@@ -10,7 +10,6 @@
 
 arcade::NCurses::NCurses() : arcade::ADisplayModule()
 {
-  std::cout << "NCurses created" << std::endl;
   initscr();             // Initialize the screen for ncurses
   cbreak();              // Disable line buffering
   noecho();              // Do not echo input characters
@@ -24,8 +23,6 @@ arcade::NCurses::NCurses() : arcade::ADisplayModule()
 
 arcade::NCurses::~NCurses()
 {
-  std::cout << "NCurses destroyed" << std::endl;
-
   WINDOW *win = static_cast<WINDOW *>(this->_window);
   win = nullptr;
   if (win == nullptr) {
@@ -50,7 +47,7 @@ void arcade::NCurses::drawSprite(
     std::pair<char, std::string> sprite, int x, int y, int width, int height)
 {
   // Draw the sprite at the specified position
-  mvwprintw(this->_window, y, x, "%c", sprite.first);
+  mvwprintw(this->_window, y / height, x / width, "%c", sprite.first);
 }
 
 void arcade::NCurses::drawAllSprite(
@@ -60,7 +57,7 @@ void arcade::NCurses::drawAllSprite(
     int height)
 {
   for (std::pair<int, int> coord : coordinates) {
-    mvwprintw(this->_window, coord.second, coord.first, "%c", sprite.first);
+    mvwprintw(this->_window, coord.second / height, coord.first / width, "%c", sprite.first);
   }
 }
 

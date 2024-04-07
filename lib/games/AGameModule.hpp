@@ -9,7 +9,6 @@
 #define AGAMEMODULE_HPP_
 
 #include <arcade/IGameModule.hpp>
-#include <chrono>
 
 namespace arcade {
 class AGameModule : virtual public arcade::IGameModule {
@@ -27,10 +26,6 @@ public:
 
   void setCoreModule(arcade::CoreModule *coreModule);
   arcade::CoreModule *getCoreModule() const;
-
-  void updateTimer();
-  void resetTimer();
-  timer getTimer() const;
 
   void setDirection(arcade::KeyboardInput direction);
   arcade::KeyboardInput getDirection() const;

@@ -11,10 +11,7 @@
  * @brief Construct a new arcade::A Game Module::A Game Module object
  *
  */
-arcade::AGameModule::AGameModule()
-{
-  this->_gameStatus = GameStatus::RUNNING;
-}
+arcade::AGameModule::AGameModule() { this->_gameStatus = GameStatus::RUNNING; }
 
 /**
  * @brief Destroy the arcade::A Game Module::A Game Module object
@@ -57,34 +54,6 @@ arcade::CoreModule *arcade::AGameModule::getCoreModule() const
   return this->_coreModule;
 }
 
-/**
- * @brief update the timer
- *
- */
-void arcade::AGameModule::updateTimer()
-{
-  this->_timer.end = std::chrono::steady_clock::now();
-  this->_timer.duration = std::chrono::duration_cast<std::chrono::milliseconds>(this->_timer.end - this->_timer.start);
-}
-
-/**
- * @brief reset the timer
- *
- */
-void arcade::AGameModule::resetTimer()
-{
-  this->_timer.start = this->_timer.end;
-}
-
-/**
- * @brief get the timer
- *
- * @return arcade::AGameModule::timer
- */
-arcade::AGameModule::timer arcade::AGameModule::getTimer() const
-{
-  return this->_timer;
-}
 
 /**
  * @brief set the direction of the game
@@ -108,17 +77,19 @@ arcade::KeyboardInput arcade::AGameModule::getDirection() const
 
 /**
  * @brief get the cell of the map
- * 
+ *
  * @param x
  * @param y
  * @return int
  */
 int arcade::AGameModule::getLayerCell(int layer, int x, int y) const
 {
-  std::vector<std::pair<int, std::pair<int, int>>> map = this->_coreModule->getGameData().entities[layer];
-  for (size_t cell = 0; cell < map.size(); cell++) {
-    if (map[cell].second.first == x && map[cell].second.second == y)
-      return map[cell].first;
+  std::vector<arcade::entity> selectedLayer =
+      this->_coreModule->getGameData().entities[layer];
+  for (size_t cell = 0; cell < selectedLayer.size(); cell++) {
+    if (selectedLayer[cell].position.first == x &&
+        selectedLayer[cell].position.second == y)
+      return selectedLayer[cell].sprite;
   }
   return -1;
 }

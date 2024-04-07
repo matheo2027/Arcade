@@ -14,7 +14,6 @@
  */
 arcade::Sfml::Sfml() : arcade::ADisplayModule()
 {
-  std::cout << "Sfml created" << std::endl;
   this->_window.create(sf::VideoMode(1920, 1080), "Arcade");
   this->_window.setFramerateLimit(60);
   this->_window.clear(sf::Color::Black);
@@ -27,7 +26,6 @@ arcade::Sfml::Sfml() : arcade::ADisplayModule()
  */
 arcade::Sfml::~Sfml()
 {
-  std::cout << "Sfml destroyed" << std::endl;
   this->_window.close();
 }
 
@@ -75,7 +73,7 @@ void arcade::Sfml::drawAllSprite(std::pair<char, std::string> sprite,
   mySprite.setTexture(texture);
 
   for (std::pair<int, int> coord : coordinates) {
-    mySprite.setPosition(coord.first * width, coord.second * height);
+    mySprite.setPosition(coord.first, coord.second);
 
     // Calculate the scale factors
     float scaleX = static_cast<float>(width) / texture.getSize().x;
