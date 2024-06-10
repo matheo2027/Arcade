@@ -59,6 +59,15 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_pacman>
           ${LIB_DESTINATION}/arcade_pacman.so
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/nibbler)
+add_custom_command(
+  TARGET arcade
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:arcade_nibbler>
+          ${LIB_DESTINATION}/arcade_nibbler.so
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
 set(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib/games/sfml)
 add_custom_command(
   TARGET arcade

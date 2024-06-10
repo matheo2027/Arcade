@@ -14,6 +14,7 @@ target_link_libraries(games_static
 # Include subdirectories
 add_subdirectory(pacman)
 add_subdirectory(snake)
+add_subdirectory(nibbler)
 
 # static library
 
